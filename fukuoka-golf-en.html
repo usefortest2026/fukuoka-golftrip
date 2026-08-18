@@ -315,17 +315,9 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
   </div>
 </nav>
 <script>
-const packingKey='fukuoka-golf-packing-en-v1';
-function loadPacking(){
-  const saved=JSON.parse(localStorage.getItem(packingKey)||'{}');
-  document.querySelectorAll('[data-pack]').forEach(item=>{
-    item.checked=!!saved[item.dataset.pack];
-    item.addEventListener('change',()=>{
-      saved[item.dataset.pack]=item.checked;
-      localStorage.setItem(packingKey,JSON.stringify(saved));
-    });
-  });
-}
+const packingKey='fukuoka-golf-packing-v1';
+function applyPacking(){const saved=JSON.parse(localStorage.getItem(packingKey)||'{}');document.querySelectorAll('[data-pack]').forEach(item=>{item.checked=!!saved[item.dataset.pack];});}
+function loadPacking(){applyPacking();document.querySelectorAll('[data-pack]').forEach(item=>{item.addEventListener('change',()=>{const saved=JSON.parse(localStorage.getItem(packingKey)||'{}');saved[item.dataset.pack]=item.checked;localStorage.setItem(packingKey,JSON.stringify(saved));});});window.addEventListener('storage',e=>{if(e.key===packingKey)applyPacking();});}
 function switchPage(id,btn){
   document.querySelectorAll('.page').forEach(page=>page.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(tab=>tab.classList.remove('active'));
