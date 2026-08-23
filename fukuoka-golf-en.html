@@ -12,8 +12,8 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{height:100%}body{margin:0;background:#eef1eb;color:#1f2933;font-family:'Noto Sans TC',system-ui,sans-serif;font-size:16px;line-height:1.55;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-.app{max-width:500px;width:100%;margin:0 auto;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#eef1eb}
-.hero{position:relative;min-height:190px;color:#fff;overflow:hidden;background:#173629}
+.app{max-width:500px;width:100%;margin:0 auto;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:calc(86px + env(safe-area-inset-bottom));background:#eef1eb}
+.hero{position:relative;min-height:190px;color:#fff;overflow:hidden;background:#173629;flex:0 0 auto}
 .hero img{position:absolute;inset:0;width:100%;height:100%;border-radius:0;object-fit:cover;object-position:center 42%;opacity:.62;box-shadow:none}
 .hero:after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(9,33,24,.72),rgba(23,54,41,.52) 58%,rgba(121,93,48,.22))}
 .hero-inner{position:relative;z-index:1;padding:18px 18px 18px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-start;gap:2px}
@@ -23,12 +23,12 @@ h1{margin:0;font-size:27px;line-height:1.12;font-weight:900;letter-spacing:0}
 .hero-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:13px;font-weight:800;color:#edf7ec}
 .hero-meta span{display:inline-flex;align-items:center;gap:5px}
 .hero-note{margin-top:0;font-size:12px;font-weight:800;color:rgba(255,255,255,.78)}
-main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
+main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .page{display:none}.page.active{display:block;animation:fadeUp .24s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .day-head{padding:15px 2px 12px}
-.day-head h2{margin:3px 0 2px;font-size:23px;line-height:1.22;font-weight:900;color:#173629}
-.day-head p{margin:0;color:#65746b;font-size:13px;font-weight:700}
+.day-head h2{margin:3px 0 2px;font-size:23px;line-height:1.22;font-weight:900;color:#173629;padding-right:104px}
+.day-head p{margin:0;color:#65746b;font-size:13px;font-weight:700;padding-right:104px}
 .panel{background:#fff;border:1px solid #e2e8dc;border-radius:12px;margin-bottom:12px;box-shadow:0 8px 24px rgba(23,54,41,.06);overflow:hidden}
 .panel-pad{padding:14px}
 .section-label{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#879282;margin-bottom:10px}
@@ -84,6 +84,8 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
 .tab-btn{flex:1;min-width:0;border:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:8px 2px 7px;color:#8a9585;font-size:11px;font-weight:700;transition:.2s}
 .tab-btn i{font-size:18px}.tab-btn.active{color:#166534}.tab-btn.active i{transform:scale(1.12)}.tab-btn span{display:block;width:100%;text-align:center}
 @media(max-width:380px){h1{font-size:25px}.hero-meta{font-size:12px;gap:5px}}
+
+.day-head{position:relative}.day-weather{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:baseline;gap:7px;white-space:nowrap}.day-weather i{font-size:23px;color:#3a7d44;align-self:center}.day-weather .wx-hi{font-size:20px;font-weight:900;color:#173629;letter-spacing:-.01em}.day-weather .wx-lo{font-size:13px;font-weight:800;color:#9aa79b}.day-weather:after{content:'avg';font-size:9px;font-weight:800;color:#c0c8bc;letter-spacing:.04em;margin-left:1px}.day-weather.wx-live:after{display:none}
 </style>
 </head>
 <body>
@@ -111,7 +113,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
         <span>·</span>
         <span><i class="fa-solid fa-calendar-days"></i>5 days</span>
       </div>
-      <div class="hero-note">20-seat Coaster · Fukuoka city hotel pending</div>
+      <div class="hero-note">20-seat Coaster · Ritz-Carlton & Mitsui Garden</div>
     </div>
   </section>
 
@@ -119,8 +121,8 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
     <div id="day1" class="page active">
       <div class="day-head">
         <div class="eyebrow">Day 1 · 11/06 (Fri)</div>
-        <h2>Depart Taipei, Arrive Fukuoka</h2>
-        <p>Tentative flight: BR106 08:00 → 11:15</p>
+        <h2>Depart Taipei, Arrive Fukuoka</h2><span class="day-weather" data-date="2026-11-06"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">21°</b><span class="wx-lo">13°</span></span>
+        <p>Flight: BR106 08:00 → 11:15</p>
       </div>
       <div class="flight">
         <div class="eyebrow">Outbound Flight</div>
@@ -132,7 +134,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
         </div>
       </div>
       <div class="panel timeline">
-        <div class="item"><div class="time">08:00<br>11:15</div><div><h3>Taipei / Fukuoka</h3><p>Tentatively flying EVA Air BR106 to Fukuoka.</p></div></div>
+        <div class="item"><div class="time">08:00<br>11:15</div><div><h3>Taipei / Fukuoka</h3><p>Flying EVA Air BR106 to Fukuoka.</p></div></div>
         <div class="item"><div class="time">Arrival</div><div><h3>Private transfer to Fukuoka City</h3><p>20-seat Coaster transfer. Check in or start city activities depending on arrival timing.</p></div></div>
         <div class="item"><div class="time">Dinner</div><div><h3>Dinner in Fukuoka City</h3><p>Restaurant pending. Tenjin or Hakata area recommended.</p></div></div>
       </div>
@@ -141,7 +143,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
     <div id="day2" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 2 · 11/07 (Sat)</div>
-        <h2>Hisayama Country Club</h2>
+        <h2>Hisayama Country Club</h2><span class="day-weather" data-date="2026-11-07"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">13°</span></span>
         <p>Approx. 20 min by car, through play without break</p>
       </div>
       <div class="panel">
@@ -172,7 +174,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
     <div id="day3" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 3 · 11/08 (Sun)</div>
-        <h2>Flexible Day in Fukuoka</h2>
+        <h2>Flexible Day in Fukuoka</h2><span class="day-weather" data-date="2026-11-08"><i class="wx-icon fa-solid fa-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">12°</span></span>
         <p>Keep room for food, shopping, and recovery</p>
       </div>
       <div class="panel">
@@ -190,7 +192,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
     <div id="day4" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 4 · 11/09 (Mon)</div>
-        <h2>Dazaifu Golf Club</h2>
+        <h2>Dazaifu Golf Club</h2><span class="day-weather" data-date="2026-11-09"><i class="wx-icon fa-solid fa-cloud"></i><b class="wx-hi">19°</b><span class="wx-lo">12°</span></span>
         <p>Approx. 30 min by car, meal arrangement pending</p>
       </div>
       <div class="panel">
@@ -222,7 +224,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
     <div id="day5" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 5 · 11/10 (Tue)</div>
-        <h2>Fukuoka Century Golf & Return to Taipei</h2>
+        <h2>Fukuoka Century Golf & Return to Taipei</h2><span class="day-weather" data-date="2026-11-10"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">12°</span></span>
         <p>Approx. 45 min by car, evening return flight</p>
       </div>
       <div class="panel">
@@ -260,7 +262,7 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
       <div class="day-head">
         <div class="eyebrow">Trip Info</div>
         <h2>Hotels & Packing</h2>
-        <p>Hotel candidates and pre-trip checklist</p>
+        <p>Hotels and pre-trip checklist</p>
       </div>
       <div class="tabs">
         <button class="seg active" onclick="switchSub('hotels',this)">Hotels</button>
@@ -268,11 +270,9 @@ main{padding:14px 14px calc(86px + env(safe-area-inset-bottom))}
       </div>
       <div id="hotels" class="subpage active panel">
         <div class="panel-pad">
-          <div class="section-label">Hotel Candidates</div>
+          <div class="section-label">Confirmed Hotels</div>
           <div class="hotel"><div class="num">1</div><div><h3>The Ritz-Carlton, Fukuoka</h3><p>Tenjin area</p><a href="https://www.ritzcarlton.com/en/hotels/fukrz-the-ritz-carlton-fukuoka/" target="_blank" rel="noopener">Official website</a></div></div>
-          <div class="hotel"><div class="num">2</div><div><h3>ONE FUKUOKA HOTEL</h3><p>Opened in April 2025. Located in Tenjin 1-chome, Chuo-ku, Fukuoka.</p><a href="https://onefukuokahotel.jp/" target="_blank" rel="noopener">Official website</a></div></div>
-          <div class="hotel"><div class="num">3</div><div><h3>Miyako Hotel Hakata</h3><p>Hakata area, convenient for Hakata Station transfers.</p><a href="https://www.miyakohotels.ne.jp/hakata/" target="_blank" rel="noopener">Official website</a></div></div>
-          <div class="hotel"><div class="num">4</div><div><h3>Fukuoka Prince Hotel Momochihama</h3><p>New in 2026. Near Fukuoka City Museum.</p><a href="https://www.princehotels.co.jp/momochihama/" target="_blank" rel="noopener">Official website</a></div></div>
+          <div class="hotel"><div class="num">2</div><div><h3>Mitsui Garden Hotel Fukuoka Nakasu</h3><p>Nakasu, near Tenjin (~6 min drive from Ritz)</p><a href="https://www.gardenhotels.co.jp/fukuoka-nakasu/" target="_blank" rel="noopener">Official website</a></div></div>
         </div>
       </div>
       <div id="packing" class="subpage panel">
@@ -324,7 +324,7 @@ function switchPage(id,btn){
   document.querySelectorAll('.tab-btn').forEach(tab=>tab.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if(btn) btn.classList.add('active');
-  var _a=document.querySelector('.app');(_a||window).scrollTo({top:0,behavior:'smooth'});
+  var _a=document.querySelector('main');(_a||window).scrollTo({top:0,behavior:'smooth'});
 }
 function switchSub(id,btn){
   document.querySelectorAll('.subpage').forEach(page=>page.classList.remove('active'));
@@ -333,8 +333,8 @@ function switchSub(id,btn){
   btn.classList.add('active');
 }
 loadPacking();
-(function(){try{history.scrollRestoration='manual';}catch(e){}function cur(){var a=document.querySelector('.page.active');return a?a.id:'day1';}function base(u){return (u||'').split('?')[0].split('#')[0];}function sync(){var id=cur();try{var u=new URL(location.href);u.searchParams.set('p',id);u.hash='';history.replaceState(null,'',u.pathname+u.search);}catch(e){}var ls=document.querySelector('.lang-switch');if(ls)ls.href=base(ls.getAttribute('href'))+'?p='+id;}function toTop(){var app=document.querySelector('.app');if(app)app.scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}function fromParam(){var id=null;try{id=new URL(location.href).searchParams.get('p');}catch(e){}var el=id?document.getElementById(id):null;if(el&&el.classList.contains('page')){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.querySelectorAll('.tab-btn').forEach(function(t){var oc=t.getAttribute('onclick')||'';if(oc.indexOf("'"+id+"'")>-1)t.classList.add('active');});}sync();toTop();}if(typeof switchPage==='function'){var _o=switchPage;switchPage=function(id,btn){_o(id,btn);sync();};}fromParam();})();
+(function(){try{history.scrollRestoration='manual';}catch(e){}function cur(){var a=document.querySelector('.page.active');return a?a.id:'day1';}function base(u){return (u||'').split('?')[0].split('#')[0];}function sync(){var id=cur();try{var u=new URL(location.href);u.searchParams.set('p',id);u.hash='';history.replaceState(null,'',u.pathname+u.search);}catch(e){}var ls=document.querySelector('.lang-switch');if(ls)ls.href=base(ls.getAttribute('href'))+'?p='+id;}function toTop(){var m=document.querySelector('main');if(m)m.scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}function fromParam(){var id=null;try{id=new URL(location.href).searchParams.get('p');}catch(e){}var el=id?document.getElementById(id):null;if(el&&el.classList.contains('page')){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active');});el.classList.add('active');document.querySelectorAll('.tab-btn').forEach(function(t){var oc=t.getAttribute('onclick')||'';if(oc.indexOf("'"+id+"'")>-1)t.classList.add('active');});}sync();toTop();}if(typeof switchPage==='function'){var _o=switchPage;switchPage=function(id,btn){_o(id,btn);sync();};}fromParam();})();
 
-</script>
+(function(){function wxIcon(c){if(c===0)return'fa-sun';if(c===1||c===2)return'fa-cloud-sun';if(c===3)return'fa-cloud';if(c===45||c===48)return'fa-smog';if(c>=71&&c<=77)return'fa-snowflake';if(c>=95)return'fa-cloud-bolt';if((c>=51&&c<=67)||(c>=80&&c<=82))return'fa-cloud-rain';return'fa-cloud-sun';}fetch('https://api.open-meteo.com/v1/forecast?latitude=33.5902&longitude=130.4017&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FTokyo&start_date=2026-11-06&end_date=2026-11-10').then(function(r){return r.ok?r.json():null;}).then(function(d){if(!d||!d.daily||!d.daily.time)return;d.daily.time.forEach(function(dt,i){var el=document.querySelector('.day-weather[data-date="'+dt+'"]');if(!el)return;var ic=el.querySelector('.wx-icon'),hi=el.querySelector('.wx-hi'),lo=el.querySelector('.wx-lo');if(ic)ic.className='wx-icon fa-solid '+wxIcon(d.daily.weather_code[i]);if(hi)hi.textContent=Math.round(d.daily.temperature_2m_max[i])+'°';if(lo)lo.textContent=Math.round(d.daily.temperature_2m_min[i])+'°';el.classList.add('wx-live');});}).catch(function(){});})();</script>
 </body>
 </html>
