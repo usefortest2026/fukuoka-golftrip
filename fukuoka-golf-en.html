@@ -11,84 +11,105 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{height:100%}body{margin:0;background:#eef1eb;color:#1f2933;font-family:'Noto Sans TC',system-ui,sans-serif;font-size:16px;line-height:1.55;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-.app{max-width:500px;width:100%;margin:0 auto;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:calc(86px + env(safe-area-inset-bottom));background:#eef1eb}
+html{height:100%;-webkit-text-size-adjust:100%}body{margin:0;background:#eef1eb;color:#18181b;font-family:'Noto Sans TC',system-ui,sans-serif;font-size:16px;line-height:1.55;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+.app{max-width:500px;width:100%;margin:0 auto;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:calc(88px + env(safe-area-inset-bottom));background:#eef1eb}
 .hero{position:relative;min-height:190px;color:#fff;overflow:hidden;background:#173629;flex:0 0 auto}
 .hero img{position:absolute;inset:0;width:100%;height:100%;border-radius:0;object-fit:cover;object-position:center 42%;opacity:.62;box-shadow:none}
 .hero:after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(9,33,24,.72),rgba(23,54,41,.52) 58%,rgba(121,93,48,.22))}
-.hero-inner{position:relative;z-index:1;padding:18px 18px 18px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-start;gap:2px}
-.lang-switch{position:absolute;right:18px;top:18px;z-index:2;display:inline-flex;align-items:center;justify-content:center;min-width:32px;min-height:26px;border:1px solid rgba(255,255,255,.34);border-radius:999px;background:rgba(255,255,255,.16);color:#fff;text-decoration:none;font-size:11px;font-weight:900}
-.eyebrow{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.82}
-h1{margin:0;font-size:27px;line-height:1.12;font-weight:900;letter-spacing:0}
-.hero-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:13px;font-weight:800;color:#edf7ec}
-.hero-meta span{display:inline-flex;align-items:center;gap:5px}
-.hero-note{margin-top:0;font-size:12px;font-weight:800;color:rgba(255,255,255,.78)}
-main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.page{display:none}.page.active{display:block;animation:fadeUp .24s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.day-head{padding:15px 2px 12px}
-.day-head h2{margin:3px 0 2px;font-size:23px;line-height:1.22;font-weight:900;color:#173629;padding-right:134px}
-.day-head p{margin:0;color:#65746b;font-size:13px;font-weight:700;padding-right:134px}
-.panel{background:#fff;border:1px solid #e2e8dc;border-radius:12px;margin-bottom:12px;box-shadow:0 8px 24px rgba(23,54,41,.06);overflow:hidden}
-.panel-pad{padding:14px}
-.section-label{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#879282;margin-bottom:10px}
+.hero-inner{position:relative;z-index:1;padding:16px;min-height:190px;display:flex;flex-direction:column;justify-content:flex-start;gap:4px}
+.lang-switch{position:absolute;right:16px;top:16px;z-index:2;display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:36px;border:1px solid rgba(255,255,255,.34);border-radius:8px;background:rgba(255,255,255,.16);color:#fff;text-decoration:none;font-size:12px;font-weight:700}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.82}
+h1{margin:0;font-size:27px;line-height:1.4;font-weight:800;letter-spacing:0}
+.hero-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:600;color:#edf7ec}
+.hero-meta span{display:inline-flex;align-items:center;gap:4px}
+.hero-note{margin-top:4px;font-size:12px;font-weight:600;color:rgba(255,255,255,.78)}
+main{padding:16px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;min-width:0}
+.page{display:none}.page.active{display:block;animation:fadeUp 200ms cubic-bezier(0.16,1,0.3,1)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.day-head{padding:16px 0 12px}
+.day-head h2{margin:4px 0;font-size:23px;line-height:1.4;font-weight:800;color:#18181b;padding-right:128px}
+.day-head p{margin:0;color:#52525b;font-size:14px;font-weight:500;padding-right:128px}
+.panel{background:#fff;border:1px solid #e4e4e7;border-radius:12px;margin-bottom:16px;box-shadow:0 4px 20px rgba(24,24,27,.04);overflow:hidden}
+.panel-pad{padding:16px}
+.section-label{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#52525b;margin-bottom:12px}
 .timeline{display:grid;gap:0}
-.item{display:grid;grid-template-columns:74px 1fr;gap:10px;align-items:baseline;padding:13px 14px;border-bottom:1px solid #edf1e9}
+.item{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:baseline;padding:16px;border-bottom:1px solid #e4e4e7}
 .item:last-child{border-bottom:none}
-.time{font-size:15px;font-weight:900;color:#173629;line-height:1.25;white-space:nowrap}
-.item h3{margin:0;color:#243128;font-size:15px;font-weight:900;line-height:1.25}
-.item p{margin:3px 0 0;color:#65746b;font-size:13px}
-.flight{background:#173629;color:#fff;border-radius:12px;padding:15px;margin-bottom:12px}
-.flight h3{margin:4px 0 0;font-size:18px;font-weight:900}
-.flight-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
-.airport{text-align:center;min-width:82px}
-.airport b{display:block;font-size:27px;letter-spacing:2px;line-height:1}
+.time{font-size:15px;font-weight:700;color:#18181b;line-height:1.4;white-space:nowrap;font-variant-numeric:tabular-nums}
+.item h3{margin:0;color:#18181b;font-size:15px;font-weight:700;line-height:1.5}
+.item p{margin:4px 0 0;color:#52525b;font-size:14px}
+.flight{background:#173629;color:#fff;border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
+.flight h3{margin:4px 0 0;font-size:18px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+.flight-row{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:8px}
+.airport{text-align:center;min-width:0;flex:0 1 80px}
+.airport b{display:block;font-size:27px;letter-spacing:2px;line-height:1.4}
 .airport span{display:block;margin-top:4px;font-size:12px;opacity:.7}
-.airport strong{display:block;margin-top:5px;font-size:22px;line-height:1}
-.flight-mid{flex:1;padding:0 8px;text-align:center;color:#d9f99d;font-size:12px;font-weight:800}
-.line{height:1px;background:rgba(255,255,255,.42);margin:7px 0;position:relative}
-.line:after{content:'\f072';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;left:50%;top:-8px;transform:translateX(-50%);background:#173629;color:#fff;padding:0 5px}
+.airport strong{display:block;margin-top:4px;font-size:22px;line-height:1.4;font-variant-numeric:tabular-nums}
+.flight-mid{flex:1;padding:0 4px;text-align:center;color:#d9f99d;font-size:12px;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.line{height:1px;background:rgba(255,255,255,.42);margin:8px 0;position:relative}
+.line:after{content:'\f072';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;left:50%;top:-8px;transform:translateX(-50%);background:#173629;color:#fff;padding:0 4px}
 .course-photo{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#dfe7d9}
-.caption{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px 12px;color:#728074;font-size:12px}
-.caption a{color:#24643d;text-decoration:none;font-weight:900}
+.caption{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px 12px;color:#52525b;font-size:12px;flex-wrap:wrap}
+.caption a{color:#24643d;text-decoration:none;font-weight:600}
 .day-photo{width:100%;aspect-ratio:16/8;object-fit:cover;display:block;background:#dfe7d9}
-.course-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px 2px}
-.info-cell{background:#f5f8f1;border:1px solid #e1ead9;border-radius:9px;padding:9px 10px}
-.info-cell b{display:block;color:#173629;font-size:12px;font-weight:900}
-.info-cell span{display:block;margin-top:2px;color:#5c6b61;font-size:12px;font-weight:700}
-.dress{margin:12px 14px 14px;background:#fbfcf8;border:1px solid #e1ead9;border-radius:10px;padding:12px}
-.dress h4{display:flex;align-items:center;gap:7px;margin:0 0 7px;color:#173629;font-size:14px;font-weight:900}
-.dress ul{margin:0;padding-left:18px;color:#53635b;font-size:13px;line-height:1.7}
-.dress p{margin:9px 0 0;border-top:1px solid #e1ead9;padding-top:8px;color:#53635b;font-size:13px}
-.link-pill{display:inline-flex;align-items:center;gap:5px;margin-top:9px;color:#24643d;text-decoration:none;font-size:12px;font-weight:900}
-.tabs{display:flex;background:#fff;border:1px solid #dfe7d8;border-radius:999px;padding:3px;margin-bottom:12px;overflow:hidden}
-.seg{position:relative;flex:1;border:0;background:transparent;color:#758174;border-radius:999px;padding:9px 6px;font-size:13px;font-weight:900}
+.course-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:16px 16px 4px}
+.info-cell{background:#f5f8f1;border:1px solid #e4e4e7;border-radius:8px;padding:12px;min-width:0;overflow-wrap:anywhere}
+.info-cell b{display:block;color:#18181b;font-size:12px;font-weight:700}
+.info-cell span{display:block;margin-top:4px;color:#52525b;font-size:13px;font-weight:500}
+.dress{margin:12px 16px 16px;background:#fbfcf8;border:1px solid #e4e4e7;border-radius:8px;padding:12px}
+.dress h4{display:flex;align-items:center;gap:8px;margin:0 0 8px;color:#18181b;font-size:14px;font-weight:700;line-height:1.5}
+.dress ul{margin:0;padding-left:20px;color:#52525b;font-size:14px;line-height:1.6}
+.dress p{margin:12px 0 0;border-top:1px solid #e4e4e7;padding-top:8px;color:#52525b;font-size:14px;line-height:1.6}
+.link-pill{display:inline-flex;align-items:center;gap:4px;margin-top:8px;color:#24643d;text-decoration:none;font-size:13px;font-weight:600}
+.tabs{display:flex;background:#fff;border:1px solid #e4e4e7;border-radius:12px;padding:4px;margin-bottom:16px;overflow:hidden}
+.seg{position:relative;flex:1;border:0;background:transparent;color:#52525b;border-radius:8px;padding:8px;font-size:14px;font-weight:700;min-height:40px}
 .seg+.seg:before{content:'';position:absolute;left:-2px;top:8px;bottom:8px;width:1px;background:#e4ebdf}
-.seg.active{background:#173629;color:#fff;box-shadow:0 2px 8px rgba(23,54,41,.16)}
+.seg.active{background:#173629;color:#fff;box-shadow:0 2px 8px rgba(24,24,27,.06)}
 .seg.active:before,.seg.active+.seg:before{display:none}
 .subpage{display:none}.subpage.active{display:block}
-.hotel{display:grid;grid-template-columns:28px 1fr;gap:11px;padding:13px 0;border-bottom:1px solid #edf1e9}
+.hotel{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:16px 0;border-bottom:1px solid #e4e4e7}
 .hotel:last-child{border-bottom:none}
-.num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#173629;color:#fff;font-size:12px;font-weight:900}
-.hotel h3{margin:0;color:#243128;font-size:15px;font-weight:900}
-.hotel p{margin:3px 0 0;color:#65746b;font-size:13px}
-.hotel a{display:inline-flex;margin-top:8px;color:#24643d;text-decoration:none;font-size:13px;font-weight:900}
-.pack-group{margin-top:15px}
+.num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#173629;color:#fff;font-size:12px;font-weight:700}
+.hotel h3{margin:0;color:#18181b;font-size:15px;font-weight:700;line-height:1.5}
+.hotel p{margin:4px 0 0;color:#52525b;font-size:14px}
+.hotel a{display:inline-flex;margin-top:8px;color:#24643d;text-decoration:none;font-size:13px;font-weight:600}
+.hotel-distance{margin:8px 0 0;color:#52525b;font-size:13px;line-height:1.5}
+.pack-group{margin-top:16px}
 .pack-group:first-child{margin-top:0}
-.pack-title{display:flex;align-items:center;gap:7px;margin-bottom:5px;color:#173629;font-size:14px;font-weight:900}
-.check-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #edf1e9;color:#53635b;font-size:14px}
+.pack-title{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#18181b;font-size:14px;font-weight:700}
+.check-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #e4e4e7;color:#52525b;font-size:14px;cursor:pointer}
 .check-row:last-child{border-bottom:none}
-.check-row input{width:19px;height:19px;accent-color:#24643d;margin-top:1px;flex-shrink:0}
-.nav{position:fixed;left:50%;right:auto;bottom:0;z-index:50;transform:translateX(-50%);max-width:500px;width:100%;margin:0 auto;background:#fff;border-top:1px solid #e5e7eb;box-shadow:0 -4px 14px rgba(15,23,42,.08);padding-bottom:env(safe-area-inset-bottom)}
+.check-row input{width:20px;height:20px;accent-color:#24643d;margin-top:0;flex-shrink:0}
+.nav{position:fixed;left:50%;right:auto;bottom:0;z-index:50;transform:translateX(-50%);max-width:500px;width:100%;margin:0 auto;background:#fff;border-top:1px solid #e4e4e7;box-shadow:0 -4px 20px rgba(24,24,27,.04);padding-bottom:env(safe-area-inset-bottom)}
 .nav-inner{max-width:500px;margin:0 auto;display:flex}
-.tab-btn{flex:1;min-width:0;border:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px;padding:8px 2px 7px;color:#8a9585;font-size:11px;font-weight:700;transition:.2s}
-.tab-btn i{font-size:18px}.tab-btn.active{color:#166534}.tab-btn.active i{transform:scale(1.12)}.tab-btn span{display:block;width:100%;text-align:center}
+.tab-btn{flex:1;min-width:0;border:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:8px 4px;color:#52525b;font-size:12px;font-weight:600;transition:.2s;line-height:1.4;border-radius:8px}
+.tab-btn i{font-size:16px}.tab-btn.active{color:#166534}.tab-btn.active i{transform:scale(1.06)}.tab-btn span{display:block;width:100%;text-align:center}
 @media(max-width:380px){h1{font-size:25px}.hero-meta{font-size:12px;gap:5px}}
 
-.day-head{position:relative}.day-weather{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:baseline;gap:7px;white-space:nowrap}.day-weather i{font-size:23px;color:#3a7d44;align-self:center}.day-weather .wx-hi{font-size:20px;font-weight:900;color:#173629;letter-spacing:-.01em}.day-weather .wx-lo{font-size:13px;font-weight:800;color:#9aa79b}.day-weather:after{content:'avg';font-size:9px;font-weight:800;color:#c0c8bc;letter-spacing:.04em;margin-left:1px}.day-weather.wx-live:after{display:none}
+.day-head{position:relative}.day-weather{position:absolute;right:0;top:50%;transform:translateY(-50%);display:inline-flex;align-items:baseline;gap:4px;white-space:nowrap}.day-weather i{font-size:20px;color:#3a7d44;align-self:center}.day-weather .wx-hi{font-size:20px;font-weight:700;color:#18181b;letter-spacing:-.01em}.day-weather .wx-lo{font-size:13px;font-weight:600;color:#52525b}.day-weather:after{content:'avg';font-size:12px;font-weight:800;color:#52525b;letter-spacing:0;margin-left:0}.day-weather.wx-live:after{display:none}
+
+.item>div:last-child{min-width:0;overflow-wrap:anywhere}.contact a{color:#24643d;text-decoration:underline;text-underline-offset:3px}.stop-list{margin:8px 0 0;padding-left:20px;color:#52525b;font-size:14px;line-height:1.55}.stop-list li+li{margin-top:8px}.booking-notes{margin-top:12px;border-top:1px solid #e4e4e7;padding-top:8px;font-size:14px;color:#52525b}.booking-notes summary{cursor:pointer;color:#24643d;font-weight:700;padding:4px 0;transition:opacity 180ms ease-out}.booking-notes summary:hover{opacity:.75}.group-notes p{margin:4px 0;color:#52525b;font-size:14px;line-height:1.55}.time{white-space:normal;overflow-wrap:normal}.tab-btn:hover,.seg:hover{opacity:.85}.tab-btn:active,.seg:active{transform:translateY(1px)}.seg{transition:opacity 180ms ease-out,transform 180ms ease-out}
+.hero h1{font-size:27px;line-height:1.4}.stop-list{list-style:disc}@media(max-width:380px){.hero h1{font-size:25px}}
+
+/* 原版視覺精修：保留既有骨架與內容 */
+.hero h1{font-weight:800;padding-right:40px;overflow-wrap:anywhere}
+.item>div,.hotel>div,.caption>span,.check-row>span{min-width:0;overflow-wrap:anywhere}
+.tab-btn,.seg,.lang-switch,.panel,.caption a,.hotel a,.contact a,.link-pill,.booking-notes summary{transition:opacity 180ms cubic-bezier(0.16,1,0.3,1),transform 180ms cubic-bezier(0.16,1,0.3,1),box-shadow 180ms cubic-bezier(0.16,1,0.3,1),border-color 180ms cubic-bezier(0.16,1,0.3,1)}
+.tab-btn i{transition:transform 180ms cubic-bezier(0.16,1,0.3,1)}
+.lang-switch:active,.caption a:active,.hotel a:active,.link-pill:active{transform:translateY(1px);opacity:.8}
+button,a,summary,input{touch-action:manipulation}
+:focus-visible{outline:2px solid #34744d;outline-offset:3px}
+@media(hover:hover) and (pointer:fine){.lang-switch:hover,.caption a:hover,.hotel a:hover,.contact a:hover,.link-pill:hover{opacity:.8;transform:translateY(-1px)}.panel:hover{border-color:#d4d4d8;box-shadow:0 6px 24px rgba(24,24,27,.05)}}
+@media(max-width:420px){.day-head h2,.day-head p{padding-right:0}.day-weather{position:static;transform:none;margin:4px 0 8px}.day-head h2{font-size:22px}.item{grid-template-columns:64px minmax(0,1fr)}}
+@media(max-width:360px){main{padding:12px}.item{padding:12px;gap:8px}.flight{padding:12px}.flight h3{font-size:16px}.airport b{font-size:24px}.airport strong{font-size:20px}.hero h1{font-size:24px}.hero-meta{gap:4px 8px}}
+@media(max-height:600px){.hero,.hero-inner{min-height:144px}.hero-inner{padding-top:12px;padding-bottom:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.pickup-routes{border-top:1px solid #e4e4e7}.pickup-intro{margin:0 0 8px;color:#52525b;font-size:13px;line-height:1.5}.pickup-route{padding:12px 0;border-bottom:1px solid #e4e4e7}.pickup-route:last-child{padding-bottom:0;border-bottom:0}.pickup-route h3{margin:0;color:#18181b;font-size:14px;font-weight:700;line-height:1.5}.pickup-route p{margin:4px 0 0;color:#52525b;font-size:14px;line-height:1.5;overflow-wrap:anywhere}.pickup-route a{display:inline-flex;margin-top:8px;color:#24643d;font-size:13px;font-weight:600;text-decoration:none;transition:opacity 180ms ease-out,transform 180ms ease-out}.pickup-route a:active{opacity:.8;transform:translateY(1px)}@media(hover:hover) and (pointer:fine){.pickup-route a:hover{opacity:.8;transform:translateY(-1px)}}
+.pickup-route .pickup-estimate{margin-top:8px;color:#52525b;font-size:13px;line-height:1.5}.pickup-estimate strong{color:#18181b;font-weight:700}
+.pickup-route .pickup-depart{margin-top:4px;color:#52525b;font-size:13px;line-height:1.5}.pickup-depart strong{color:#18181b;font-weight:700}.pickup-method{margin:0 0 8px;color:#71717a;font-size:12px;line-height:1.5}
 </style>
 <script>
-(function(){var APP_VERSION="20260823-3";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
+(function(){var APP_VERSION="20260922-6";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
 </script>
 </head>
 <body>
@@ -110,7 +131,7 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
       <div class="eyebrow">Nov 6 - Nov 10, 2026</div>
       <h1>2026 Fukuoka Golf Trip</h1>
       <div class="hero-meta">
-        <span><i class="fa-solid fa-users"></i>8 golfers</span>
+        <span><i class="fa-solid fa-users"></i>8 golfers + 3 companions</span>
         <span>·</span>
         <span><i class="fa-solid fa-golf-ball-tee"></i>3 Rounds</span>
         <span>·</span>
@@ -125,9 +146,7 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
       <div class="day-head">
         <div class="eyebrow">Day 1 · 11/06 (Fri)</div>
         <h2>Depart Taipei, Arrive Fukuoka</h2><span class="day-weather" data-date="2026-11-06"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">21°</b><span class="wx-lo">13°</span></span>
-        <p>Flight: BR106 08:00 → 11:15</p>
-      </div>
-      <div class="flight">
+        <p>City sightseeing after arrival; yakiniku at 18:00</p></div><div class="flight">
         <div class="eyebrow">Outbound Flight</div>
         <h3>BR106 Taipei TPE → Fukuoka FUK</h3>
         <div class="flight-row">
@@ -136,14 +155,8 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
           <div class="airport"><b>FUK</b><span>Fukuoka</span><strong>11:15</strong></div>
         </div>
       </div>
-      <div class="panel timeline">
-        <div class="item"><div class="time">08:00<br>11:15</div><div><h3>Taipei / Fukuoka</h3><p>Flying EVA Air BR106 to Fukuoka.</p></div></div>
-        <div class="item"><div class="time">Arrival</div><div><h3>Private transfer to Fukuoka City</h3><p>20-seat Coaster transfer. Check in or start city activities depending on arrival timing.</p></div></div>
-        <div class="item"><div class="time">Dinner</div><div><h3>Dinner in Fukuoka City</h3><p>Restaurant pending. Tenjin or Hakata area recommended.</p></div></div>
-      </div>
-    </div>
-
-    <div id="day2" class="page">
+      <div class="panel timeline"><div class="item"><div class="time">Arrival</div><div><h3>Private transfer & Fukuoka sightseeing</h3><p>20-seat Coaster transfer to Fukuoka City. Lunch followed by city sightseeing.</p></div></div><div class="item"><div class="time">18:00</div><div><h3>宮中 別邸 | Yakiniku</h3><p>Reserved for 11 in a private room. Choose a set menu and pay on site.</p><p class="contact"><a href="tel:0922603788">092-260-3788</a><br>Yamamoto Building 1F, 3-6-7 Nakasu, Hakata-ku, Fukuoka</p><details class="booking-notes nearby-notes"><summary>Nearby after-dinner ideas</summary><ul class="stop-list"><li>Fukuhaku Deai Bridge and the Naka River — a short riverside stroll for the Nakasu night view.</li><li>Canal City Hakata — browse the shops if dinner ends early; shops generally close at 21:00.</li></ul></details></div></div></div></div>
+<div id="day2" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 2 · 11/07 (Sat)</div>
         <h2>Hisayama Country Club</h2><span class="day-weather" data-date="2026-11-07"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">13°</span></span>
@@ -169,36 +182,17 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
           <a class="link-pill" href="https://www.hisayama.cc/dresscode.html" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Official dress code</a>
         </div>
       </div>
-      <div class="panel timeline">
-        <div class="item"><div class="time">Dinner</div><div><h3>Dinner in Fukuoka City</h3><p>Return to the city after golf.</p></div></div>
-      </div>
-    </div>
-
-    <div id="day3" class="page">
+      <div class="panel timeline"><div class="item"><div class="time">18:00</div><div><h3>NAGAOKA | Omakase</h3><p>Reserved for 11 in a private room. ¥22,000 per person before tax; pay on site.</p><p>Additional service fee: ¥1,000 per person. Private room: ¥5,000 per hour. Children have the same menu and price as adults.</p><p class="contact"><a href="tel:0924069181">092-406-9181</a><br>Room 103, 3-20 Nishinakasu, Chuo-ku, Fukuoka</p><details class="booking-notes"><summary>Reservation & dining notes</summary><p>Booking ID: IDVC7EA9 | Reserved by [REDACTED RESERVER NAME]</p><p>Credit card guarantee. Cancel at least 3 days in advance.</p><p>No tank tops, sandals or casual leisurewear; avoid strong perfume.</p></details><details class="booking-notes nearby-notes"><summary>Nearby after-dinner ideas</summary><ul class="stop-list"><li>Nishinakasu stone-paved lanes — stroll through the backstreets and look for the hidden hearts in the paving.</li><li>Fukuhaku Deai Bridge and Tenjin Central Park — riverside and park views after dark.</li></ul></details></div></div></div></div>
+<div id="day3" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 3 · 11/08 (Sun)</div>
-        <h2>Flexible Day in Fukuoka</h2><span class="day-weather" data-date="2026-11-08"><i class="wx-icon fa-solid fa-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">12°</span></span>
-        <p>Keep room for food, shopping, and recovery</p>
-      </div>
-      <div class="panel">
-        <img class="day-photo" src="https://wanderfulhorizons.com/wp-content/uploads/2024/08/Fukuoka-Ohori-Park-1024x683.jpg" alt="Flexible day in Fukuoka">
-        <div class="caption"><span>Flexible day in Fukuoka</span><a href="https://wanderfulhorizons.com/kyushu-itinerary-7-days/" target="_blank" rel="noopener">Image source</a></div>
-      </div>
-      <div class="panel timeline">
-        <div class="item"><div class="time">Morning</div><div><h3>Late start / coffee / city walk</h3><p>Keep the morning light as a recovery window between golf days.</p></div></div>
-        <div class="item"><div class="time">Lunch</div><div><h3>Group lunch</h3><p>Hakata or Tenjin area recommended, prioritizing restaurants that can seat 8 guests.</p></div></div>
-        <div class="item"><div class="time">Afternoon</div><div><h3>Free time or shopping</h3><p>Tenjin Underground Mall, department stores, drugstores, or Bic Camera.</p></div></div>
-        <div class="item"><div class="time">Dinner</div><div><h3>Group dinner</h3><p>Mizutaki, yakiniku, seafood izakaya, or yatai experience recommended.</p></div></div>
-      </div>
-    </div>
-
-    <div id="day4" class="page">
+        <h2>Itoshima Day Trip</h2><span class="day-weather" data-date="2026-11-08"><i class="wx-icon fa-solid fa-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">12°</span></span>
+        <p>Stops depend on time available; sukiyaki at 17:30</p></div><div class="panel timeline"><div class="item"><div class="time">Stops</div><div><h3>Itoshima coast & forest</h3><ul class="stop-list"><li>Sakurai Futamigaura: white torii gate and Couple Rocks</li><li>Palm-tree swings & PALM BEACH THE GARDENS</li><li>Totoro Forest: short walk with uneven terrain</li><li>Keya no Oto: approx. 30-minute boat ride, weather permitting; pay on site</li><li>Raizan Sennyoji Daihioin: autumn foliage</li></ul></div></div><div class="item"><div class="time">Lunch</div><div><h3>Lunch options in Itoshima</h3><p>Shima no Shiki seafood market / Ichiran no Mori / Ocean House</p></div></div><div class="item"><div class="time">17:30</div><div><h3>Sukiyaki Yamashou</h3><p>Reserved for 11. ¥8,000 per person including unlimited drinks; pay on site.</p><p>Go directly from the last Itoshima stop to the restaurant; leave by 16:00.</p><p class="contact"><a href="tel:05055974333">050-5597-4333</a><br>6-24 Gionmachi, Hakata-ku, Fukuoka</p><details class="booking-notes nearby-notes"><summary>Nearby after-dinner ideas</summary><ul class="stop-list"><li>Kushida Shrine — a short walk from the restaurant; generally open for visits until 22:00.</li><li>Canal City Hakata — shops and canal scenery; shops generally close at 21:00.</li><li>Nakasu riverside — stroll by the Naka River for the night view and yatai atmosphere.</li></ul></details></div></div></div></div>
+<div id="day4" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 4 · 11/09 (Mon)</div>
         <h2>Dazaifu Golf Club</h2><span class="day-weather" data-date="2026-11-09"><i class="wx-icon fa-solid fa-cloud"></i><b class="wx-hi">19°</b><span class="wx-lo">12°</span></span>
-        <p>Approx. 30 min by car, meal arrangement pending</p>
-      </div>
-      <div class="panel">
+        <p>Approx. 30 min by car; chicken hot pot at 18:00</p></div><div class="panel">
         <img class="course-photo" src="https://i.gimg.jp/resource/reserve/gstart/gcimg/913103/913103-7.jpg" alt="Dazaifu Golf Club">
         <div class="caption"><span>Dazaifu Golf Club</span><a href="https://reserve.golfdigest.co.jp/golf-course/913103/course-info/" target="_blank" rel="noopener">Image source</a></div>
         <div class="course-info">
@@ -217,14 +211,8 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
           <p>Repair bunker footprints, divots, and ball marks. The course asks players to keep pace.</p>
           <a class="link-pill" href="https://www.dazaifugc.co.jp/manner/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Official visitor rules</a>
         </div>
-      </div>
-      <div class="panel timeline">
-        <div class="item"><div class="time">Optional</div><div><h3>Dazaifu area stop</h3><p>If time allows, visit Dazaifu Tenmangu or shop for souvenirs.</p></div></div>
-        <div class="item"><div class="time">Dinner</div><div><h3>Dinner in Fukuoka City</h3><p>Return to the city after golf.</p></div></div>
-      </div>
-    </div>
-
-    <div id="day5" class="page">
+      </div><div class="panel timeline"><div class="item"><div class="time">Touring</div><div><h3>Dazaifu | 3 non-golfers</h3><p>Drop the golfers at the course in the morning. Around noon, the vehicle returns to the Ritz-Carlton and Mitsui Garden hotels to pick up the 3 non-golfers for sightseeing in Dazaifu. After the round, pick up the golfers and return to the hotels together.</p><p>Dazaifu Tenmangu, Omotesando and Homangu Kamado Shrine.</p></div></div><div class="item"><div class="time">18:00</div><div><h3>Mizutaki Nagano | Chicken hot pot</h3><p>Private room reserved for 11. Choose a set menu on site; 10% service charge; pay on site.</p><p class="contact"><a href="tel:0922812200">092-281-2200</a><br>Tsushimashoji, Hakata-ku, Fukuoka</p><details class="booking-notes nearby-notes"><summary>Nearby after-dinner ideas</summary><ul class="stop-list"><li>Bayside Place Hakata — if you still have energy, take a short ride to the harbor for the night view.</li><li>Nakasu riverside — pause for a brief walk along the river on the way back to the hotels.</li></ul></details></div></div></div></div>
+<div id="day5" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 5 · 11/10 (Tue)</div>
         <h2>Fukuoka Century Golf & Return to Taipei</h2><span class="day-weather" data-date="2026-11-10"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">12°</span></span>
@@ -237,7 +225,7 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
           <div class="info-cell"><b>Tee Time</b><span>10:08 / 10:16</span></div>
           <div class="info-cell"><b>Arrival</b><span>60 min early</span></div>
           <div class="info-cell"><b>Meal</b><span>Pending</span></div>
-          <div class="info-cell"><b>Note</b><span>Visitor booking rules to confirm</span></div>
+          <div class="info-cell"><b>Note</b><span>Airport after 18 holes</span></div>
         </div>
         <div class="dress">
           <h4><i class="fa-solid fa-shirt"></i>Dress Code</h4>
@@ -246,11 +234,10 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
             <li>Collared golf wear is required during play; collared shirts are also requested for arrival and departure.</li>
             <li>Avoid T-shirts, jeans, and sandals. Soft-spike golf shoes are recommended.</li>
           </ul>
-          <p>Confirm before booking whether foreign visitors must be accompanied by a club member.</p>
+
           <a class="link-pill" href="https://www.fcgc.biz/faq/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Official FAQ</a>
         </div>
-      </div>
-      <div class="flight">
+      </div><div class="panel timeline"><div class="item"><div class="time">Touring</div><div><h3>Akizuki Castle Ruins | 3 non-golfers</h3><p>Companions may depart with the golfers and visit Akizuki Castle Ruins in Asakura, approx. 15 min from the course.</p></div></div><div class="item"><div class="time">After golf</div><div><h3>Airport transfer after 18 holes</h3><p>Return to Taipei on EVA Air BR101 in the evening.</p></div></div></div><div class="flight">
         <div class="eyebrow">Return Flight</div>
         <h3>BR101 Fukuoka FUK → Taipei TPE</h3>
         <div class="flight-row">
@@ -260,8 +247,7 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
         </div>
       </div>
     </div>
-
-    <div id="info" class="page">
+<div id="info" class="page">
       <div class="day-head">
         <div class="eyebrow">Trip Info</div>
         <h2>Hotels & Packing</h2>
@@ -275,9 +261,21 @@ main{padding:14px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
         <div class="panel-pad">
           <div class="section-label">Confirmed Hotels</div>
           <div class="hotel"><div class="num">1</div><div><h3>The Ritz-Carlton, Fukuoka</h3><p>Tenjin area</p><a href="https://www.ritzcarlton.com/en/hotels/fukrz-the-ritz-carlton-fukuoka/" target="_blank" rel="noopener">Official website</a></div></div>
-          <div class="hotel"><div class="num">2</div><div><h3>Mitsui Garden Hotel Fukuoka Nakasu</h3><p>Nakasu, near Tenjin (~6 min drive from Ritz)</p><a href="https://www.gardenhotels.co.jp/fukuoka-nakasu/" target="_blank" rel="noopener">Official website</a></div></div>
-        </div>
-      </div>
+          <div class="hotel"><div class="num">2</div><div><h3>Mitsui Garden Hotel Fukuoka Nakasu</h3><p>Nakasu, near Tenjin</p><a href="https://www.gardenhotels.co.jp/fukuoka-nakasu/" target="_blank" rel="noopener">Official website</a></div></div>
+        <p class="hotel-distance">The two hotels are about 6 minutes apart by car.</p></div>
+                              <section class="pickup-routes panel-pad" aria-label="Hotel pickup for golf"><div class="section-label">Hotel pickup for golf</div><p class="pickup-intro">For D2, D4 and D5, the suggested order is Ritz → Mitsui → golf course. Check live navigation before departure.</p><p class="pickup-method">Departure time allows the upper end of the drive range, 10 minutes for pickup and a 5-minute buffer; arrive 60 minutes before the first tee time.</p>
+        <div class="pickup-route"><h3>D2 · Hisayama Country Club</h3><p>Ritz → Mitsui → Hisayama Country Club</p><p class="pickup-estimate"><strong>Both hotel pickups: ~30–40 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 09:10</strong> · Arrive at the course by 10:06</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=Hisayama+Country+Club%2C+3549+Kuhara%2C+Hisayama%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        <div class="pickup-route"><h3>D4 · Dazaifu Golf Club</h3><p>Ritz → Mitsui → Dazaifu Golf Club</p><p class="pickup-estimate"><strong>Both hotel pickups: ~40–50 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 07:55</strong> · Arrive at the course by 09:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=Dazaifu+Golf+Club%2C+3467-39+Ishiana%2C+Dazaifu%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        <div class="pickup-route"><h3>D5 · Fukuoka Century Golf Club</h3><p>Ritz → Mitsui → Fukuoka Century Golf Club</p><p class="pickup-estimate"><strong>Both hotel pickups: ~50–60 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 07:50</strong> · Arrive at the course by 09:08</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=Fukuoka+Century+Golf+Club%2C+1-1+Itaya%2C+Asakura%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        </section>
+<section class="pickup-routes panel-pad" aria-label="Routes to dinner"><div class="section-label">Routes to dinner</div><p class="pickup-intro">For D1, D2 and D4, use Ritz → Mitsui → restaurant when leaving from the hotels. On D3, go directly from the last Itoshima stop to Sukiyaki Yamasho. Check live navigation on the day.</p><p class="pickup-method">D1, D2 and D4 departure times allow for pickup and a buffer. For D3, allow up to about 70 minutes of driving plus a 20-minute buffer. Arrive by the dinner reservation.</p>
+        <div class="pickup-route"><h3>D1 · Miyanaka Bettei</h3><p>Ritz → Mitsui → Miyanaka Bettei</p><p class="pickup-estimate"><strong>Both hotel pickups: ~15–25 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 17:20</strong> · Arrive at the restaurant by 18:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=3-6-7+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        <div class="pickup-route"><h3>D2 · NAGAOKA</h3><p>Ritz → Mitsui → NAGAOKA</p><p class="pickup-estimate"><strong>Both hotel pickups: ~15–25 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 17:20</strong> · Arrive at the restaurant by 18:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=3-20+Nishinakasu%2C+Chuo+Ward%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        <div class="pickup-route"><h3>D3 · Sukiyaki Yamasho</h3><p>Last stop in Itoshima → Sukiyaki Yamasho</p><p class="pickup-estimate"><strong>Itoshima to restaurant: ~40–70 min</strong> (depends on the last stop and traffic)</p><p class="pickup-depart"><strong>Leave the last Itoshima stop by 16:00</strong> · Arrive at the restaurant by 17:30</p><a href="https://www.google.com/maps/dir/?api=1&amp;destination=6-24+Gionmachi%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Navigate by car from your current location</a></div>
+        <div class="pickup-route"><h3>D4 · Mizutaki Nagano</h3><p>Ritz → Mitsui → Mizutaki Nagano</p><p class="pickup-estimate"><strong>Both hotel pickups: ~15–25 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 17:20</strong> · Arrive at the restaurant by 18:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=1-6+Tsushimashoji%2C+Hakata+Ward%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        </section>
+
+</div>
       <div id="packing" class="subpage panel">
         <div class="panel-pad">
           <div class="pack-group">
