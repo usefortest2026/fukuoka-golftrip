@@ -48,7 +48,7 @@ main{padding:16px;flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-sc
 .flight-mid{flex:1;padding:0 4px;text-align:center;color:#d9f99d;font-size:12px;font-weight:600;min-width:0;overflow-wrap:anywhere}
 .line{height:1px;background:rgba(255,255,255,.42);margin:8px 0;position:relative}
 .line:after{content:'\f072';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;left:50%;top:-8px;transform:translateX(-50%);background:#173629;color:#fff;padding:0 4px}
-.course-photo{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#dfe7d9}
+.course-photo{width:100%;aspect-ratio:2/1;object-fit:cover;object-position:center;display:block;background:#dfe7d9}
 .caption{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px 12px;color:#52525b;font-size:12px;flex-wrap:wrap}
 .caption a{color:#24643d;text-decoration:none;font-weight:600}
 .day-photo{width:100%;aspect-ratio:16/8;object-fit:cover;display:block;background:#dfe7d9}
@@ -107,9 +107,27 @@ button,a,summary,input{touch-action:manipulation}
 .pickup-routes{border-top:1px solid #e4e4e7}.pickup-intro{margin:0 0 8px;color:#52525b;font-size:13px;line-height:1.5}.pickup-route{padding:12px 0;border-bottom:1px solid #e4e4e7}.pickup-route:last-child{padding-bottom:0;border-bottom:0}.pickup-route h3{margin:0;color:#18181b;font-size:14px;font-weight:700;line-height:1.5}.pickup-route p{margin:4px 0 0;color:#52525b;font-size:14px;line-height:1.5;overflow-wrap:anywhere}.pickup-route a{display:inline-flex;margin-top:8px;color:#24643d;font-size:13px;font-weight:600;text-decoration:none;transition:opacity 180ms ease-out,transform 180ms ease-out}.pickup-route a:active{opacity:.8;transform:translateY(1px)}@media(hover:hover) and (pointer:fine){.pickup-route a:hover{opacity:.8;transform:translateY(-1px)}}
 .pickup-route .pickup-estimate{margin-top:8px;color:#52525b;font-size:13px;line-height:1.5}.pickup-estimate strong{color:#18181b;font-weight:700}
 .pickup-route .pickup-depart{margin-top:4px;color:#52525b;font-size:13px;line-height:1.5}.pickup-depart strong{color:#18181b;font-weight:700}.pickup-method{margin:0 0 8px;color:#71717a;font-size:12px;line-height:1.5}
+
+/* Compact editorial trip header */
+.hero{min-height:120px}
+.hero img{object-position:center 44%;opacity:.5;filter:saturate(.78) contrast(.92)}
+.hero:after{background:rgba(9,33,24,.7)}
+.hero-inner{min-height:120px;padding:12px 64px 12px 16px;justify-content:center;gap:2px}
+.hero .eyebrow{font-size:11px;line-height:1.4;letter-spacing:.1em}
+.hero h1{padding-right:0;font-size:24px;line-height:1.25}
+.hero-meta{gap:2px 8px;margin-top:2px;font-size:12px;line-height:1.4;color:rgba(255,255,255,.88)}
+.hero-meta>span:nth-child(even){display:none}
+.hero-meta>span:nth-child(odd):not(:first-child)::before{content:'·';margin-right:8px;opacity:.55}
+.hero-note{display:none}
+.lang-switch{top:8px;right:8px;min-width:44px;min-height:44px;background:rgba(255,255,255,.12)}
+@media(max-width:380px){.hero,.hero-inner{min-height:112px}.hero-inner{padding:10px 60px 10px 12px}.hero h1{font-size:22px}.hero-meta{font-size:11px;gap:2px 6px}.hero-meta>span:nth-child(odd):not(:first-child)::before{margin-right:6px}}
+@media(min-width:768px){.hero,.hero-inner{min-height:128px}.hero-inner{padding:16px 68px 16px 20px}.hero h1{font-size:26px}}
+@media(max-height:600px){.hero,.hero-inner{min-height:104px}.hero-inner{padding-top:8px;padding-bottom:8px}}
+.line{background:transparent}
+.line:after{content:'\f5b0';left:50%;right:auto;top:50%;width:24px;height:18px;padding:0;display:flex;align-items:center;justify-content:center;border:0;transform:translate(-50%,-50%);background:#173629;background-image:none;color:rgba(255,255,255,.9);-webkit-text-fill-color:transparent;-webkit-text-stroke:.55px rgba(255,255,255,.9);font-family:'Font Awesome 6 Free';font-size:16px;line-height:1;font-weight:900}
 </style>
 <script>
-(function(){var APP_VERSION="20260922-8";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
+(function(){var APP_VERSION="20260923-9";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
 </script>
 </head>
 <body>
@@ -182,7 +200,7 @@ button,a,summary,input{touch-action:manipulation}
           <a class="link-pill" href="https://www.hisayama.cc/dresscode.html" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Official dress code</a>
         </div>
       </div>
-      <div class="panel timeline"><div class="item"><div class="time">Dinner</div><div><h3>Chinpunkampun Hakata</h3><p>Izakaya; not yet reserved. Dinner time to be confirmed.</p><p class="contact">VIERRA Hakata Terrace, 4-38-10 Hakata Ekimae, Hakata Ward, Fukuoka<br><a href="https://maps.app.goo.gl/5yNNMmeLhAKXQ5C89?g_st=ic" target="_blank" rel="noopener">Open Google Maps</a></p></div></div></div></div>
+      <div class="panel timeline"><div class="item"><div class="time">18:00</div><div><h3>Chinpunkampun Hakata</h3><p>Reserved for 11 guests for 2 hours. Order and pay at the restaurant.</p><p>Booking ID: <strong>[REDACTED BOOKING REFERENCE]</strong> · Reserved by [REDACTED RESERVER NAME]</p><p>A ¥4,400 system fee (tax included) was paid by credit card at booking. A ¥330 appetizer fee for cabbage (tax included) also applies.</p><p class="contact"><a href="tel:07031508174">070-3150-8174</a><br>VIERRA Hakata Terrace, 4-38-10 Hakata Ekimae, Hakata Ward, Fukuoka<br><a href="https://maps.app.goo.gl/5yNNMmeLhAKXQ5C89?g_st=ic" target="_blank" rel="noopener">Open Google Maps</a></p></div></div></div></div>
 <div id="day3" class="page">
       <div class="day-head">
         <div class="eyebrow">Day 3 · 11/08 (Sun)</div>
@@ -216,7 +234,7 @@ button,a,summary,input{touch-action:manipulation}
       <div class="day-head">
         <div class="eyebrow">Day 5 · 11/10 (Tue)</div>
         <h2>Fukuoka Century Golf & After-Golf Transfers</h2><span class="day-weather" data-date="2026-11-10"><i class="wx-icon fa-solid fa-cloud-sun"></i><b class="wx-hi">20°</b><span class="wx-lo">12°</span></span>
-        <p>Approx. 45 min by car; onward to the airport or Ritz after golf</p>
+        <p>Approx. 45 min by car; airport first, then 2 guests return to Ritz</p>
       </div>
       <div class="panel">
         <img class="course-photo" src="https://image.jimcdn.com/app/cms/image/transf/none/path/sad2a693edfa25add/image/id15c7cb7d2f84a79/version/1713505859/image.jpg" alt="Fukuoka Century Golf Club">
@@ -225,7 +243,7 @@ button,a,summary,input{touch-action:manipulation}
           <div class="info-cell"><b>Tee Time</b><span>10:08 / 10:16</span></div>
           <div class="info-cell"><b>Arrival</b><span>60 min early</span></div>
           <div class="info-cell"><b>Meal</b><span>Pending</span></div>
-          <div class="info-cell"><b>Note</b><span>Airport / Ritz after golf</span></div>
+          <div class="info-cell"><b>Note</b><span>Airport first, then 2 guests to Ritz</span></div>
         </div>
         <div class="dress">
           <h4><i class="fa-solid fa-shirt"></i>Dress Code</h4>
@@ -237,7 +255,7 @@ button,a,summary,input{touch-action:manipulation}
 
           <a class="link-pill" href="https://www.fcgc.biz/faq/" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i>Official FAQ</a>
         </div>
-      </div><div class="panel timeline"><div class="item"><div class="time">Touring</div><div><h3>Akizuki Castle Ruins | 3 non-golfers</h3><p>Companions may depart with the golfers and visit Akizuki Castle Ruins in Asakura, approx. 15 min from the course.</p></div></div><div class="item"><div class="time">After golf</div><div><h3>Separate transfers after 18 holes</h3><p>One group heads to Fukuoka Airport for EVA Air BR101; 2 people return to The Ritz-Carlton, Fukuoka.</p></div></div></div><div class="flight">
+      </div><div class="panel timeline"><div class="item"><div class="time">Touring</div><div><h3>Akizuki Castle Ruins | 3 non-golfers</h3><p>Companions may depart with the golfers and visit Akizuki Castle Ruins in Asakura, approx. 15 min from the course.</p></div></div><div class="item"><div class="time">After golf</div><div><h3>Sequential transfers after 18 holes</h3><p>After 18 holes, everyone first travels to Fukuoka Airport for the EVA Air BR101 drop-off. The vehicle then takes the remaining 2 guests back to The Ritz-Carlton, Fukuoka.</p></div></div></div><div class="flight">
         <div class="eyebrow">Airport Group Return Flight</div>
         <h3>BR101 Fukuoka FUK → Taipei TPE</h3>
         <div class="flight-row">
@@ -268,9 +286,9 @@ button,a,summary,input{touch-action:manipulation}
         <div class="pickup-route"><h3>D4 · Dazaifu Golf Club</h3><p>Ritz → Mitsui → Dazaifu Golf Club</p><p class="pickup-estimate"><strong>Both hotel pickups: ~40–50 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 07:55</strong> · Arrive at the course by 09:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=Dazaifu+Golf+Club%2C+3467-39+Ishiana%2C+Dazaifu%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
         <div class="pickup-route"><h3>D5 · Fukuoka Century Golf Club</h3><p>Ritz → Mitsui → Fukuoka Century Golf Club</p><p class="pickup-estimate"><strong>Both hotel pickups: ~50–60 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 07:50</strong> · Arrive at the course by 09:08</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=Fukuoka+Century+Golf+Club%2C+1-1+Itaya%2C+Asakura%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
         </section>
-<section class="pickup-routes panel-pad" aria-label="Routes to dinner"><div class="section-label">Routes to dinner</div><p class="pickup-intro">For D1, D2 and D4, use Ritz → Mitsui → restaurant when leaving from the hotels. On D3, go directly from the last Itoshima stop to Sukiyaki Yamasho. Check live navigation on the day.</p><p class="pickup-method">D1 and D4 departure times allow for pickup and a buffer. For D3, allow up to about 70 minutes of driving plus a 20-minute buffer. Arrive by the dinner reservation.</p>
+<section class="pickup-routes panel-pad" aria-label="Routes to dinner"><div class="section-label">Routes to dinner</div><p class="pickup-intro">For D1, D2 and D4, use Ritz → Mitsui → restaurant when leaving from the hotels. On D3, go directly from the last Itoshima stop to Sukiyaki Yamasho. Check live navigation on the day.</p><p class="pickup-method">D1, D2 and D4 departure times allow for pickup and a buffer. For D3, allow up to about 70 minutes of driving plus a 20-minute buffer. Arrive by the dinner reservation.</p>
         <div class="pickup-route"><h3>D1 · Miyanaka Bettei</h3><p>Ritz → Mitsui → Miyanaka Bettei</p><p class="pickup-estimate"><strong>Both hotel pickups: ~15–25 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 17:20</strong> · Arrive at the restaurant by 18:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=3-6-7+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
-        <div class="pickup-route"><h3>D2 · Chinpunkampun Hakata</h3><p>Ritz → Mitsui → Chinpunkampun Hakata</p><p class="pickup-estimate"><strong>Both hotel pickups: ~20–30 min</strong> (excluding pickup stops; allow for traffic)</p><p class="pickup-depart"><strong>Not yet reserved</strong> · Set departure time after confirming dinner time</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=33.5868685%2C130.4209231&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
+        <div class="pickup-route"><h3>D2 · Chinpunkampun Hakata</h3><p>Ritz → Mitsui → Chinpunkampun Hakata</p><p class="pickup-estimate"><strong>Both hotel pickups: ~20–30 min</strong> (excluding pickup stops; allow for traffic)</p><p class="pickup-depart"><strong>Leave Ritz around 17:15</strong> · Arrive at the restaurant by 18:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=33.5868685%2C130.4209231&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
         <div class="pickup-route"><h3>D3 · Sukiyaki Yamasho</h3><p>Last stop in Itoshima → Sukiyaki Yamasho</p><p class="pickup-estimate"><strong>Itoshima to restaurant: ~40–70 min</strong> (depends on the last stop and traffic)</p><p class="pickup-depart"><strong>Leave the last Itoshima stop by 16:00</strong> · Arrive at the restaurant by 17:30</p><a href="https://www.google.com/maps/dir/?api=1&amp;destination=6-24+Gionmachi%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Navigate by car from your current location</a></div>
         <div class="pickup-route"><h3>D4 · Mizutaki Nagano</h3><p>Ritz → Mitsui → Mizutaki Nagano</p><p class="pickup-estimate"><strong>Both hotel pickups: ~15–25 min</strong> (excluding pickup stops)</p><p class="pickup-depart"><strong>Leave Ritz around 17:20</strong> · Arrive at the restaurant by 18:00</p><a href="https://www.google.com/maps/dir/?api=1&amp;origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&amp;destination=1-6+Tsushimashoji%2C+Hakata+Ward%2C+Fukuoka&amp;waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&amp;travelmode=driving" target="_blank" rel="noopener">Open driving route</a></div>
         </section>
