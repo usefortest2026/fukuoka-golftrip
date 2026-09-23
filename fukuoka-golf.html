@@ -73,11 +73,12 @@ button,a,summary,input{touch-action:manipulation}
 @media(max-width:380px){.hero,.hero-inner{min-height:112px}.hero-inner{padding:10px 60px 10px 12px}.hero h1{font-size:22px}.hero-meta{font-size:11px;gap:2px 6px}.hero-meta>span:nth-child(odd):not(:first-child)::before{margin-right:6px}}
 @media(min-width:768px){.hero,.hero-inner{min-height:128px}.hero-inner{padding:16px 68px 16px 20px}.hero h1{font-size:26px}}
 @media(max-height:600px){.hero,.hero-inner{min-height:104px}.hero-inner{padding-top:8px;padding-bottom:8px}}
+.day-head{padding-top:8px}
 .line{background:rgba(255,255,255,.42)}
 .line:after{content:'\f072';left:50%;right:auto;top:50%;width:24px;height:18px;padding:0;display:flex;align-items:center;justify-content:center;border:0;transform:translate(-50%,-50%);background:#173629;background-image:none;color:rgba(255,255,255,.9);-webkit-text-fill-color:transparent;-webkit-text-stroke:.55px rgba(255,255,255,.9);font-family:'Font Awesome 6 Free';font-size:16px;line-height:1;font-weight:900}
 </style>
 <script>
-(function(){var APP_VERSION="20260923-12";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
+(function(){var APP_VERSION="20260923-13";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
 </script>
 </head>
 <body>
@@ -94,6 +95,48 @@ button,a,summary,input{touch-action:manipulation}
 
 
 <script>
+(function updateArrivalPlan(){
+  const arrival=document.querySelector('#day1 .timeline .item');
+  if(!arrival)return;
+  const title=arrival.querySelector('h3');
+  const detail=arrival.querySelector('p');
+  if(title)title.textContent='午餐後前往飯店';
+  if(detail)detail.textContent='抵達福岡後先享用午餐，餐後前往飯店，15:00 後辦理入住。';
+})();
+(function simplifyPickupInfo(){
+  const hotelPage=document.getElementById('hotels');
+  if(!hotelPage)return;
+  const distance=hotelPage.querySelector('.hotel-distance');
+  if(distance)distance.remove();
+  const sections=hotelPage.querySelectorAll('.pickup-routes');
+  sections.forEach((section,index)=>{
+    const intro=section.querySelector('.pickup-intro');
+    if(intro){
+      if(index===0)intro.textContent='固定接送順序：麗思卡爾頓 → 三井花園 → 球場或餐廳。';
+      else intro.remove();
+    }
+    const method=section.querySelector('.pickup-method');
+    if(method)method.remove();
+    section.querySelectorAll('.pickup-route').forEach(route=>{
+      const estimate=route.querySelector('.pickup-estimate');
+      if(estimate)estimate.remove();
+      Array.from(route.children).forEach(child=>{
+        if(child.tagName==='P'&&!child.classList.contains('pickup-depart'))child.remove();
+      });
+    });
+  });
+  const dinnerRoutes=sections[1]?sections[1].querySelectorAll('.pickup-route'):[];
+  const d3=dinnerRoutes[2];
+  if(d3){
+    const depart=d3.querySelector('.pickup-depart');
+    if(depart)depart.innerHTML='<strong>建議麗思 16:50 出發</strong> · 目標餐廳 17:30 抵達';
+    const map=d3.querySelector('a');
+    if(map){
+      map.href='https://www.google.com/maps/dir/?api=1&origin=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&destination=6-24+Gionmachi%2C+Hakata+Ward%2C+Fukuoka&waypoints=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&travelmode=driving';
+      map.textContent='查看開車路線';
+    }
+  }
+})();
 const packingKey='fukuoka-golf-packing-v1';
 function applyPacking(){const saved=JSON.parse(localStorage.getItem(packingKey)||'{}');document.querySelectorAll('[data-pack]').forEach(item=>{item.checked=!!saved[item.dataset.pack];});}
 function loadPacking(){applyPacking();document.querySelectorAll('[data-pack]').forEach(item=>{item.addEventListener('change',()=>{const saved=JSON.parse(localStorage.getItem(packingKey)||'{}');saved[item.dataset.pack]=item.checked;localStorage.setItem(packingKey,JSON.stringify(saved));});});window.addEventListener('storage',e=>{if(e.key===packingKey)applyPacking();});}
