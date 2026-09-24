@@ -276,14 +276,14 @@
 }
 
 .contact .contact-action {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
   min-width: 0;
   min-height: 44px;
   margin: 0;
-  padding: 8px 10px;
+  padding: 8px 24px;
   border: 1px solid var(--contact-border);
   border-radius: 8px;
   font-size: 13px;
@@ -292,6 +292,22 @@
   text-align: center;
   text-decoration: none;
   transition: opacity 180ms cubic-bezier(.16, 1, .3, 1), transform 180ms cubic-bezier(.16, 1, .3, 1), background-color 180ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.contact .contact-action i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 14px;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.contact .contact-action span {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
 }
 
 .contact .contact-call {
