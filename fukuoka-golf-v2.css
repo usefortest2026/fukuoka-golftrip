@@ -184,6 +184,22 @@
 
 .course-info + .v2-map-actions { margin: 0 16px 12px; }
 
+.course-intro {
+  margin: 16px;
+  color: #52525b;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.course-intro h3 {
+  margin: 0 0 8px;
+  color: #27272a;
+  font-size: 16px;
+}
+
+.course-intro p { margin: 0 0 8px; }
+.course-intro p:last-child { margin-bottom: 0; }
+
 .v2-nav-button:active {
   opacity: .82;
   transform: translateY(1px);
