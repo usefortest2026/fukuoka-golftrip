@@ -35,7 +35,7 @@
 
 .v2-summary-list li {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
+  grid-template-columns: 68px minmax(0, 1fr);
   gap: 8px;
   padding: 6px 0;
   border-bottom: 1px solid #f0f1f2;
@@ -50,6 +50,7 @@
   color: #166534;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .v2-day-state {
