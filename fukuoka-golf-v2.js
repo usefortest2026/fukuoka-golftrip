@@ -173,6 +173,7 @@
     var action = document.createElement('div');
     action.className = 'v2-quick-action';
     action.appendChild(makeMapButton(mapLinks[dayId], document.querySelector('#' + dayId + ' .day-head h2').textContent));
+    action.querySelector('span').textContent = 'Google Maps 導航';
     section.appendChild(action);
     summary.insertAdjacentElement('afterend', section);
   });
@@ -212,6 +213,7 @@
   });
 
   document.querySelectorAll('.contact a[href*="google.com/maps"], .contact a[href*="maps.app.goo.gl"]').forEach(function (sourceLink) {
+    if (sourceLink.classList.contains('contact-action')) return;
     var title = sourceLink.closest('.item').querySelector('h3').textContent;
     sourceLink.classList.add('v2-nav-button');
     sourceLink.setAttribute('aria-label', title + ' Google Maps 導航');
