@@ -6,7 +6,7 @@
     day2: [['09:10', 'Depart Ritz; pick up group'], ['10:06', 'Arrive at Hisayama Country Club'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata']],
     day3: [['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['16:00', 'Leave the final stop by this time'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
     day4: [['07:55', 'Depart Ritz; pick up group'], ['09:00', 'Arrive at Dazaifu Golf Club'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano']],
-    day5: [['07:50', 'Depart Ritz; pick up group'], ['09:08', 'Arrive at Fukuoka Century Golf Club'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first'], ['20:55', 'BR101 departs Fukuoka']]
+    day5: [['07:50', 'Depart Ritz; pick up group'], ['09:08', 'Arrive at Fukuoka Century Golf Club'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 2 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
   };
 
   var golfQuickInfo = {
@@ -22,11 +22,11 @@
   };
 
   var routeStops = [
-    ['Sakurai Futamigaura', 'White torii gate & Couple Rocks', 'https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura'],
-    ['Palm-tree Swing', 'PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
-    ['Totoro Forest', 'Approx. 1 km on foot; short but uneven trail', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
-    ['Keya no Oto', 'Boat service depends on weather', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
-    ['Raizan Sennyoji Daihioin', 'Autumn foliage usually peaks in late November', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
+    ['Sakurai Futamigaura', 'Priority | White torii gate & Couple Rocks', 'https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura'],
+    ['Palm-tree Swing', 'Priority | PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
+    ['Totoro Forest', 'If time allows | Approx. 1 km on foot; short but uneven trail', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
+    ['Keya no Oto', 'If time allows | Boat service depends on weather', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
+    ['Raizan Sennyoji Daihioin', 'Priority, earlier afternoon | Autumn foliage usually peaks in late November', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
   ];
 
   var courseDetails = {

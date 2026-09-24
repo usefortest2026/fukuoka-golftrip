@@ -31,7 +31,7 @@
       ['07:50', '麗思出發，依序接人'],
       ['09:08', '抵達福岡世紀高爾夫俱樂部'],
       ['10:08', '第一組 Tee Time（第二組 10:16）'],
-      ['球後', '全員先前往福岡機場'],
+      ['球後', '全員先前往福岡機場；2 位續住者再回麗思'],
       ['20:55', 'BR101 福岡起飛']
     ]
   };
@@ -70,11 +70,11 @@
   };
 
   var routeStops = [
-    ['櫻井二見浦', '白色鳥居與夫婦岩', 'https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura'],
-    ['棕櫚樹鞦韆', 'PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
-    ['龍貓森林', '需步行約 1 公里，步道短但有起伏', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
-    ['芥屋大門', '遊船視天候開航', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
-    ['雷山千如寺大悲王院', '紅葉期約 11 月下旬', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
+    ['櫻井二見浦', '優先｜白色鳥居與夫婦岩', 'https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura'],
+    ['棕櫚樹鞦韆', '優先｜PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
+    ['龍貓森林', '時間允許｜需步行約 1 公里，步道短但有起伏', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
+    ['芥屋大門', '時間允許｜遊船視天候開航', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
+    ['雷山千如寺大悲王院', '優先・下午較早｜紅葉期約 11 月下旬', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
   ];
 
   var courseDetails = {
