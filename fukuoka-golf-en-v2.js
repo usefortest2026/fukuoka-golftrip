@@ -10,9 +10,9 @@
   };
 
   var golfQuickInfo = {
-    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Course arrival', '10:06'], ['Tee Time', '11:06 / 11:14'], ['Play format', 'Through play, no break'], ['Gear reminder', 'Hat & soft-spike golf shoes'], ['Historical temperature reference', '20° / 13°']],
-    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Course arrival', '09:00'], ['Tee Time', '10:00 / 10:08'], ['Play format', 'Meal arrangement pending'], ['Gear reminder', 'Jacket, collared shirt, hat & soft-spike golf shoes'], ['Historical temperature reference', '19° / 12°']],
-    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Course arrival', '09:08'], ['Tee Time', '10:08 / 10:16'], ['Play format', 'Meal arrangement pending'], ['Gear reminder', 'Blazer, collared shirt, hat & soft-spike golf shoes'], ['Historical temperature reference', '20° / 12°']]
+    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'A suit jacket or golf jacket is optional on arrival.', 'dress']],
+    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival (except June–September; applies in November).', 'dress']],
+    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket (except June–September; applies in November).', 'dress']]
   };
 
   var mapLinks = {
@@ -114,6 +114,7 @@
     grid.className = 'v2-quick-grid';
     golfQuickInfo[dayId].forEach(function (entry) {
       var cell = document.createElement('div');
+      if (entry[2] === 'dress') cell.className = 'v2-quick-dress';
       var term = document.createElement('dt');
       var value = document.createElement('dd');
       term.textContent = entry[0];
@@ -123,6 +124,11 @@
       grid.appendChild(cell);
     });
     section.appendChild(grid);
+
+    var action = document.createElement('div');
+    action.className = 'v2-quick-action';
+    action.appendChild(makeMapButton(mapLinks[dayId], document.querySelector('#' + dayId + ' .day-head h2').textContent));
+    section.appendChild(action);
     summary.insertAdjacentElement('afterend', section);
   });
 
@@ -149,15 +155,15 @@
     day3Summary.insertAdjacentElement('afterend', route);
   }
 
-  Object.keys(mapLinks).forEach(function (dayId) {
+  Object.keys(golfQuickInfo).forEach(function (dayId) {
     var page = document.getElementById(dayId);
     var courseInfo = page && page.querySelector('.course-info');
-    var heading = page && page.querySelector('.day-head h2');
-    if (!courseInfo || !heading) return;
-    var actions = document.createElement('div');
-    actions.className = 'v2-map-actions';
-    actions.appendChild(makeMapButton(mapLinks[dayId], heading.textContent));
-    courseInfo.insertAdjacentElement('afterend', actions);
+    if (!courseInfo) return;
+    courseInfo.querySelectorAll('.info-cell').forEach(function (cell) {
+      var label = cell.querySelector('b');
+      if (label && label.textContent.trim() === 'Tee Time') cell.remove();
+      if (label && label.textContent.trim() === 'Note' && dayId !== 'day4') cell.remove();
+    });
   });
 
   document.querySelectorAll('.contact a[href*="google.com/maps"], .contact a[href*="maps.app.goo.gl"]').forEach(function (sourceLink) {
