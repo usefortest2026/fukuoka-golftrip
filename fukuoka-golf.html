@@ -90,9 +90,40 @@ main{padding-top:8px}.day-head{padding-top:4px}
 .app{padding-bottom:68px}.nav{padding-bottom:0}.nav-inner{height:68px}.tab-btn{height:68px;display:grid;grid-template-rows:18px 17px 17px;align-content:center;justify-items:center;gap:0;padding:6px 2px;font-size:11px}.tab-btn i{font-size:16px;line-height:18px}.tab-btn span{line-height:17px}.tab-btn span:nth-child(2):last-child{grid-row:2 / 4;align-self:center}@media(display-mode:standalone){.app{padding-bottom:calc(68px + env(safe-area-inset-bottom))}.nav{padding-bottom:env(safe-area-inset-bottom)}}
 .tab-btn:nth-last-child(-n+2){display:flex;height:68px;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px}.tab-btn:nth-last-child(-n+2) i{font-size:18px;line-height:20px}
 .overview-line .no-time{color:#18181b;font-weight:700}
+
+/* Facebook-inspired app chrome: compact, persistent and content-first */
+body{background:#f0f2f5}
+.app{max-width:680px;background:#f0f2f5;padding-bottom:calc(54px + env(safe-area-inset-bottom))}
+.hero{min-height:60px;height:60px;background:#fff;color:#1c1e21;border-bottom:1px solid #d8dadf;box-shadow:0 1px 3px rgba(24,24,27,.08);overflow:visible}
+.hero img{z-index:2;inset:10px auto auto 12px;width:40px;height:40px;border-radius:50%;object-position:center;opacity:1;filter:none;box-shadow:0 0 0 1px rgba(24,24,27,.08)}
+.hero:after{display:none}
+.hero-inner{min-height:60px;height:60px;padding:7px 56px 7px 64px;justify-content:center;gap:0}
+.hero .eyebrow,.hero-note{display:none}
+.hero h1{padding:0;color:#1c1e21;font-size:19px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-meta{margin:0;color:#65676b;font-size:11px;line-height:1.35;gap:2px 5px;overflow:hidden}
+.hero-meta>span{white-space:nowrap}
+.hero-meta>span:nth-child(even){display:none}
+.hero-meta>span:nth-child(odd):not(:first-child)::before{content:'·';margin-right:6px;color:#8a8d91;opacity:1}
+.lang-switch{z-index:3;top:12px;right:12px;width:36px;min-width:36px;height:36px;min-height:36px;padding:0;border:0;border-radius:50%;background:#e4e6eb;color:#24643d;font-size:11px;box-shadow:none}
+main{padding:8px 16px 16px}
+.nav{max-width:680px;padding-bottom:env(safe-area-inset-bottom);border-top:1px solid #d8dadf;box-shadow:0 -1px 3px rgba(24,24,27,.08)}
+.nav-inner{max-width:680px;height:54px}
+.tab-btn,.tab-btn:nth-last-child(-n+2){position:relative;height:54px;display:grid;grid-template-rows:24px 16px;align-content:center;justify-items:center;gap:0;padding:5px 2px;border-radius:0;background:transparent;color:#65676b;font-size:11px;line-height:16px;transition:color 180ms cubic-bezier(0.16,1,0.3,1),background-color 180ms cubic-bezier(0.16,1,0.3,1),transform 180ms cubic-bezier(0.16,1,0.3,1)}
+.tab-btn i,.tab-btn:nth-last-child(-n+2) i{font-size:18px;line-height:24px}
+.tab-btn span{line-height:16px}
+.tab-btn span:nth-of-type(2){display:none}
+.tab-btn::after{content:'';position:absolute;top:0;left:50%;width:32px;height:3px;border-radius:0 0 3px 3px;background:#24643d;opacity:0;transform:translateX(-50%);transition:opacity 180ms ease-out}
+.tab-btn.active{color:#24643d;background:#f3f8f4}
+.tab-btn.active::after{opacity:1}
+.tab-btn.active i{transform:none}
+@media(hover:hover) and (pointer:fine){.tab-btn:hover{opacity:1;background:#f0f2f5}}
+@media(max-width:380px){.hero,.hero-inner{min-height:58px;height:58px}.hero img{top:9px}.hero h1{font-size:18px}.hero-meta>span:nth-child(5){display:none}.lang-switch{top:11px}main{padding-left:12px;padding-right:12px}}
+@media(min-width:681px){main{padding-left:20px;padding-right:20px}}
+@media(max-height:600px){.hero,.hero-inner{min-height:56px;height:56px}.hero img{top:8px}.lang-switch{top:10px}.nav-inner,.tab-btn,.tab-btn:nth-last-child(-n+2){height:50px}.app{padding-bottom:calc(50px + env(safe-area-inset-bottom))}}
+@media(display-mode:standalone){.app{padding-bottom:calc(54px + env(safe-area-inset-bottom))}.nav{padding-bottom:env(safe-area-inset-bottom)}}
 </style>
 <script>
-(function(){var APP_VERSION="20260923-24";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
+(function(){var APP_VERSION="20260924-01";try{var u0=new URL(location.href);if(u0.searchParams.has('_')){u0.searchParams.delete('_');history.replaceState(null,'',u0.pathname+(u0.search||'')+u0.hash);}}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
 </script>
 </head>
 <body>
