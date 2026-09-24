@@ -43,7 +43,7 @@
       ['Tee Time', '11:06 / 11:14'],
       ['進行方式', '不休息連續打球'],
       ['裝備提醒', '帽子、軟釘高爾夫鞋'],
-      ['天氣參考', '20° / 13°']
+      ['歷年氣溫參考', '20° / 13°']
     ],
     day4: [
       ['飯店出發', '07:55 麗思 → 三井'],
@@ -51,7 +51,7 @@
       ['Tee Time', '10:00 / 10:08'],
       ['進行方式', '餐別待確認'],
       ['裝備提醒', '夾克、有領上衣、帽子、軟釘高爾夫鞋'],
-      ['天氣參考', '19° / 12°']
+      ['歷年氣溫參考', '19° / 12°']
     ],
     day5: [
       ['飯店出發', '07:50 麗思 → 三井'],
@@ -59,7 +59,7 @@
       ['Tee Time', '10:08 / 10:16'],
       ['進行方式', '餐別待確認'],
       ['裝備提醒', 'Blazer、有領上衣、帽子、軟釘高爾夫鞋'],
-      ['天氣參考', '20° / 12°']
+      ['歷年氣溫參考', '20° / 12°']
     ]
   };
 
@@ -298,13 +298,16 @@
   });
 
   document.querySelectorAll('.day-weather').forEach(function (weather) {
-    var label = document.createElement('span');
-    label.className = 'v2-weather-label';
+    var label = weather.querySelector('.v2-weather-label');
+    if (!label) {
+      label = document.createElement('span');
+      label.className = 'v2-weather-label';
+      weather.appendChild(label);
+    }
     function syncWeatherLabel() {
       label.textContent = weather.classList.contains('wx-live') ? '天氣參考' : '歷年氣溫參考';
     }
     syncWeatherLabel();
-    weather.appendChild(label);
     new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class'] });
   });
 

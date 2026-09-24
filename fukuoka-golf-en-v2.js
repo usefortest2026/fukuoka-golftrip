@@ -10,9 +10,9 @@
   };
 
   var golfQuickInfo = {
-    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Course arrival', '10:06'], ['Tee Time', '11:06 / 11:14'], ['Play format', 'Through play, no break'], ['Gear reminder', 'Hat & soft-spike golf shoes'], ['Weather reference', '20° / 13°']],
-    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Course arrival', '09:00'], ['Tee Time', '10:00 / 10:08'], ['Play format', 'Meal arrangement pending'], ['Gear reminder', 'Jacket, collared shirt, hat & soft-spike golf shoes'], ['Weather reference', '19° / 12°']],
-    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Course arrival', '09:08'], ['Tee Time', '10:08 / 10:16'], ['Play format', 'Meal arrangement pending'], ['Gear reminder', 'Blazer, collared shirt, hat & soft-spike golf shoes'], ['Weather reference', '20° / 12°']]
+    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Course arrival', '10:06'], ['Tee Time', '11:06 / 11:14'], ['Play format', 'Through play, no break'], ['Gear reminder', 'Hat & soft-spike golf shoes'], ['Historical temperature reference', '20° / 13°']],
+    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Course arrival', '09:00'], ['Tee Time', '10:00 / 10:08'], ['Play format', 'Meal arrangement pending'], ['Gear reminder', 'Jacket, collared shirt, hat & soft-spike golf shoes'], ['Historical temperature reference', '19° / 12°']],
+    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Course arrival', '09:08'], ['Tee Time', '10:08 / 10:16'], ['Play format', 'Meal arrangement pending'], ['Gear reminder', 'Blazer, collared shirt, hat & soft-spike golf shoes'], ['Historical temperature reference', '20° / 12°']]
   };
 
   var mapLinks = {
@@ -243,13 +243,16 @@
   });
 
   document.querySelectorAll('.day-weather').forEach(function (weather) {
-    var label = document.createElement('span');
-    label.className = 'v2-weather-label';
+    var label = weather.querySelector('.v2-weather-label');
+    if (!label) {
+      label = document.createElement('span');
+      label.className = 'v2-weather-label';
+      weather.appendChild(label);
+    }
     function syncWeatherLabel() {
       label.textContent = weather.classList.contains('wx-live') ? 'Weather reference' : 'Historical temperature reference';
     }
     syncWeatherLabel();
-    weather.appendChild(label);
     new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class'] });
   });
 
