@@ -511,9 +511,20 @@
 .private-info-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  width: 100%;
   gap: 12px;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
 }
+
+.private-info-head:focus-visible { outline: 2px solid rgba(58, 125, 68, .35); outline-offset: 4px; border-radius: 4px; }
 
 .private-info-title {
   display: flex;
@@ -525,7 +536,6 @@
 .private-info-title strong { color: #27272a; }
 .private-info-title span { color: #71717a; font-size: 13px; }
 
-.private-info-toggle,
 .private-info-form button {
   min-height: 36px;
   padding: 7px 11px;
@@ -592,7 +602,6 @@
   .contact-actions .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .hero .lang-switch:hover { background: #24643d; color: #fff; }
   .v2-quick-action .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
-  .private-info-toggle:hover,
   .private-info-form button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
 }
 
@@ -608,7 +617,6 @@
   .v2-quick-grid > div:last-child { border-bottom: 0; }
   .v2-route-stop { grid-template-columns: minmax(0, 1fr); }
   .v2-route-stop .v2-nav-button { justify-self: start; }
-  .private-info-head { align-items: flex-start; flex-direction: column; }
   .private-info-form { grid-template-columns: 1fr 1fr; }
   .private-info-form input { grid-column: 1 / -1; }
 }
@@ -920,6 +928,5 @@ details > summary {
 @media (prefers-reduced-motion:reduce) {
   .v2-nav-button,
   .v2-accordion summary::after,
-  .private-info-toggle,
   .private-info-form button { transition: none; }
 }

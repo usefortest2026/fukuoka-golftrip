@@ -5,8 +5,6 @@
 
   function copy(locale) {
     return locale === 'en' ? {
-      open: 'Password',
-      close: 'Close',
       password: 'Password',
       unlock: 'Unlock',
       cancel: 'Cancel',
@@ -17,8 +15,6 @@
       reservedBy: 'Reserved by',
       note: 'Private note'
     } : {
-      open: '密碼',
-      close: '關閉',
       password: '密碼',
       unlock: '解鎖',
       cancel: '取消',
@@ -85,15 +81,22 @@
     var locale = section.getAttribute('data-private-locale') === 'en' ? 'en' : 'zh';
     var labels = copy(locale);
     var recordId = section.getAttribute('data-private-record');
-    var toggle = section.querySelector('.private-info-toggle');
+    var trigger = section.querySelector('.private-info-head');
     var workspace = section.querySelector('.private-info-workspace');
     var isOpen = false;
+    var activationCount = 0;
+    var activationTimer;
+
+    function resetActivations() {
+      window.clearTimeout(activationTimer);
+      activationCount = 0;
+    }
 
     function lock() {
       workspace.replaceChildren();
-      toggle.textContent = labels.open;
-      toggle.setAttribute('aria-expanded', 'false');
+      trigger.setAttribute('aria-expanded', 'false');
       isOpen = false;
+      resetActivations();
     }
 
     function showForm() {
@@ -144,14 +147,20 @@
       input.focus();
     }
 
-    toggle.addEventListener('click', function () {
+    trigger.addEventListener('click', function () {
+      activationCount += 1;
+      window.clearTimeout(activationTimer);
+      if (activationCount < 3) {
+        activationTimer = window.setTimeout(resetActivations, 900);
+        return;
+      }
+      resetActivations();
       if (isOpen) {
         lock();
         return;
       }
       isOpen = true;
-      toggle.textContent = labels.close;
-      toggle.setAttribute('aria-expanded', 'true');
+      trigger.setAttribute('aria-expanded', 'true');
       if (!window.crypto || !window.crypto.subtle) {
         workspace.textContent = labels.unavailable;
         return;
