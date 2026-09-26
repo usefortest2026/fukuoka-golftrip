@@ -1,6 +1,15 @@
 (function () {
   'use strict';
 
+  var navWeekdays = ['Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
+  document.querySelectorAll('.tab-btn').forEach(function (button, index) {
+    if (!navWeekdays[index] || button.querySelector('.nav-weekday')) return;
+    var weekday = document.createElement('span');
+    weekday.className = 'nav-weekday';
+    weekday.textContent = navWeekdays[index];
+    button.appendChild(weekday);
+  });
+
   var summaries = {
     day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Light lunch in Fukuoka City'], ['15:00+', 'Hotel check-in & city sightseeing'], ['18:00', 'Dinner at Miyanaka Bettei']],
     day2: [['09:10', 'Depart Ritz; pick up group'], ['10:06', 'Arrive at Hisayama Country Club'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata']],
@@ -10,9 +19,9 @@
   };
 
   var golfQuickInfo = {
-    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'A suit jacket or golf jacket is optional on arrival.', 'dress']],
-    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival (except June–September; applies in November).', 'dress']],
-    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket (except June–September; applies in November).', 'dress']]
+    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
+    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
+    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket.', 'dress']]
   };
 
   var mapLinks = {
@@ -36,7 +45,7 @@
         'It hosted the Japan Professional Golf East–West Match in 1970 and the Japan Women’s Professional Golf Championship in 1974.'
       ],
       dress: [
-        ['Clubhouse', ['A suit jacket or golf jacket is optional on arrival.', 'Avoid T-shirts, tank tops and sleeveless tops.', 'Avoid jeans, sportswear and workwear.', 'Crocs, wooden sandals and flip-flops are not permitted.']],
+        ['Clubhouse', ['Wear a jacket or suit on arrival.', 'Avoid T-shirts, tank tops and sleeveless tops.', 'Avoid jeans, sportswear and workwear.', 'Crocs, wooden sandals and flip-flops are not permitted.']],
         ['Course', ['Wear a sleeved collared or mock-neck shirt; crew-neck tops do not meet the code.', 'Tuck shirts into trousers or skirts, except women’s overblouses.', 'Undershirts and tank tops may not be worn alone.', 'Jeans and workwear are not permitted.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.', 'A hat is required on the course for safety and heat protection.']]
       ]
     },
@@ -45,7 +54,7 @@
         'Dazaifu Golf Club is an 18-hole, par-72 course within a short drive of central Fukuoka, with convenient access from the airport and major stations. Its varied terrain includes uphill and downhill shots plus challenging water hazards.',
         'Gently rolling fairways keep the round engaging without becoming overly difficult. The greens use fine-leaved zoysia grass, and the club has hosted the Japan Women’s Open.'
       ],
-      dress: [['', ['Wear a jacket or suit on arrival, except June through September.', 'Avoid collarless or sleeveless tops and backless shoes such as Crocs or sandals.', 'Tuck shirts into trousers or skirts.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.', 'A hat is required during play for safety.', 'Repair bunker footprints, divots and ball marks.', 'Maintain pace of play, targeting 2 hours 15 minutes per nine holes.']]]
+      dress: [['', ['Wear a jacket or suit on arrival.', 'Avoid collarless or sleeveless tops and backless shoes such as Crocs or sandals.', 'Tuck shirts into trousers or skirts.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.', 'A hat is required during play for safety.', 'Repair bunker footprints, divots and ball marks.', 'Maintain pace of play, targeting 2 hours 15 minutes per nine holes.']]]
     },
     day5: {
       description: [
@@ -53,7 +62,7 @@
         'The club hosted multiple women’s tournaments from 1973 to 2011, including the Vernal Cup RKB Ladies, the Vernal Ladies and the Fundokin Women’s tournament. In 2026 it also hosts the NIKKEN Holdings Cup Open Golf Tournament and the Children’s Cafeteria Support Charity Golf Tournament.'
       ],
       dress: [
-        ['Clubhouse', ['Wear a blazer or golf jacket, except June through September.', 'Slippers and sandals are not permitted.', 'Waist-length tops, sweaters and T-shirts are not permitted.', 'Jeans and work trousers are not permitted.', 'Wear a collared, sleeved shirt tucked into trousers or a skirt.']],
+        ['Clubhouse', ['Wear a blazer or golf jacket.', 'Slippers and sandals are not permitted.', 'Waist-length tops, sweaters and T-shirts are not permitted.', 'Jeans and work trousers are not permitted.', 'Wear a collared, sleeved shirt tucked into trousers or a skirt.']],
         ['Course', ['Do not drape towels around the neck or shoulders.', 'Knee-high socks are recommended with shorts.', 'Wear a hat to help prevent heatstroke.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.']]
       ]
     }
@@ -86,7 +95,16 @@
     var section = document.createElement('section');
     section.className = 'v2-summary';
     section.setAttribute('aria-label', "Today's Summary");
-    section.appendChild(makeHeading("Today's Summary"));
+    var summaryHead = makeHeading("Today's Summary");
+    if (dayId === 'day1') {
+      var serviceRow = page.querySelector('.v2-service-row');
+      var serviceLink = serviceRow && serviceRow.querySelector('.v2-service-link');
+      if (serviceLink) {
+        summaryHead.appendChild(serviceLink);
+        serviceRow.remove();
+      }
+    }
+    section.appendChild(summaryHead);
     var list = document.createElement('ol');
     list.className = 'v2-summary-list';
     summaries[dayId].forEach(function (entry) {
@@ -125,6 +143,13 @@
     });
     section.appendChild(grid);
 
+    if (dayId === 'day4') {
+      var paceNote = document.createElement('p');
+      paceNote.className = 'v2-pace-note';
+      paceNote.textContent = 'Pace reminder: target 2 hr 15 min per nine holes';
+      section.appendChild(paceNote);
+    }
+
     var action = document.createElement('div');
     action.className = 'v2-quick-action';
     action.appendChild(makeMapButton(mapLinks[dayId], document.querySelector('#' + dayId + ' .day-head h2').textContent));
@@ -133,29 +158,6 @@
     summary.insertAdjacentElement('afterend', section);
   });
 
-  var day3Summary = document.querySelector('#day3 .v2-summary');
-  if (day3Summary) {
-    var route = document.createElement('section');
-    route.className = 'v2-route';
-    route.setAttribute('aria-label', 'Itoshima route timeline');
-    route.appendChild(makeHeading('Route Timeline'));
-    var routeList = document.createElement('ol');
-    routeList.className = 'v2-route-list';
-    routeStops.forEach(function (stop) {
-      var item = document.createElement('li');
-      item.className = 'v2-route-stop';
-      var copy = document.createElement('div');
-      copy.innerHTML = '<b></b><small></small>';
-      copy.querySelector('b').textContent = stop[0];
-      copy.querySelector('small').textContent = stop[1];
-      item.appendChild(copy);
-      item.appendChild(makeMapButton(stop[2], stop[0]));
-      routeList.appendChild(item);
-    });
-    route.appendChild(routeList);
-    day3Summary.insertAdjacentElement('afterend', route);
-  }
-
   Object.keys(golfQuickInfo).forEach(function (dayId) {
     var page = document.getElementById(dayId);
     var courseInfo = page && page.querySelector('.course-info');
@@ -163,7 +165,7 @@
     courseInfo.querySelectorAll('.info-cell').forEach(function (cell) {
       var label = cell.querySelector('b');
       if (label && label.textContent.trim() === 'Tee Time') cell.remove();
-      if (label && label.textContent.trim() === 'Note' && dayId !== 'day4') cell.remove();
+      if (label && label.textContent.trim() === 'Note') cell.remove();
     });
   });
 
@@ -174,26 +176,56 @@
     if (!title) return;
     sourceLink.classList.add('v2-nav-button');
     sourceLink.setAttribute('aria-label', title.textContent + ' directions in Google Maps');
-    sourceLink.innerHTML = '<i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Directions</span>';
+    sourceLink.innerHTML = '<i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Open in Google Maps</span>';
   });
 
   var hotelMaps = [
     ['The Ritz-Carlton, Fukuoka', 'https://www.google.com/maps/search/?api=1&query=The+Ritz-Carlton+Fukuoka'],
     ['Mitsui Garden Hotel Fukuoka Nakasu', 'https://www.google.com/maps/search/?api=1&query=Mitsui+Garden+Hotel+Fukuoka+Nakasu']
   ];
+  var tripToolsSubtitle = document.querySelector('#more > .day-head > p');
+  if (tripToolsSubtitle) tripToolsSubtitle.remove();
   document.querySelectorAll('#hotels .hotel').forEach(function (hotel, index) {
     if (!hotelMaps[index]) return;
     var destination = hotel.querySelector('div:last-child');
-    if (!destination) return;
+    var officialLink = destination && destination.querySelector(':scope > a');
+    if (!destination || !officialLink) return;
     var actions = document.createElement('div');
-    actions.className = 'v2-map-actions';
-    actions.appendChild(makeMapButton(hotelMaps[index][1], hotelMaps[index][0]));
+    actions.className = 'v2-map-actions v2-hotel-map-actions';
+    actions.appendChild(officialLink);
+    var mapButton = makeMapButton(hotelMaps[index][1], hotelMaps[index][0]);
+    mapButton.querySelector('span').textContent = 'Open in Google Maps';
+    actions.appendChild(mapButton);
     destination.appendChild(actions);
   });
 
   document.querySelectorAll('#day3 .stop-list li').forEach(function (stop) {
     if (stop.textContent.indexOf('Totoro Forest') === 0) stop.textContent = 'Totoro Forest · Approx. 1 km on foot; short but uneven trail';
     if (stop.textContent.indexOf('Raizan Sennyoji Daihioin') === 0) stop.textContent = 'Raizan Sennyoji Daihioin · Autumn foliage usually peaks in late November';
+  });
+
+  var day3StopLinks = [
+    ['Sakurai Futamigaura', routeStops[0][2]],
+    ['Palm-tree swings & PALM BEACH THE GARDENS', routeStops[1][2]],
+    ['Totoro Forest', routeStops[2][2]],
+    ['Keya no Oto', routeStops[3][2]],
+    ['Raizan Sennyoji Daihioin', routeStops[4][2]]
+  ];
+
+  document.querySelectorAll('#day3 .timeline > .item:first-child .stop-list > li').forEach(function (item) {
+    var fullText = item.textContent.trim();
+    var destination = day3StopLinks.find(function (entry) { return fullText.indexOf(entry[0]) === 0; });
+    if (!destination) return;
+    var link = document.createElement('a');
+    link.className = 'v2-inline-map-link';
+    link.href = destination[1];
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.setAttribute('aria-label', destination[0] + ' directions in Google Maps');
+    link.textContent = destination[0];
+    item.textContent = '';
+    item.appendChild(link);
+    item.appendChild(document.createTextNode(fullText.slice(destination[0].length)));
   });
 
   Object.keys(courseDetails).forEach(function (dayId) {
@@ -250,6 +282,36 @@
     wrapper.appendChild(content);
   });
 
+  var desktopDetailsQuery = window.matchMedia('(min-width: 1024px)');
+
+  function syncDesktopDetails() {
+    document.querySelectorAll('details').forEach(function (details) {
+      if (desktopDetailsQuery.matches) {
+        if (!details.hasAttribute('data-mobile-open')) {
+          details.setAttribute('data-mobile-open', details.open ? 'true' : 'false');
+        }
+        details.open = true;
+        return;
+      }
+      if (details.hasAttribute('data-mobile-open')) {
+        details.open = details.getAttribute('data-mobile-open') === 'true';
+        details.removeAttribute('data-mobile-open');
+      }
+    });
+  }
+
+  document.addEventListener('click', function (event) {
+    if (!desktopDetailsQuery.matches || !event.target.closest) return;
+    if (event.target.closest('details > summary')) event.preventDefault();
+  });
+
+  if (desktopDetailsQuery.addEventListener) {
+    desktopDetailsQuery.addEventListener('change', syncDesktopDetails);
+  } else {
+    desktopDetailsQuery.addListener(syncDesktopDetails);
+  }
+  syncDesktopDetails();
+
   document.querySelectorAll('.day-weather').forEach(function (weather) {
     var label = weather.querySelector('.v2-weather-label');
     if (!label) {
@@ -258,7 +320,7 @@
       weather.appendChild(label);
     }
     function syncWeatherLabel() {
-      label.textContent = weather.classList.contains('wx-live') ? 'Weather reference' : 'Historical temperature reference';
+      label.textContent = weather.classList.contains('wx-live') ? 'Weather reference' : '(Historical)';
     }
     syncWeatherLabel();
     new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class'] });

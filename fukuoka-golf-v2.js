@@ -1,6 +1,15 @@
 (function () {
   'use strict';
 
+  var navWeekdays = ['五', '六', '日', '一', '二'];
+  document.querySelectorAll('.tab-btn').forEach(function (button, index) {
+    if (!navWeekdays[index] || button.querySelector('.nav-weekday')) return;
+    var weekday = document.createElement('span');
+    weekday.className = 'nav-weekday';
+    weekday.textContent = navWeekdays[index];
+    button.appendChild(weekday);
+  });
+
   var summaries = {
     day1: [
       ['08:00', '桃園機場起飛'],
@@ -40,17 +49,17 @@
     day2: [
       ['飯店出發', '09:10 麗思 → 三井'],
       ['Tee Time', '11:06 / 11:14'],
-      ['服裝重點', '抵達會所穿著外套（西裝外套／高爾夫球衣外套）為可選。', 'dress']
+      ['服裝重點', '抵達時請穿著夾克或西裝。', 'dress']
     ],
     day4: [
       ['飯店出發', '07:55 麗思 → 三井'],
       ['Tee Time', '10:00 / 10:08'],
-      ['服裝重點', '抵達時請穿夾克或西裝（6～9 月除外；本次 11 月適用）。', 'dress']
+      ['服裝重點', '抵達時請穿著夾克或西裝。', 'dress']
     ],
     day5: [
       ['飯店出發', '07:50 麗思 → 三井'],
       ['Tee Time', '10:08 / 10:16'],
-      ['服裝重點', '請穿西裝外套或高爾夫球衣外套（6～9 月除外；本次 11 月適用）。', 'dress']
+      ['服裝重點', '請穿西裝外套或高爾夫球衣外套。', 'dress']
     ]
   };
 
@@ -65,7 +74,7 @@
     ['棕櫚樹鞦韆', '優先｜PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
     ['龍貓森林', '時間允許｜需步行約 1 公里，步道短但有起伏', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
     ['芥屋大門', '時間允許｜遊船視天候開航', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
-    ['雷山千如寺大悲王院', '優先・下午較早｜紅葉期約 11 月下旬', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
+    ['雷山千如寺大悲王院', '優先｜建議下午早一點前往；紅葉期約 11 月下旬', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
   ];
 
   var courseDetails = {
@@ -75,7 +84,7 @@
         '1970 年舉辦日本職業高爾夫東西向比賽，1974 年舉辦日本女子職業高爾夫錦標賽。'
       ],
       dress: [
-        ['會所內', ['抵達會所時，穿著西裝外套或高爾夫外套為可選。', '避免穿著 T 恤、背心或無袖衣物。', '避免穿著牛仔褲、運動服或工作服。', '不可穿著 Crocs、木屐涼鞋或拖鞋。']],
+        ['會所內', ['抵達時請穿著夾克或西裝。', '避免穿著 T 恤、背心或無袖衣物。', '避免穿著牛仔褲、運動服或工作服。', '不可穿著 Crocs、木屐涼鞋或拖鞋。']],
         ['球場內', ['請穿著有袖、有領或高領上衣；圓領上衣不符合規定。', '上衣下襬需紮入褲子或裙子內，女性罩衫除外。', '不可只穿內衣或背心下場。', '不可穿著牛仔褲或工作服下場。', '請穿軟釘高爾夫鞋，禁止金屬釘鞋。', '為避免危險與中暑，場上務必戴帽。']]
       ]
     },
@@ -85,7 +94,7 @@
         '球道呈現柔和波動，提升打球感受，同時不會過於艱難。無論是觀光客或商務旅客，太宰府都是靠近城市、位處九州風光中的舒適高爾夫體驗首選。果嶺採用細葉結縷草（Zoysia），並曾舉辦日本女子公開賽（日本女子オープン）。'
       ],
       dress: [
-        ['', ['抵達時請穿著夾克或西裝，6～9 月除外。', '避免穿著無領或無袖上衣，以及 Crocs、涼鞋等無後跟鞋。', '上衣下襬需紮入褲子或裙子內。', '請穿軟釘高爾夫鞋，禁止金屬釘鞋。', '比賽時務必戴帽，以避免危險。', '請修復沙坑腳印、草皮痕與果嶺球痕。', '請保持順暢打球速度，半場以 2 小時 15 分鐘為目標。']]
+        ['', ['抵達時請穿著夾克或西裝。', '避免穿著無領或無袖上衣，以及 Crocs、涼鞋等無後跟鞋。', '上衣下襬需紮入褲子或裙子內。', '請穿軟釘高爾夫鞋，禁止金屬釘鞋。', '比賽時務必戴帽，以避免危險。', '請修復沙坑腳印、草皮痕與果嶺球痕。', '請保持順暢打球速度，半場以 2 小時 15 分鐘為目標。']]
       ]
     },
     day5: {
@@ -94,7 +103,7 @@
         '1973～2011 年間曾舉辦多項女子高爾夫賽事，包括 2000 年 Vernal Cup RKB 女子競技賽、2001～2009 年 Vernal 女子競技賽及 2010～2011 年 Fundokin Women’s 競技賽。2026 年亦舉辦「NIKKEN ホールディングス杯オープンゴルフトーナメント」及 3 月 20～22 日的「こども食堂応援チャリティーゴルフトーナメント」。'
       ],
       dress: [
-        ['會所內', ['請穿著西裝外套或高爾夫外套，6～9 月除外。', '進出會所不可穿拖鞋或涼鞋。', '進出會所不可穿著束腰衣、毛衣或 T 恤。', '進出會所不可穿著牛仔褲或工作褲。', '請穿有領、有袖的上衣，並將上衣紮入褲子或裙子內。']],
+        ['會所內', ['請穿著西裝外套或高爾夫外套。', '進出會所不可穿拖鞋或涼鞋。', '進出會所不可穿著束腰衣、毛衣或 T 恤。', '進出會所不可穿著牛仔褲或工作褲。', '請穿有領、有袖的上衣，並將上衣紮入褲子或裙子內。']],
         ['球場內', ['不可將毛巾披在脖子或肩膀上。', '穿短褲時，建議搭配高筒襪。', '請戴帽以避免中暑。', '請穿軟釘高爾夫鞋，禁止金屬釘鞋。']]
       ]
     }
@@ -128,7 +137,16 @@
     var section = document.createElement('section');
     section.className = 'v2-summary';
     section.setAttribute('aria-label', '今日摘要');
-    section.appendChild(makeHeading('今日摘要'));
+    var summaryHead = makeHeading('今日摘要');
+    if (dayId === 'day1') {
+      var serviceRow = page.querySelector('.v2-service-row');
+      var serviceLink = serviceRow && serviceRow.querySelector('.v2-service-link');
+      if (serviceLink) {
+        summaryHead.appendChild(serviceLink);
+        serviceRow.remove();
+      }
+    }
+    section.appendChild(summaryHead);
 
     var list = document.createElement('ol');
     list.className = 'v2-summary-list';
@@ -152,8 +170,8 @@
 
     var section = document.createElement('section');
     section.className = 'v2-golf-quick';
-    section.setAttribute('aria-label', '高爾夫快速資訊');
-    section.appendChild(makeHeading('Golf Day Quick Info'));
+    section.setAttribute('aria-label', '高爾夫當日重點');
+    section.appendChild(makeHeading('高爾夫當日重點'));
 
     var grid = document.createElement('dl');
     grid.className = 'v2-quick-grid';
@@ -170,6 +188,13 @@
     });
     section.appendChild(grid);
 
+    if (dayId === 'day4') {
+      var paceNote = document.createElement('p');
+      paceNote.className = 'v2-pace-note';
+      paceNote.textContent = '節奏提醒：半場目標 2 小時 15 分';
+      section.appendChild(paceNote);
+    }
+
     var action = document.createElement('div');
     action.className = 'v2-quick-action';
     action.appendChild(makeMapButton(mapLinks[dayId], document.querySelector('#' + dayId + ' .day-head h2').textContent));
@@ -178,37 +203,13 @@
     summary.insertAdjacentElement('afterend', section);
   });
 
-  var day3Summary = document.querySelector('#day3 .v2-summary');
-  if (day3Summary) {
-    var route = document.createElement('section');
-    route.className = 'v2-route';
-    route.setAttribute('aria-label', '糸島路線時間軸');
-    route.appendChild(makeHeading('Route Timeline'));
-
-    var routeList = document.createElement('ol');
-    routeList.className = 'v2-route-list';
-    routeStops.forEach(function (stop) {
-      var item = document.createElement('li');
-      item.className = 'v2-route-stop';
-      var copy = document.createElement('div');
-      copy.innerHTML = '<b></b><small></small>';
-      copy.querySelector('b').textContent = stop[0];
-      copy.querySelector('small').textContent = stop[1];
-      item.appendChild(copy);
-      item.appendChild(makeMapButton(stop[2], stop[0]));
-      routeList.appendChild(item);
-    });
-    route.appendChild(routeList);
-    day3Summary.insertAdjacentElement('afterend', route);
-  }
-
   Object.keys(golfQuickInfo).forEach(function (dayId) {
     var courseInfo = document.querySelector('#' + dayId + ' .course-info');
     if (!courseInfo) return;
     courseInfo.querySelectorAll('.info-cell').forEach(function (cell) {
       var label = cell.querySelector('b');
       if (label && label.textContent.trim() === '開球') cell.remove();
-      if (label && label.textContent.trim() === '注意' && dayId !== 'day4') cell.remove();
+      if (label && label.textContent.trim() === '注意') cell.remove();
     });
   });
 
@@ -217,19 +218,29 @@
     var title = sourceLink.closest('.item').querySelector('h3').textContent;
     sourceLink.classList.add('v2-nav-button');
     sourceLink.setAttribute('aria-label', title + ' Google Maps 導航');
-    sourceLink.innerHTML = '<i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>導航</span>';
+    sourceLink.innerHTML = '<i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span>';
   });
 
   var hotelMaps = [
     ['福岡麗思卡爾頓酒店', 'https://www.google.com/maps/search/?api=1&query=The+Ritz-Carlton+Fukuoka'],
     ['三井花園飯店福岡中洲', 'https://www.google.com/maps/search/?api=1&query=Mitsui+Garden+Hotel+Fukuoka+Nakasu']
   ];
+  var tripToolsSubtitle = document.querySelector('#more > .day-head > p');
+  if (tripToolsSubtitle) tripToolsSubtitle.remove();
+  var hotelsHeading = document.querySelector('#hotels .section-label');
+  if (hotelsHeading) hotelsHeading.textContent = '住宿飯店';
   document.querySelectorAll('#hotels .hotel').forEach(function (hotel, index) {
     if (!hotelMaps[index]) return;
+    var destination = hotel.querySelector('div:last-child');
+    var officialLink = destination && destination.querySelector(':scope > a');
+    if (!destination || !officialLink) return;
     var actions = document.createElement('div');
-    actions.className = 'v2-map-actions';
-    actions.appendChild(makeMapButton(hotelMaps[index][1], hotelMaps[index][0]));
-    hotel.querySelector('div:last-child').appendChild(actions);
+    actions.className = 'v2-map-actions v2-hotel-map-actions';
+    actions.appendChild(officialLink);
+    var mapButton = makeMapButton(hotelMaps[index][1], hotelMaps[index][0]);
+    mapButton.querySelector('span').textContent = 'Google Maps 導航';
+    actions.appendChild(mapButton);
+    destination.appendChild(actions);
   });
 
   document.querySelectorAll('#day3 .stop-list li').forEach(function (stop) {
@@ -239,6 +250,30 @@
     if (stop.textContent.indexOf('雷山千如寺大悲王院') === 0) {
       stop.textContent = '雷山千如寺大悲王院・紅葉期約 11 月下旬';
     }
+  });
+
+  var day3StopLinks = [
+    ['櫻井二見浦', routeStops[0][2]],
+    ['棕櫚樹鞦韆・PALM BEACH THE GARDENS', routeStops[1][2]],
+    ['龍貓森林', routeStops[2][2]],
+    ['芥屋大門', routeStops[3][2]],
+    ['雷山千如寺大悲王院', routeStops[4][2]]
+  ];
+
+  document.querySelectorAll('#day3 .timeline > .item:first-child .stop-list > li').forEach(function (item) {
+    var fullText = item.textContent.trim();
+    var destination = day3StopLinks.find(function (entry) { return fullText.indexOf(entry[0]) === 0; });
+    if (!destination) return;
+    var link = document.createElement('a');
+    link.className = 'v2-inline-map-link';
+    link.href = destination[1];
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.setAttribute('aria-label', destination[0] + ' Google Maps 導航');
+    link.textContent = destination[0];
+    item.textContent = '';
+    item.appendChild(link);
+    item.appendChild(document.createTextNode(fullText.slice(destination[0].length)));
   });
 
   Object.keys(courseDetails).forEach(function (dayId) {
@@ -296,6 +331,36 @@
     wrapper.appendChild(summary);
     wrapper.appendChild(content);
   });
+
+  var desktopDetailsQuery = window.matchMedia('(min-width: 1024px)');
+
+  function syncDesktopDetails() {
+    document.querySelectorAll('details').forEach(function (details) {
+      if (desktopDetailsQuery.matches) {
+        if (!details.hasAttribute('data-mobile-open')) {
+          details.setAttribute('data-mobile-open', details.open ? 'true' : 'false');
+        }
+        details.open = true;
+        return;
+      }
+      if (details.hasAttribute('data-mobile-open')) {
+        details.open = details.getAttribute('data-mobile-open') === 'true';
+        details.removeAttribute('data-mobile-open');
+      }
+    });
+  }
+
+  document.addEventListener('click', function (event) {
+    if (!desktopDetailsQuery.matches || !event.target.closest) return;
+    if (event.target.closest('details > summary')) event.preventDefault();
+  });
+
+  if (desktopDetailsQuery.addEventListener) {
+    desktopDetailsQuery.addEventListener('change', syncDesktopDetails);
+  } else {
+    desktopDetailsQuery.addListener(syncDesktopDetails);
+  }
+  syncDesktopDetails();
 
   document.querySelectorAll('.day-weather').forEach(function (weather) {
     var label = weather.querySelector('.v2-weather-label');
