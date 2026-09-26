@@ -525,6 +525,7 @@
 }
 
 .private-info-head:focus-visible { outline: 2px solid rgba(58, 125, 68, .35); outline-offset: 4px; border-radius: 4px; }
+.private-info-head:disabled { cursor: default; }
 
 .private-info-title {
   display: flex;

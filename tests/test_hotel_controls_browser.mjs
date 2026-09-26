@@ -232,6 +232,7 @@ async function inspectPrivateInfoForm(file, width) {
     return {
       formShown: true,
       triggerExpanded: document.querySelector('#day2 .private-info-head').getAttribute('aria-expanded'),
+      inputPlaceholder: input.placeholder,
       inputFontSize: getComputedStyle(input).fontSize,
       inputFocused: document.activeElement === input,
       inputWithinViewport: inputBox.left >= 0 && inputBox.right <= innerWidth,
@@ -268,6 +269,30 @@ async function inspectPrivateInfoForm(file, width) {
     workspaceEmpty: !document.querySelector('#day2 .private-info-workspace').textContent.trim(),
   }))()`);
   return { beforeThirdClick, revealed, unlocked, relocked };
+}
+
+async function inspectDesktopPrivateInfo(file) {
+  await setViewport(1200);
+  const loaded = waitFor('Page.loadEventFired');
+  await send('Page.navigate', { url: `${baseUrl}/${file}?p=day2` });
+  await loaded;
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return evaluate(`(() => {
+    const trigger = document.querySelector('#day2 .private-info-head');
+    trigger.click();
+    trigger.click();
+    trigger.click();
+    return {
+      title: trigger.querySelector('strong').textContent.trim(),
+      state: trigger.querySelector('.private-info-title > span').textContent.trim(),
+      disabled: trigger.disabled,
+      cursor: getComputedStyle(trigger).cursor,
+      expanded: trigger.getAttribute('aria-expanded'),
+      formShown: Boolean(document.querySelector('#day2 .private-info-form')),
+      contentShown: Boolean(document.querySelector('#day2 .private-info-content')),
+      workspaceEmpty: !document.querySelector('#day2 .private-info-workspace').textContent.trim(),
+    };
+  })()`);
 }
 
 await send('Page.enable');
@@ -336,6 +361,22 @@ for (const [file, label] of [
   });
 }
 
+for (const [file, title, state] of [
+  ['fukuoka-golf.html', '私人訂位資訊', '已預訂'],
+  ['fukuoka-golf-en.html', 'Private Trip Info', 'Reserved'],
+]) {
+  assert.deepEqual(await inspectDesktopPrivateInfo(file), {
+    title,
+    state,
+    disabled: true,
+    cursor: 'default',
+    expanded: 'false',
+    formShown: false,
+    contentShown: false,
+    workspaceEmpty: true,
+  });
+}
+
 for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   assert.deepEqual(await inspectPrivateInfoForm(file, 430), {
     beforeThirdClick: {
@@ -347,6 +388,7 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     revealed: {
       formShown: true,
       triggerExpanded: 'true',
+      inputPlaceholder: 'f***26',
       inputFontSize: '16px',
       inputFocused: true,
       inputWithinViewport: true,

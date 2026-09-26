@@ -83,6 +83,7 @@
     var recordId = section.getAttribute('data-private-record');
     var trigger = section.querySelector('.private-info-head');
     var workspace = section.querySelector('.private-info-workspace');
+    var desktopQuery = window.matchMedia('(min-width: 900px)');
     var isOpen = false;
     var activationCount = 0;
     var activationTimer;
@@ -108,7 +109,7 @@
       input.autocomplete = 'current-password';
       input.required = true;
       input.setAttribute('aria-label', labels.password);
-      input.placeholder = labels.password;
+      input.placeholder = 'f***26';
       var unlock = document.createElement('button');
       unlock.type = 'submit';
       unlock.textContent = labels.unlock;
@@ -148,6 +149,7 @@
     }
 
     trigger.addEventListener('click', function () {
+      if (desktopQuery.matches) return;
       activationCount += 1;
       window.clearTimeout(activationTimer);
       if (activationCount < 3) {
@@ -169,5 +171,14 @@
     });
 
     lock();
+
+    function syncInteractionMode() {
+      if (desktopQuery.matches) lock();
+      trigger.disabled = desktopQuery.matches;
+    }
+
+    if (desktopQuery.addEventListener) desktopQuery.addEventListener('change', syncInteractionMode);
+    else desktopQuery.addListener(syncInteractionMode);
+    syncInteractionMode();
   });
 })();
