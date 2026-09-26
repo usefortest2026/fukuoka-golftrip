@@ -41,25 +41,25 @@
   var courseDetails = {
     day2: {
       description: [
-        'Hisayama opened in Fukuoka in 1964. Designed and supervised by three professional golfers—Torakichi Nakamura, Takehito Fujii and Yoshimasa Fujii—it is one of Fukuoka Prefecture’s oldest courses. At about 6,075 yards, it may not appear long, but it plays more challenging than the distance suggests. Strategically placed bunkers reward careful landing zones and shot planning.',
-        'It hosted the Japan Professional Golf East–West Match in 1970 and the Japan Women’s Professional Golf Championship in 1974.'
+        'Hisayama opened in Fukuoka in 1964. Designed and supervised by three professional golfers—Torakichi Nakamura, Takehito Fujii and Yoshimasa Fujii—it is one of Fukuoka Prefecture\'s oldest courses. At about 6,075 yards, it may not appear long, but it plays more challenging than the distance suggests. Strategically placed bunkers reward careful landing zones and shot planning.',
+        'It hosted the Japan Professional Golf East–West Match in 1970 and the Japan Women\'s Professional Golf Championship in 1974.'
       ],
       dress: [
         ['Clubhouse', ['Wear a jacket or suit on arrival.', 'Avoid T-shirts, tank tops and sleeveless tops.', 'Avoid jeans, sportswear and workwear.', 'Crocs, wooden sandals and flip-flops are not permitted.']],
-        ['Course', ['Wear a sleeved collared or mock-neck shirt; crew-neck tops do not meet the code.', 'Tuck shirts into trousers or skirts, except women’s overblouses.', 'Undershirts and tank tops may not be worn alone.', 'Jeans and workwear are not permitted.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.', 'A hat is required on the course for safety and heat protection.']]
+        ['Course', ['Wear a sleeved collared or mock-neck shirt; crew-neck tops do not meet the code.', 'Tuck shirts into trousers or skirts, except women\'s overblouses.', 'Undershirts and tank tops may not be worn alone.', 'Jeans and workwear are not permitted.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.', 'A hat is required on the course for safety and heat protection.']]
       ]
     },
     day4: {
       description: [
         'Dazaifu Golf Club is an 18-hole, par-72 course within a short drive of central Fukuoka, with convenient access from the airport and major stations. Its varied terrain includes uphill and downhill shots plus challenging water hazards.',
-        'Gently rolling fairways keep the round engaging without becoming overly difficult. The greens use fine-leaved zoysia grass, and the club has hosted the Japan Women’s Open.'
+        'Gently rolling fairways keep the round engaging without becoming overly difficult. The greens use fine-leaved zoysia grass, and the club has hosted the Japan Women\'s Open.'
       ],
       dress: [['', ['Wear a jacket or suit on arrival.', 'Avoid collarless or sleeveless tops and backless shoes such as Crocs or sandals.', 'Tuck shirts into trousers or skirts.', 'Wear soft-spike or spikeless golf shoes; metal spikes are prohibited.', 'A hat is required during play for safety.', 'Repair bunker footprints, divots and ball marks.', 'Maintain pace of play, targeting 2 hours 15 minutes per nine holes.']]]
     },
     day5: {
       description: [
-        'One of Kyushu’s premier courses, often described as both one of the region’s most challenging and most beautiful. Although set on rolling terrain, the fairways are relatively level and the design calls for every club in the bag. A practice hole on each nine makes it Japan’s first 20-hole facility.',
-        'The club hosted multiple women’s tournaments from 1973 to 2011, including the Vernal Cup RKB Ladies, the Vernal Ladies and the Fundokin Women’s tournament. In 2026 it also hosts the NIKKEN Holdings Cup Open Golf Tournament and the Children’s Cafeteria Support Charity Golf Tournament.'
+        'One of Kyushu\'s premier courses, often described as both one of the region\'s most challenging and most beautiful. Although set on rolling terrain, the fairways are relatively level and the design calls for every club in the bag. A practice hole on each nine makes it Japan\'s first 20-hole facility.',
+        'The club hosted multiple women\'s tournaments from 1973 to 2011, including the Vernal Cup RKB Ladies, the Vernal Ladies and the Fundokin Women\'s tournament. In 2026 it also hosts the NIKKEN Holdings Cup Open Golf Tournament and the Children\'s Cafeteria Support Charity Golf Tournament.'
       ],
       dress: [
         ['Clubhouse', ['Wear a blazer or golf jacket.', 'Slippers and sandals are not permitted.', 'Waist-length tops, sweaters and T-shirts are not permitted.', 'Jeans and work trousers are not permitted.', 'Wear a collared, sleeved shirt tucked into trousers or a skirt.']],

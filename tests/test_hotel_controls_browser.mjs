@@ -88,6 +88,7 @@ async function inspect(file, width) {
     const heroInnerStyle = getComputedStyle(heroInner);
     const languageBox = languageButton.getBoundingClientRect();
     const moreSubtitle = document.querySelector('#more > .day-head > p');
+    const heroMetaItems = [...document.querySelectorAll('.hero-meta > span:nth-child(odd)')];
     const hotelsHeading = document.querySelector('#hotels .section-label');
     const distance = document.querySelector('#hotels .hotel-distance');
     const distanceStyle = distance && getComputedStyle(distance);
@@ -139,6 +140,8 @@ async function inspect(file, width) {
       },
       hotelsHeading: hotelsHeading?.textContent.trim(),
       moreSubtitle: moreSubtitle?.textContent.trim() || null,
+      heroMetaItemCount: heroMetaItems.length,
+      heroCalendarCount: document.querySelectorAll('.hero-meta .fa-calendar-days').length,
       pageOverflow: document.documentElement.scrollWidth > innerWidth,
     };
   })()`);
@@ -232,6 +235,8 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle] of [
     assert.equal(result.hotels.length, 2);
     assert.equal(result.hotelsHeading, hotelsHeading);
     assert.equal(result.moreSubtitle, moreSubtitle);
+    assert.equal(result.heroMetaItemCount, 2, `${file} should not show a trip-duration item in the header`);
+    assert.equal(result.heroCalendarCount, 0, `${file} should not show the header calendar icon`);
     assert.deepEqual(result.distance, { text: distanceText, fontSize: '13px' });
     assert.equal(result.pageOverflow, false);
     for (const hotel of result.hotels) {

@@ -200,6 +200,26 @@ class FooterNavigationTest(unittest.TestCase):
         self.assertNotIn("Historical temperature reference", html)
         self.assertNotIn("Historical temperature reference", script)
 
+    def test_day_five_title_names_only_the_golf_course(self):
+        chinese_titles = (
+            (ROOT / "fukuoka-golf.html").read_text(encoding="utf-8"),
+            (ROOT / "fukuoka-golf-v2.html").read_text(encoding="utf-8"),
+        )
+        for html in chinese_titles:
+            self.assertIn("<h2>福岡世紀高爾夫</h2>", html)
+            self.assertNotIn("福岡世紀高爾夫與球後接送", html)
+
+        english_html = (ROOT / "fukuoka-golf-en.html").read_text(encoding="utf-8")
+        self.assertIn("<h2>Fukuoka Century Golf</h2>", english_html)
+        self.assertNotIn("Fukuoka Century Golf & After-Golf Transfers", english_html)
+
+    def test_english_course_copy_uses_half_width_apostrophes(self):
+        script = (ROOT / "fukuoka-golf-en-v2.js").read_text(encoding="utf-8")
+        self.assertNotIn("’", script)
+        for phrase in ("Kyushu\\'s", "Japan\\'s", "Women\\'s", "Children\\'s"):
+            with self.subTest(phrase=phrase):
+                self.assertIn(phrase, script)
+
     def test_dress_code_requires_a_jacket_on_day_two_in_both_languages(self):
         english_html = (ROOT / "fukuoka-golf-en.html").read_text(encoding="utf-8")
         english_script = (ROOT / "fukuoka-golf-en-v2.js").read_text(encoding="utf-8")
