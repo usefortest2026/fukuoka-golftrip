@@ -212,12 +212,15 @@ async function inspectPrivateInfoForm(file, width) {
   await send('Page.navigate', { url: `${baseUrl}/${file}?p=day2` });
   await loaded;
   await new Promise((resolve) => setTimeout(resolve, 250));
+  const closedLabel = await evaluate(`document.querySelector('#day2 .private-info-toggle').textContent.trim()`);
   await evaluate(`document.querySelector('#day2 .private-info-toggle').click()`);
   await new Promise((resolve) => setTimeout(resolve, 100));
   return evaluate(`(() => {
     const input = document.querySelector('#day2 .private-info-form input');
     const inputBox = input.getBoundingClientRect();
     return {
+      closedLabel: ${JSON.stringify(closedLabel)},
+      openLabel: document.querySelector('#day2 .private-info-toggle').textContent.trim(),
       inputFontSize: getComputedStyle(input).fontSize,
       inputFocused: document.activeElement === input,
       inputWithinViewport: inputBox.left >= 0 && inputBox.right <= innerWidth,
@@ -292,8 +295,13 @@ for (const [file, label] of [
   });
 }
 
-for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
+for (const [file, closedLabel, openLabel] of [
+  ['fukuoka-golf.html', '密碼', '關閉'],
+  ['fukuoka-golf-en.html', 'Password', 'Close'],
+]) {
   assert.deepEqual(await inspectPrivateInfoForm(file, 430), {
+    closedLabel,
+    openLabel,
     inputFontSize: '16px',
     inputFocused: true,
     inputWithinViewport: true,

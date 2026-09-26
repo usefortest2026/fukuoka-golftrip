@@ -5,8 +5,8 @@
 
   function copy(locale) {
     return locale === 'en' ? {
-      open: 'Enter password to view',
-      close: 'Close private info',
+      open: 'Password',
+      close: 'Close',
       password: 'Password',
       unlock: 'Unlock',
       cancel: 'Cancel',
@@ -17,8 +17,8 @@
       reservedBy: 'Reserved by',
       note: 'Private note'
     } : {
-      open: '輸入密碼查看',
-      close: '關閉私人資訊',
+      open: '密碼',
+      close: '關閉',
       password: '密碼',
       unlock: '解鎖',
       cancel: '取消',
