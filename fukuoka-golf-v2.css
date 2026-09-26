@@ -1,4 +1,33 @@
 /* V2 專用 UX 增強；不供正式版載入。 */
+html,
+body,
+.app,
+main {
+  touch-action: manipulation;
+}
+
+.portrait-lock { display: none; }
+
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  body > .app { visibility: hidden; }
+
+  .portrait-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+    background: #eef1eb;
+    color: #173629;
+    font-size: clamp(18px, 4vw, 24px);
+    font-weight: 800;
+    line-height: 1.5;
+    text-align: center;
+  }
+}
+
 .v2-summary,
 .v2-golf-quick,
 .v2-route {

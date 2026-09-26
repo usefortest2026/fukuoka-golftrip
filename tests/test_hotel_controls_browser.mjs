@@ -57,10 +57,10 @@ async function evaluate(expression) {
   return result.result.value;
 }
 
-async function setViewport(width) {
+async function setViewport(width, height = 844) {
   await send('Emulation.setDeviceMetricsOverride', {
     width,
-    height: 844,
+    height,
     deviceScaleFactor: 2,
     mobile: true,
   });
@@ -295,6 +295,55 @@ async function inspectDesktopPrivateInfo(file) {
   })()`);
 }
 
+async function inspectMobileTouchPolicy(file) {
+  await setViewport(390);
+  const loaded = waitFor('Page.loadEventFired');
+  await send('Page.navigate', { url: `${baseUrl}/${file}?p=day1` });
+  await loaded;
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return evaluate(`(() => {
+    const viewport = document.querySelector('meta[name="viewport"]').content;
+    return {
+      touchAction: {
+        html: getComputedStyle(document.documentElement).touchAction,
+        body: getComputedStyle(document.body).touchAction,
+        app: getComputedStyle(document.querySelector('.app')).touchAction,
+        scrollArea: getComputedStyle(document.querySelector('main')).touchAction,
+      },
+      pinchZoomAllowed: !/user-scalable\\s*=\\s*no|maximum-scale\\s*=\\s*1(?:\\D|$)/i.test(viewport),
+    };
+  })()`);
+}
+
+async function inspectMobileOrientationLock(file) {
+  await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+  await setViewport(844, 390);
+  const loaded = waitFor('Page.loadEventFired');
+  await send('Page.navigate', { url: `${baseUrl}/${file}?p=day1` });
+  await loaded;
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  const landscape = await evaluate(`(() => {
+    const overlay = document.querySelector('.portrait-lock');
+    return {
+      overlayExists: Boolean(overlay),
+      overlayDisplay: overlay && getComputedStyle(overlay).display,
+      overlayText: overlay && overlay.textContent.trim(),
+      appVisibility: getComputedStyle(document.querySelector('.app')).visibility,
+    };
+  })()`);
+  await setViewport(390, 844);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  const portrait = await evaluate(`(() => {
+    const overlay = document.querySelector('.portrait-lock');
+    return {
+      overlayDisplay: overlay && getComputedStyle(overlay).display,
+      appVisibility: getComputedStyle(document.querySelector('.app')).visibility,
+    };
+  })()`);
+  await send('Emulation.setTouchEmulationEnabled', { enabled: false });
+  return { landscape, portrait };
+}
+
 await send('Page.enable');
 await send('Runtime.enable');
 await send('Network.enable');
@@ -358,6 +407,36 @@ for (const [file, label] of [
   assert.deepEqual(await inspectRestaurantMapButton(file, 390), {
     text: label,
     trailingContent: 'none',
+  });
+}
+
+for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
+  assert.deepEqual(await inspectMobileTouchPolicy(file), {
+    touchAction: {
+      html: 'manipulation',
+      body: 'manipulation',
+      app: 'manipulation',
+      scrollArea: 'manipulation',
+    },
+    pinchZoomAllowed: true,
+  });
+}
+
+for (const [file, overlayText] of [
+  ['fukuoka-golf.html', '請將手機轉回直向使用'],
+  ['fukuoka-golf-en.html', 'Please rotate your phone to portrait'],
+]) {
+  assert.deepEqual(await inspectMobileOrientationLock(file), {
+    landscape: {
+      overlayExists: true,
+      overlayDisplay: 'flex',
+      overlayText,
+      appVisibility: 'hidden',
+    },
+    portrait: {
+      overlayDisplay: 'none',
+      appVisibility: 'visible',
+    },
   });
 }
 
