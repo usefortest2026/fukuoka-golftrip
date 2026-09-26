@@ -206,6 +206,26 @@ async function inspectRestaurantMapButton(file, width) {
   })()`);
 }
 
+async function inspectPrivateInfoForm(file, width) {
+  await setViewport(width);
+  const loaded = waitFor('Page.loadEventFired');
+  await send('Page.navigate', { url: `${baseUrl}/${file}?p=day2` });
+  await loaded;
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  await evaluate(`document.querySelector('#day2 .private-info-toggle').click()`);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  return evaluate(`(() => {
+    const input = document.querySelector('#day2 .private-info-form input');
+    const inputBox = input.getBoundingClientRect();
+    return {
+      inputFontSize: getComputedStyle(input).fontSize,
+      inputFocused: document.activeElement === input,
+      inputWithinViewport: inputBox.left >= 0 && inputBox.right <= innerWidth,
+      pageOverflow: document.documentElement.scrollWidth > innerWidth,
+    };
+  })()`);
+}
+
 await send('Page.enable');
 await send('Runtime.enable');
 await send('Network.enable');
@@ -269,6 +289,15 @@ for (const [file, label] of [
   assert.deepEqual(await inspectRestaurantMapButton(file, 390), {
     text: label,
     trailingContent: 'none',
+  });
+}
+
+for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
+  assert.deepEqual(await inspectPrivateInfoForm(file, 430), {
+    inputFontSize: '16px',
+    inputFocused: true,
+    inputWithinViewport: true,
+    pageOverflow: false,
   });
 }
 
