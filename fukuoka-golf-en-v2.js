@@ -79,6 +79,72 @@
     return link;
   }
 
+  function legacyCopyText(text) {
+    return new Promise(function (resolve, reject) {
+      var textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.readOnly = true;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        if (!document.execCommand('copy')) throw new Error('Copy command failed');
+        resolve();
+      } catch (error) {
+        reject(error);
+      } finally {
+        textarea.remove();
+      }
+    });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text).catch(function () {
+        return legacyCopyText(text);
+      });
+    }
+    return legacyCopyText(text);
+  }
+
+  function makeHotelAddress(address, hotelName) {
+    var row = document.createElement('div');
+    row.className = 'v2-hotel-address';
+    row.innerHTML = '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>';
+    var addressText = document.createElement('span');
+    addressText.className = 'v2-hotel-address-text';
+    addressText.textContent = address;
+    var copyButton = document.createElement('button');
+    copyButton.type = 'button';
+    copyButton.className = 'v2-copy-address';
+    copyButton.setAttribute('aria-label', hotelName + ': Copy address');
+    copyButton.setAttribute('aria-live', 'polite');
+    copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy address</span>';
+    copyButton.addEventListener('click', function () {
+      if (copyButton.dataset.copying === 'true') return;
+      copyButton.dataset.copying = 'true';
+      copyButton.setAttribute('aria-busy', 'true');
+      copyText(address).then(function () {
+        copyButton.classList.add('is-copied');
+        copyButton.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span>Copied</span>';
+      }).catch(function () {
+        copyButton.classList.add('is-error');
+        copyButton.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>Copy failed</span>';
+      }).finally(function () {
+        copyButton.removeAttribute('aria-busy');
+        window.setTimeout(function () {
+          copyButton.classList.remove('is-copied', 'is-error');
+          copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy address</span>';
+          delete copyButton.dataset.copying;
+        }, 1600);
+      });
+    });
+    row.appendChild(addressText);
+    row.appendChild(copyButton);
+    return row;
+  }
+
   function makeHeading(title) {
     var head = document.createElement('div');
     head.className = 'v2-block-head';
@@ -180,8 +246,8 @@
   });
 
   var hotelMaps = [
-    ['The Ritz-Carlton, Fukuoka', 'https://www.google.com/maps/search/?api=1&query=The+Ritz-Carlton+Fukuoka'],
-    ['Mitsui Garden Hotel Fukuoka Nakasu', 'https://www.google.com/maps/search/?api=1&query=Mitsui+Garden+Hotel+Fukuoka+Nakasu']
+    ['The Ritz-Carlton, Fukuoka', 'https://www.google.com/maps/search/?api=1&query=The+Ritz-Carlton+Fukuoka', 'Fukuoka Daimyo Garden City 2-6-50, Daimyo, Chuo Ward, Fukuoka 810-0041, Japan'],
+    ['Mitsui Garden Hotel Fukuoka Nakasu', 'https://www.google.com/maps/search/?api=1&query=Mitsui+Garden+Hotel+Fukuoka+Nakasu', '5-5-1 Nakasu, Hakata Ward, Fukuoka 810-0801, Japan']
   ];
   var tripToolsSubtitle = document.querySelector('#more > .day-head > p');
   if (tripToolsSubtitle) tripToolsSubtitle.remove();
@@ -192,6 +258,7 @@
     if (!destination || !officialLink) return;
     var actions = document.createElement('div');
     actions.className = 'v2-map-actions v2-hotel-map-actions';
+    destination.appendChild(makeHotelAddress(hotelMaps[index][2], hotelMaps[index][0]));
     actions.appendChild(officialLink);
     var mapButton = makeMapButton(hotelMaps[index][1], hotelMaps[index][0]);
     mapButton.querySelector('span').textContent = 'Open in Google Maps';
