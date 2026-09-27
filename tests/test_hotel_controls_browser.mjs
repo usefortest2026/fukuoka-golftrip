@@ -119,6 +119,7 @@ async function inspect(file, width) {
       const officialBox = official && official.getBoundingClientRect();
       const mapBox = map && map.getBoundingClientRect();
       const copyInitialText = copy?.textContent.trim();
+      const copyInitialIcon = copy?.querySelector('i')?.className;
       copy?.click();
       await new Promise((resolve) => setTimeout(resolve, 0));
       hotels.push({
@@ -141,6 +142,9 @@ async function inspect(file, width) {
         addressDisplay: addressStyle?.display,
         copyInitialText,
         copySuccessText: copy?.textContent.trim(),
+        copyInitialIcon,
+        copySuccessIcon: copy?.querySelector('i')?.className,
+        copyWidth: copyStyle?.width,
         copyMinHeight: copyStyle?.minHeight,
         copyAriaLabel: copy?.getAttribute('aria-label'),
         copiedText: copiedTexts[index],
@@ -199,6 +203,7 @@ async function inspectCopyFallback(file) {
     const result = {
       fallbackText,
       buttonText: button.textContent.trim(),
+      buttonIcon: button.querySelector('i')?.className,
       textareaRemoved: !document.querySelector('textarea'),
     };
     document.execCommand = originalExecCommand;
@@ -227,6 +232,7 @@ async function inspectCopyFailure(file) {
     const result = {
       fallbackText,
       buttonText: button.textContent.trim(),
+      buttonIcon: button.querySelector('i')?.className,
       statusText: document.querySelector('#hotels .v2-copy-status')?.textContent.trim(),
       textareaRemoved: !document.querySelector('textarea'),
       ariaBusy: button.hasAttribute('aria-busy'),
@@ -508,8 +514,11 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
       assert.equal(hotel.mapOnRight, true);
       assert.equal(hotel.addressText, addresses[index]);
       assert.equal(hotel.addressDisplay, 'grid');
-      assert.equal(hotel.copyInitialText, copyLabel);
-      assert.equal(hotel.copySuccessText, copiedLabel);
+      assert.equal(hotel.copyInitialText, '');
+      assert.equal(hotel.copySuccessText, '');
+      assert.equal(hotel.copyInitialIcon.includes('fa-copy'), true);
+      assert.equal(hotel.copySuccessIcon.includes('fa-check'), true);
+      assert.equal(hotel.copyWidth, '44px');
       assert.equal(hotel.copyMinHeight, '44px');
       assert.equal(hotel.copyAriaLabel.includes(copyLabel), true);
       assert.equal(hotel.copiedText, addresses[index]);
@@ -524,12 +533,14 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
   }
   assert.deepEqual(await inspectCopyFallback(file), {
     fallbackText: addresses[0],
-    buttonText: copiedLabel,
+    buttonText: '',
+    buttonIcon: 'fa-solid fa-check',
     textareaRemoved: true,
   });
   assert.deepEqual(await inspectCopyFailure(file), {
     fallbackText: addresses[0],
-    buttonText: copyFailedLabel,
+    buttonText: '',
+    buttonIcon: 'fa-solid fa-triangle-exclamation',
     statusText: copyFailedLabel,
     textareaRemoved: true,
     ariaBusy: false,

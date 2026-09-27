@@ -119,7 +119,7 @@
     copyButton.type = 'button';
     copyButton.className = 'v2-copy-address';
     copyButton.setAttribute('aria-label', hotelName + ': Copy address');
-    copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy address</span>';
+    copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
     var copyStatus = document.createElement('span');
     copyStatus.className = 'v2-copy-status';
     copyStatus.setAttribute('role', 'status');
@@ -131,17 +131,17 @@
       copyButton.setAttribute('aria-busy', 'true');
       copyText(address).then(function () {
         copyButton.classList.add('is-copied');
-        copyButton.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span>Copied</span>';
+        copyButton.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
         copyStatus.textContent = 'Copied';
       }).catch(function () {
         copyButton.classList.add('is-error');
-        copyButton.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>Copy failed</span>';
+        copyButton.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>';
         copyStatus.textContent = 'Copy failed';
       }).finally(function () {
         copyButton.removeAttribute('aria-busy');
         window.setTimeout(function () {
           copyButton.classList.remove('is-copied', 'is-error');
-          copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy address</span>';
+          copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
           copyStatus.textContent = '';
           delete copyButton.dataset.copying;
         }, 1600);
