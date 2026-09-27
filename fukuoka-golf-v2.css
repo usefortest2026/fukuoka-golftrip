@@ -417,6 +417,18 @@ main {
 .v2-copy-address.is-copied { color: #173629; }
 .v2-copy-address.is-error { color: #b42318; }
 
+.v2-copy-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .v2-copy-address:hover { background: #edf5f0; }
 }

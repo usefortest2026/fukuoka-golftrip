@@ -160,8 +160,12 @@
     copyButton.type = 'button';
     copyButton.className = 'v2-copy-address';
     copyButton.setAttribute('aria-label', hotelName + '：複製地址');
-    copyButton.setAttribute('aria-live', 'polite');
     copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>複製地址</span>';
+    var copyStatus = document.createElement('span');
+    copyStatus.className = 'v2-copy-status';
+    copyStatus.setAttribute('role', 'status');
+    copyStatus.setAttribute('aria-live', 'polite');
+    copyStatus.setAttribute('aria-atomic', 'true');
     copyButton.addEventListener('click', function () {
       if (copyButton.dataset.copying === 'true') return;
       copyButton.dataset.copying = 'true';
@@ -169,20 +173,24 @@
       copyText(address).then(function () {
         copyButton.classList.add('is-copied');
         copyButton.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span>已複製</span>';
+        copyStatus.textContent = '已複製';
       }).catch(function () {
         copyButton.classList.add('is-error');
         copyButton.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i><span>複製失敗</span>';
+        copyStatus.textContent = '複製失敗';
       }).finally(function () {
         copyButton.removeAttribute('aria-busy');
         window.setTimeout(function () {
           copyButton.classList.remove('is-copied', 'is-error');
           copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i><span>複製地址</span>';
+          copyStatus.textContent = '';
           delete copyButton.dataset.copying;
         }, 1600);
       });
     });
     row.appendChild(addressText);
     row.appendChild(copyButton);
+    row.appendChild(copyStatus);
     return row;
   }
 

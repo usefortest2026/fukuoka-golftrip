@@ -110,6 +110,7 @@ async function inspect(file, width) {
       const address = hotel.querySelector('.v2-hotel-address');
       const addressText = address?.querySelector('.v2-hotel-address-text');
       const copy = address?.querySelector('.v2-copy-address');
+      const copyStatus = address?.querySelector('.v2-copy-status');
       const rowStyle = row && getComputedStyle(row);
       const mapStyle = map && getComputedStyle(map);
       const mapArrow = map && getComputedStyle(map, '::after');
@@ -143,6 +144,8 @@ async function inspect(file, width) {
         copyMinHeight: copyStyle?.minHeight,
         copyAriaLabel: copy?.getAttribute('aria-label'),
         copiedText: copiedTexts[index],
+        copyStatusText: copyStatus?.textContent.trim(),
+        copyStatusRole: copyStatus?.getAttribute('role'),
       });
     }
     return {
@@ -197,6 +200,36 @@ async function inspectCopyFallback(file) {
       fallbackText,
       buttonText: button.textContent.trim(),
       textareaRemoved: !document.querySelector('textarea'),
+    };
+    document.execCommand = originalExecCommand;
+    return result;
+  })()`);
+}
+
+async function inspectCopyFailure(file) {
+  await setViewport(390);
+  await navigate(file);
+  return evaluate(`(async () => {
+    let fallbackText = null;
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: undefined,
+    });
+    const originalExecCommand = document.execCommand;
+    document.execCommand = (command) => {
+      const textarea = document.querySelector('textarea');
+      if (command === 'copy' && textarea) fallbackText = textarea.value;
+      return false;
+    };
+    const button = document.querySelector('#hotels .v2-copy-address');
+    button.click();
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    const result = {
+      fallbackText,
+      buttonText: button.textContent.trim(),
+      statusText: document.querySelector('#hotels .v2-copy-status')?.textContent.trim(),
+      textareaRemoved: !document.querySelector('textarea'),
+      ariaBusy: button.hasAttribute('aria-busy'),
     };
     document.execCommand = originalExecCommand;
     return result;
@@ -405,7 +438,7 @@ await send('Runtime.enable');
 await send('Network.enable');
 await send('Network.setCacheDisabled', { cacheDisabled: true });
 
-for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, copyLabel, copiedLabel] of [
+for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, copyLabel, copiedLabel, copyFailedLabel] of [
   [
     'fukuoka-golf.html',
     ['官方網站', 'Google Maps 導航'],
@@ -418,6 +451,7 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
     ],
     '複製地址',
     '已複製',
+    '複製失敗',
   ],
   [
     'fukuoka-golf-en.html',
@@ -431,6 +465,7 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
     ],
     'Copy address',
     'Copied',
+    'Copy failed',
   ],
 ]) {
   for (const width of [320, 390]) {
@@ -478,6 +513,8 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
       assert.equal(hotel.copyMinHeight, '44px');
       assert.equal(hotel.copyAriaLabel.includes(copyLabel), true);
       assert.equal(hotel.copiedText, addresses[index]);
+      assert.equal(hotel.copyStatusText, copiedLabel);
+      assert.equal(hotel.copyStatusRole, 'status');
     }
     if (width === 390) {
       const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
@@ -489,6 +526,13 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
     fallbackText: addresses[0],
     buttonText: copiedLabel,
     textareaRemoved: true,
+  });
+  assert.deepEqual(await inspectCopyFailure(file), {
+    fallbackText: addresses[0],
+    buttonText: copyFailedLabel,
+    statusText: copyFailedLabel,
+    textareaRemoved: true,
+    ariaBusy: false,
   });
 }
 
