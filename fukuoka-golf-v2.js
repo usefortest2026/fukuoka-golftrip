@@ -1,6 +1,17 @@
 (function () {
   'use strict';
 
+  function hydrateCoupon(details) {
+    if (!details.open) return;
+    var image = details.querySelector('.v2-coupon-image[data-src]');
+    if (image && !image.hasAttribute('src')) image.src = image.dataset.src;
+  }
+
+  document.querySelectorAll('details.v2-scan-coupon').forEach(function (details) {
+    hydrateCoupon(details);
+    details.addEventListener('toggle', function () { hydrateCoupon(details); });
+  });
+
   var navWeekdays = ['五', '六', '日', '一', '二'];
   document.querySelectorAll('.tab-btn').forEach(function (button, index) {
     if (!navWeekdays[index] || button.querySelector('.nav-weekday')) return;
@@ -449,7 +460,7 @@
   var desktopDetailsQuery = window.matchMedia('(min-width: 1024px)');
 
   function syncDesktopDetails() {
-    document.querySelectorAll('details').forEach(function (details) {
+    document.querySelectorAll('details:not(.v2-scan-coupon)').forEach(function (details) {
       if (desktopDetailsQuery.matches) {
         if (!details.hasAttribute('data-mobile-open')) {
           details.setAttribute('data-mobile-open', details.open ? 'true' : 'false');
@@ -466,7 +477,7 @@
 
   document.addEventListener('click', function (event) {
     if (!desktopDetailsQuery.matches || !event.target.closest) return;
-    if (event.target.closest('details > summary')) event.preventDefault();
+    if (event.target.closest('details:not(.v2-scan-coupon) > summary')) event.preventDefault();
   });
 
   if (desktopDetailsQuery.addEventListener) {

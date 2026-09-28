@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="fukuoka-golf-v2.css?v=20260928-42">
+<link rel="stylesheet" href="fukuoka-golf-v2.css?v=20260928-43">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{height:100%;-webkit-text-size-adjust:100%}body{margin:0;background:#eef1eb;color:#18181b;font-family:'Noto Sans TC',system-ui,sans-serif;font-size:16px;line-height:1.55;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
@@ -128,7 +128,7 @@ main{flex:0 0 auto;min-height:auto;overflow:visible}
 .restaurant-intro{margin:4px 0 8px;color:#4b5563;font-size:14px;line-height:1.55}
 </style>
 <script>
-(function(){var APP_VERSION="20260928-42",requestedVersion='';try{var u0=new URL(location.href);requestedVersion=u0.searchParams.get('_')||'';}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION&&v!==requestedVersion){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
+(function(){var APP_VERSION="20260928-43",requestedVersion='';try{var u0=new URL(location.href);requestedVersion=u0.searchParams.get('_')||'';}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION&&v!==requestedVersion){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
 </script>
 </head>
 <body>
@@ -156,25 +156,80 @@ main{flex:0 0 auto;min-height:auto;overflow:visible}
     <a class="overview-day" href="?p=day5" aria-label="查看第五天詳細行程"><div class="overview-date"><b>D5</b><span>11/10</span><small>週二</small></div><div class="overview-body"><div class="overview-title-row"><h3 class="overview-title">福岡世紀高爾夫・返程</h3><span class="overview-tag">球敘／航班</span></div><div class="overview-schedule"><div class="overview-line"><time>07:50</time><span>麗思 → 三井 → 福岡世紀球場</span></div><div class="overview-line"><time>10:08</time><span>兩組開球 10:08 / 10:16</span></div><div class="overview-line"><span class="no-time">球後</span><span>全員先到福岡機場，再送 2 位返回麗思</span></div><div class="overview-line"><time>20:55</time><span>BR101 福岡起飛，22:40 抵達台北</span></div></div><p class="overview-note">不打球者：秋月城遺址，或自行市區逛街後前往機場。</p></div><i class="overview-arrow fa-solid fa-chevron-right" aria-hidden="true"></i></a>
   </div>
   <section class="v2-trip-coupons" aria-labelledby="day5-coupons-heading">
-    <div class="v2-coupon-heading"><span class="v2-coupon-heading-icon"><i class="fa-solid fa-ticket" aria-hidden="true"></i></span><div><p class="eyebrow">Shopping</p><h2 id="day5-coupons-heading">福岡購物優惠</h2><p>有條碼的優惠券直接出示；百貨優惠持護照現場辦理。</p></div></div>
+    <div class="v2-coupon-heading"><span class="v2-coupon-heading-icon"><i class="fa-solid fa-ticket" aria-hidden="true"></i></span><div><p class="eyebrow">Shopping</p><h2 id="day5-coupons-heading">福岡購物優惠</h2><p>共 13 張可掃優惠券；點品牌展開條碼，打開時才載入圖片。</p></div></div>
     <div class="v2-passport-offers" aria-label="百貨公司旅客優惠">
       <article class="v2-passport-offer"><span>5% OFF</span><h3>岩田屋本店／福岡三越</h3><p>持護照至岩田屋新館 7F 或福岡三越 B2 免稅櫃檯申請 Guest Card；單件滿 ¥3,000，部分商品除外。</p></article>
       <article class="v2-passport-offer"><span>5% OFF</span><h3>大丸福岡天神店</h3><p>結帳時出示護照，化妝品與手錶享 5% 優惠；部分品牌與商品除外。</p></article>
       <article class="v2-passport-offer"><span>5% OFF</span><h3>博多阪急</h3><p>持護照至 1F 服務台或 M3F 免稅櫃檯領取 Guest Coupon，可於 7 日內使用；部分商品除外。</p></article>
     </div>
     <div class="v2-scan-coupons">
-      <figure class="v2-scan-coupon">
-        <div class="v2-scan-coupon-title"><div><span>麗思附近</span><h3>Cocokara Fine 福岡 PARCO 店</h3></div><b>最高 7% OFF</b></div>
-        <a class="v2-coupon-image-link" href="coupon-cocokara-zh.jpg" target="_blank" rel="noopener" aria-label="放大 Cocokara Fine 可掃描優惠券"><img class="v2-coupon-image" src="coupon-cocokara-zh.jpg" alt="Cocokara Fine 3%、5%、7% 可掃描優惠券，有效至 2027 年 3 月 31 日"></a>
-        <figcaption><span>PARCO 新館 B1F · 10:00–20:30 · 結帳前出示</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Cocokara+Fine+Fukuoka+PARCO" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></figcaption>
-      </figure>
-      <figure class="v2-scan-coupon">
-        <div class="v2-scan-coupon-title"><div><span>三井花園附近</span><h3>松本清 中洲 5 丁目店</h3></div><b>最高 7% OFF</b></div>
-        <a class="v2-coupon-image-link" href="coupon-matsukiyo-zh.jpg" target="_blank" rel="noopener" aria-label="放大松本清可掃描優惠券"><img class="v2-coupon-image" src="coupon-matsukiyo-zh.jpg" alt="松本清 3%、5%、7% 可掃描優惠券，有效至 2027 年 3 月 31 日"></a>
-        <figcaption><span>中洲 5-2-1 · 09:00–23:30 · 結帳前出示</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Matsumoto+Kiyoshi+Nakasu+5-chome" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></figcaption>
-      </figure>
+      <details class="v2-scan-coupon" open>
+        <summary class="v2-scan-coupon-title"><div><span>D5 回程機場</span><h3>福岡機場免稅店</h3></div><b>5% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-airport-dutyfree-zh.jpg" target="_blank" rel="noopener" aria-label="放大福岡機場免稅店可掃描優惠券"><img class="v2-coupon-image" src="coupon-airport-dutyfree-zh.jpg" data-src="coupon-airport-dutyfree-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1190" alt="福岡機場免稅店 5% 可掃描優惠券，有效至 2027 年 3 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>國際線安檢後免稅店 · 有效至 2027/03/31</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Fukuoka+Airport+International+Terminal+Duty+Free" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>麗思附近</span><h3>Cocokara Fine 福岡 PARCO 店</h3></div><b>最高 7% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-cocokara-zh.jpg" target="_blank" rel="noopener" aria-label="放大 Cocokara Fine 可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-cocokara-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1363" alt="Cocokara Fine 3%、5%、7% 可掃描優惠券，有效至 2027 年 3 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>PARCO 新館 B1F · 10:00–20:30</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Cocokara+Fine+Fukuoka+PARCO" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>三井花園附近</span><h3>松本清 中洲 5 丁目店</h3></div><b>最高 7% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-matsukiyo-zh.jpg" target="_blank" rel="noopener" aria-label="放大松本清可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-matsukiyo-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1920" alt="松本清 3%、5%、7% 可掃描優惠券，有效至 2027 年 3 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>中洲 5-2-1 · 09:00–23:30</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Matsumoto+Kiyoshi+Nakasu+5-chome" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神南</span><h3>COSMOS 科摩思藥妝</h3></div><b>最高 19% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-cosmos-zh.jpg" target="_blank" rel="noopener" aria-label="放大 COSMOS 可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-cosmos-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="590" height="1657" alt="COSMOS 最高 19% 可掃描優惠券，有效至 2026 年 12 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>渡邊通 5-24-30 · 10:00–23:00</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Drugstore+Cosmos+Tenjin" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>博多站筑紫口</span><h3>SUGI 杉藥局</h3></div><b>最高 18% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-sugi-zh.jpg" target="_blank" rel="noopener" aria-label="放大 SUGI 杉藥局可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-sugi-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1074" alt="SUGI 杉藥局最高 18% 可掃描優惠券，有效至 2027 年 2 月 28 日"></a>
+        <div class="v2-scan-coupon-caption"><span>博多駅東 1-1-25 · 24 小時營業</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Sugi+Drug+Hakata+Station+East" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神／博多多店</span><h3>KoKuMiN 國民藥妝</h3></div><b>最高 18% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-kokumin-zh.jpg" target="_blank" rel="noopener" aria-label="放大 KoKuMiN 國民藥妝可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-kokumin-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1020" alt="KoKuMiN 國民藥妝最高 18% 可掃描優惠券，有效至 2026 年 12 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>日本各地 KoKuMiN 免稅店可用</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=KoKuMiN+Drug+Tenjin+Fukuoka" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神警固／博多</span><h3>Drug 11 藥妝</h3></div><b>最高 7% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-drug11-zh.jpg" target="_blank" rel="noopener" aria-label="放大 Drug 11 可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-drug11-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="962" alt="Drug 11 最高 7% 可掃描優惠券，有效至 2027 年 2 月 28 日"></a>
+        <div class="v2-scan-coupon-caption"><span>天神警固店 · 10:00–23:00</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Drug+Eleven+Tenjin+Kego" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神南</span><h3>鶴羽藥妝</h3></div><b>最高 17% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-tsuruha-zh.jpg" target="_blank" rel="noopener" aria-label="放大鶴羽藥妝可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-tsuruha-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1211" alt="鶴羽藥妝最高 17% 可掃描優惠券，有效至 2027 年 12 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>渡邊通 5-20-6 · 09:00–23:00</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Tsuruha+Drug+Tenjin+Minami" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神商圈</span><h3>Sundrug 尚都樂客</h3></div><b>最高 17% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-sundrug-zh.jpg" target="_blank" rel="noopener" aria-label="放大 Sundrug 可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-sundrug-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1089" alt="Sundrug 最高 17% 可掃描優惠券"></a>
+        <div class="v2-scan-coupon-caption"><span>天神 2-8-22 · 10:00–23:15</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Sundrug+Tenjin+Fukuoka" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神地下街／Solaria</span><h3>大賀藥局 OHGA Pharmacy</h3></div><b>每滿 ¥10,000 折 ¥500</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-ohga-zh.jpg" target="_blank" rel="noopener" aria-label="放大大賀藥局可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-ohga-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="680" alt="大賀藥局每滿一萬日圓折五百日圓可掃描優惠券，有效至 2026 年 12 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>Solaria Stage M2F · 10:00–20:30</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=OHGA+Pharmacy+Solaria+Stage" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>天神電器</span><h3>YAMADA／BEST 電器</h3></div><b>最高 17% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-yamada-zh.jpg" target="_blank" rel="noopener" aria-label="放大 YAMADA 電器可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-yamada-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="612" height="919" alt="YAMADA 電器最高 17% 可掃描優惠券，有效至 2026 年 12 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>YAMADA、LABI、Tecc.Land、BEST 適用</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Best+Denki+Fukuoka+Main+Store" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>高爾夫用品／Canal City</span><h3>Alpen FUKUOKA／Golf5</h3></div><b>5% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-alpen-zh.jpg" target="_blank" rel="noopener" aria-label="放大 Alpen FUKUOKA 可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-alpen-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1280" alt="Alpen FUKUOKA 與 Golf5 免稅店 5% 可掃描優惠券，有效至 2026 年 12 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>Canal City South Building 1F · 10:00–21:00</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Alpen+Fukuoka+Canal+City" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
+      <details class="v2-scan-coupon">
+        <summary class="v2-scan-coupon-title"><div><span>ONE FUKUOKA 4F</span><h3>Snow Peak</h3></div><b>最高 7% OFF</b></summary>
+        <a class="v2-coupon-image-link" href="coupon-snowpeak-zh.jpg" target="_blank" rel="noopener" aria-label="放大 Snow Peak 可掃描優惠券"><img class="v2-coupon-image" data-src="coupon-snowpeak-zh.jpg" loading="lazy" decoding="async" fetchpriority="low" width="680" height="1209" alt="Snow Peak 最高 7% 可掃描優惠券，有效至 2027 年 3 月 31 日"></a>
+        <div class="v2-scan-coupon-caption"><span>ONE FUKUOKA BLDG. 4F · 11:00–20:00</span><a class="v2-coupon-map v2-nav-button" href="https://www.google.com/maps/search/?api=1&amp;query=Snow+Peak+ONE+FUKUOKA+BLDG" target="_blank" rel="noopener"><i class="fa-solid fa-location-arrow" aria-hidden="true"></i><span>Google Maps 導航</span></a></div>
+      </details>
     </div>
-    <p class="v2-coupon-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>藥妝券依未稅消費金額提供 3%／5%／7% 優惠，有效至 2027/03/31；部分商品與店鋪不適用。</p>
+    <p class="v2-coupon-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Bic Camera 與 EDION 券在 2026/10/31 到期，早於本次旅程，未收錄。券圖來源：福寶媽衝日本；實際優惠以券面與店家規定為準。</p>
   </section>
   <p class="overview-foot">點選任一天查看完整行程、訂位與注意事項。</p>
 </div>
@@ -244,7 +299,7 @@ loadPacking();
   });
 })();
 </script>
-<script src="fukuoka-golf-v2.js?v=20260928-42"></script>
-<script src="private-trip-info.js?v=20260928-42"></script>
+<script src="fukuoka-golf-v2.js?v=20260928-43"></script>
+<script src="private-trip-info.js?v=20260928-43"></script>
 </body>
 </html>

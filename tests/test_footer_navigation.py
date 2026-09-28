@@ -207,12 +207,26 @@ class FooterNavigationTest(unittest.TestCase):
             with self.subTest(filename=filename):
                 page = self.parse(filename)
                 self.assertEqual(3, page.overview_passport_offer_count)
-                self.assertEqual(2, len(page.overview_coupon_images))
-                self.assertEqual(2, len(page.overview_coupon_image_links))
-                self.assertEqual(2, len(page.overview_coupon_map_links))
-                image_sources = [item["src"] for item in page.overview_coupon_images]
+                self.assertEqual(13, len(page.overview_coupon_images))
+                self.assertEqual(13, len(page.overview_coupon_image_links))
+                self.assertEqual(13, len(page.overview_coupon_map_links))
+                self.assertEqual(
+                    1,
+                    sum("src" in item for item in page.overview_coupon_images),
+                )
+                image_sources = [
+                    item["data-src"] for item in page.overview_coupon_images
+                ]
                 self.assertTrue(all(source.startswith("coupon-") for source in image_sources))
                 self.assertTrue(all(item.get("alt") for item in page.overview_coupon_images))
+                self.assertTrue(
+                    all(
+                        item.get("loading") == "lazy"
+                        and item.get("decoding") == "async"
+                        and item.get("fetchpriority") == "low"
+                        for item in page.overview_coupon_images
+                    )
+                )
                 self.assertEqual(
                     image_sources,
                     [item["href"] for item in page.overview_coupon_image_links],
@@ -235,7 +249,7 @@ class FooterNavigationTest(unittest.TestCase):
         for filename, _, _ in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(2, len(page.overview_coupon_map_links))
+                self.assertEqual(13, len(page.overview_coupon_map_links))
                 self.assertTrue(
                     all(
                         "v2-nav-button" in item.get("class", "").split()

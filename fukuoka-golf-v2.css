@@ -160,7 +160,7 @@ main {
 .v2-quick-action .v2-nav-button,
 .v2-hotel-map-actions .v2-nav-button,
 .contact-actions .v2-nav-button,
-.v2-scan-coupon figcaption .v2-nav-button {
+.v2-scan-coupon-caption .v2-nav-button {
   min-height: 32px;
   width: auto;
   padding: 4px 2px;
@@ -991,13 +991,42 @@ main {
   background: #fff;
 }
 
+.v2-scan-coupon > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.v2-scan-coupon > summary::-webkit-details-marker { display: none; }
+.v2-scan-coupon > summary::marker { content: ''; }
+
 .v2-scan-coupon-title {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: 12px 13px;
+  padding: 12px 42px 12px 13px;
 }
+
+.v2-scan-coupon-title::after {
+  position: absolute;
+  top: 50%;
+  right: 13px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #edf5e7;
+  color: #24643d;
+  content: '+';
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.v2-scan-coupon[open] > .v2-scan-coupon-title::after { content: '−'; }
 
 .v2-scan-coupon-title span {
   display: block;
@@ -1039,7 +1068,7 @@ main {
   margin: 0 auto;
 }
 
-.v2-scan-coupon figcaption {
+.v2-scan-coupon-caption {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1066,7 +1095,8 @@ main {
   .v2-nav-button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
   .v2-hotel-map-actions .v2-nav-button:hover,
   .contact-actions .v2-nav-button:hover,
-  .v2-scan-coupon figcaption .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
+  .v2-scan-coupon-caption .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
+  .v2-scan-coupon > summary:hover { background: #f8faf8; }
   .hero .lang-switch:hover { background: #24643d; color: #fff; }
   .v2-quick-action .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .private-info-form button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
@@ -1092,7 +1122,7 @@ main {
   .v2-trip-coupons { padding: 14px 12px; }
   .v2-scan-coupon-title { display: block; }
   .v2-scan-coupon-title b { display: block; margin-top: 5px; }
-  .v2-scan-coupon figcaption { align-items: flex-start; }
+  .v2-scan-coupon-caption { align-items: flex-start; }
 }
 
 @media (max-width:380px) {

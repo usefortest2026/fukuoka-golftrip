@@ -239,6 +239,24 @@ async function inspectDayFiveOptionLabels(file, width) {
 async function inspectDayFiveCoupons(file, width) {
   await setViewport(width);
   await navigate(file, 'more');
+  const initialLoadedImages = await evaluate(`([...document.querySelectorAll('#overview .v2-coupon-image')]
+    .filter((image) => image.hasAttribute('src')).length)`);
+  await evaluate(`(async () => {
+    document.querySelectorAll('#overview details.v2-scan-coupon').forEach((details) => {
+      details.open = true;
+      details.dispatchEvent(new Event('toggle'));
+    });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    for (const image of document.querySelectorAll('#overview .v2-coupon-image')) {
+      image.scrollIntoView({ block: 'center' });
+      if (!image.complete) {
+        await new Promise((resolve) => {
+          image.addEventListener('load', resolve, { once: true });
+          image.addEventListener('error', resolve, { once: true });
+        });
+      }
+    }
+  })()`);
   const result = await evaluate(`(() => {
     const section = document.querySelector('#overview > .v2-trip-coupons');
     const overviewList = document.querySelector('#overview > .overview-list');
@@ -252,6 +270,10 @@ async function inspectDayFiveCoupons(file, width) {
         alt: item.alt,
         complete: item.complete,
         naturalWidth: item.naturalWidth,
+        loading: item.loading,
+        decoding: item.decoding,
+        fetchPriority: item.fetchPriority,
+        dataSrc: item.dataset.src || '',
         width: box.width,
         left: box.left,
         right: box.right,
@@ -281,6 +303,8 @@ async function inspectDayFiveCoupons(file, width) {
       dayFiveSectionExists: Boolean(document.querySelector('#day5 > .v2-trip-coupons')),
       followsDayFiveCard: overviewList?.lastElementChild === dayFiveCard && section?.previousElementSibling === overviewList,
       passportOffers: document.querySelectorAll('#overview .v2-passport-offer').length,
+      couponDetails: document.querySelectorAll('#overview details.v2-scan-coupon').length,
+      initialLoadedImages: ${initialLoadedImages},
       images,
       mapLinks: mapLinks.map((link) => ({
         href: link.href,
@@ -554,12 +578,19 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.equal(coupons.followsDayFiveCard, true, `${file} coupons should immediately follow the D5 overview row`);
     assert.equal(coupons.sectionTop >= coupons.dayFiveCardBottom, true, `${file} coupons should follow the D5 overview row`);
     assert.equal(coupons.passportOffers, 3);
-    assert.equal(coupons.images.length, 2);
-    assert.equal(coupons.mapLinks.length, 2);
+    assert.equal(coupons.images.length, 13);
+    assert.equal(coupons.couponDetails, 13);
+    assert.equal(coupons.initialLoadedImages, 1);
+    assert.equal(coupons.mapLinks.length, 13);
     assert.equal(coupons.officialLinks, 0);
     assert.equal(coupons.pageOverflow, false, `${file} coupons overflow at ${width}px`);
-    assert.ok(coupons.images.every((item) => item.complete && item.naturalWidth >= 800));
+    assert.ok(coupons.images.every((item) => item.complete && item.naturalWidth >= 590));
     assert.ok(coupons.images.every((item) => item.src.startsWith('coupon-') && item.src === item.linkHref));
+    assert.ok(coupons.images.every((item) => item.loading === 'lazy'));
+    assert.ok(coupons.images.every((item) => item.decoding === 'async'));
+    assert.ok(coupons.images.every((item) => item.fetchPriority === 'low'));
+    assert.ok(coupons.images.every((item) => item.dataSrc === item.src));
+    assert.ok(coupons.images.every((item) => fs.statSync(item.src).size <= 240_000));
     assert.ok(coupons.images.every((item) => item.alt.length > 0));
     assert.ok(coupons.images.every((item) => item.target === '_blank' && item.rel.includes('noopener')));
     assert.ok(coupons.images.every((item) => item.width >= 280), `${file} coupon codes are too small at ${width}px`);
