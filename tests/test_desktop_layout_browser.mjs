@@ -236,6 +236,55 @@ async function inspectDayFiveOptionLabels(file, width) {
     .filter((text) => /^(Option|選項)/.test(text)))`);
 }
 
+async function inspectDayFiveCoupons(file, width) {
+  await setViewport(width);
+  await navigate(file, 'day5');
+  const result = await evaluate(`(() => {
+    const section = document.querySelector('#day5 > .v2-trip-coupons');
+    const images = [...document.querySelectorAll('#day5 .v2-coupon-image')].map((item) => {
+      const box = item.getBoundingClientRect();
+      const link = item.closest('.v2-coupon-image-link');
+      return {
+        src: item.getAttribute('src') || '',
+        alt: item.alt,
+        complete: item.complete,
+        naturalWidth: item.naturalWidth,
+        width: box.width,
+        left: box.left,
+        right: box.right,
+        linkHref: link?.getAttribute('href') || '',
+        target: link?.target || '',
+        rel: link?.rel || '',
+      };
+    });
+    const mapLinks = [...document.querySelectorAll('#day5 .v2-coupon-map')];
+    return {
+      sectionExists: Boolean(section),
+      passportOffers: document.querySelectorAll('#day5 .v2-passport-offer').length,
+      images,
+      mapLinks: mapLinks.map((link) => ({
+        href: link.href,
+        height: link.getBoundingClientRect().height,
+        target: link.target,
+        rel: link.rel,
+      })),
+      officialLinks: document.querySelectorAll('#day5 .v2-offer-link, #day5 .v2-nearby-official').length,
+      sectionTop: section?.getBoundingClientRect().top || 0,
+      flightBottom: document.querySelector('#day5 > .flight')?.getBoundingClientRect().bottom || 0,
+      pageOverflow: document.documentElement.scrollWidth > innerWidth,
+    };
+  })()`);
+
+  if (width === 390 || width === 1440) {
+    await evaluate(`document.querySelector('#day5 > .v2-trip-coupons')?.scrollIntoView({ block: 'start' })`);
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
+    const locale = file.includes('-en') ? 'en' : 'zh';
+    fs.writeFileSync(`/private/tmp/fukuoka-coupons-${width}-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
+  }
+  return result;
+}
+
 async function inspectMore(file, width) {
   await setViewport(width);
   await navigate(file, 'more');
@@ -261,47 +310,6 @@ async function inspectMore(file, width) {
 
   await evaluate(`document.querySelectorAll('#more .seg')[1].click()`);
   await new Promise((resolve) => setTimeout(resolve, 50));
-  const coupons = await evaluate(`(() => {
-    const offers = [...document.querySelectorAll('#coupons .v2-offer-item')].map((item) => {
-      const link = item.querySelector('.v2-offer-link');
-      return {
-        title: item.querySelector('h3')?.textContent.trim() || '',
-        badge: item.querySelector('.v2-offer-badge')?.textContent.trim() || '',
-        href: link?.href || '',
-        target: link?.target || '',
-        rel: link?.rel || '',
-        linkHeight: link?.getBoundingClientRect().height || 0,
-      };
-    });
-    const stores = [...document.querySelectorAll('#coupons .v2-nearby-item')].map((item) => {
-      const official = item.querySelector('.v2-nearby-official');
-      const map = item.querySelector('.v2-nearby-map');
-      return {
-        name: item.querySelector('h3')?.textContent.trim() || '',
-        officialHref: official?.href || '',
-        mapHref: map?.href || '',
-        officialHeight: official?.getBoundingClientRect().height || 0,
-        mapHeight: map?.getBoundingClientRect().height || 0,
-        linksSafe: [official, map].every((link) => link?.target === '_blank' && link?.rel.includes('noopener')),
-      };
-    });
-    return {
-      activeSubpage: document.querySelector('#more .subpage.active')?.id,
-      offers,
-      stores,
-      checkedText: document.querySelector('#coupons .v2-offers-checked')?.textContent.trim() || '',
-      pageOverflow: document.documentElement.scrollWidth > innerWidth,
-    };
-  })()`);
-
-  if (width === 1440) {
-    const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
-    const locale = file.includes('-en') ? 'en' : 'zh';
-    fs.writeFileSync(`/private/tmp/fukuoka-desktop-offers-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
-  }
-
-  await evaluate(`document.querySelectorAll('#more .seg')[2].click()`);
-  await new Promise((resolve) => setTimeout(resolve, 50));
   const hotelActive = await evaluate(`document.querySelector('#more .subpage.active')?.id`);
   if (width === 1440) {
     const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
@@ -309,7 +317,7 @@ async function inspectMore(file, width) {
     fs.writeFileSync(`/private/tmp/fukuoka-desktop-hotels-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
   }
 
-  await evaluate(`document.querySelectorAll('#more .seg')[3].click()`);
+  await evaluate(`document.querySelectorAll('#more .seg')[2].click()`);
   await new Promise((resolve) => setTimeout(resolve, 50));
   const packing = await evaluate(`(() => {
     const groups = [...document.querySelectorAll('#packing .pack-group')].map((item) => {
@@ -332,7 +340,12 @@ async function inspectMore(file, width) {
     fs.writeFileSync(`/private/tmp/fukuoka-desktop-packing-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
   }
 
-  return { overview, coupons, hotelActive, packing };
+  return {
+    overview,
+    hotelActive,
+    packing,
+    tabs: await evaluate(`([...document.querySelectorAll('#more .seg')].map((item) => item.textContent.trim()))`),
+  };
 }
 
 await send('Page.enable');
@@ -496,30 +509,13 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   assert.ok(more.overview.cards[1].top >= more.overview.cards[0].bottom, `${file} overview should be a single desktop column`);
   assert.ok(Math.abs(more.overview.cards[1].left - more.overview.cards[0].left) < 2, `${file} overview rows should align`);
   assert.ok(Math.abs(more.overview.cards[1].width - more.overview.cards[0].width) < 2, `${file} overview rows should share a width`);
-  assert.equal(more.coupons.activeSubpage, 'coupons');
-  assert.equal(more.coupons.pageOverflow, false);
-  assert.equal(mobileMore.coupons.pageOverflow, false, `${file} offers overflow on mobile`);
-  assert.equal(more.coupons.offers.length, 5);
   assert.deepEqual(
-    more.coupons.offers.map((offer) => offer.title),
+    more.tabs,
     file.includes('-en')
-      ? ['Iwataya / Fukuoka Mitsukoshi', 'Daimaru Fukuoka Tenjin', 'Fukuoka City Subway 1-Day Pass', 'Fukuoka Tourist City Pass', 'JR Pass Holder Benefits']
-      : ['岩田屋本店／福岡三越', '大丸福岡天神店', '福岡市地下鐵一日券', '福岡悠遊卡', 'JR Pass 持有人優惠'],
+      ? ['Overview', 'Hotels', 'Packing']
+      : ['總覽', '飯店', '行李'],
   );
-  assert.ok(more.coupons.offers.every((offer) => offer.href.startsWith('http')));
-  assert.ok(more.coupons.offers.every((offer) => offer.target === '_blank' && offer.rel.includes('noopener')));
-  assert.ok(more.coupons.offers.every((offer) => offer.linkHeight >= 44));
-  assert.deepEqual(
-    more.coupons.stores.map((store) => store.name),
-    file.includes('-en')
-      ? ['Cocokara Fine Fukuoka PARCO', 'Matsumoto Kiyoshi Nakasu 5-chome']
-      : ['Cocokara Fine 福岡 PARCO 店', '松本清 中洲 5 丁目店'],
-  );
-  assert.ok(more.coupons.stores.every((store) => store.officialHref.startsWith('http')));
-  assert.ok(more.coupons.stores.every((store) => store.mapHref.includes('google.com/maps/search/')));
-  assert.ok(more.coupons.stores.every((store) => store.linksSafe));
-  assert.ok(more.coupons.stores.every((store) => store.officialHeight >= 44 && store.mapHeight >= 44));
-  assert.ok(more.coupons.checkedText.includes('2026/09/28'));
+  assert.deepEqual(mobileMore.tabs, more.tabs);
   assert.equal(more.hotelActive, 'hotels');
   assert.equal(more.packing.activeSubpage, 'packing');
   assert.equal(more.packing.pageOverflow, false);
@@ -527,6 +523,26 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   assert.ok(Math.abs(more.packing.groups[0].top - more.packing.groups[1].top) < 2, `${file} packing groups are not two columns`);
   assert.ok(more.packing.groups[1].left > more.packing.groups[0].right, `${file} packing columns overlap`);
   assert.deepEqual(more.packing.pointerFailures, [], `${file} has clickable controls without a pointer cursor`);
+
+  for (const width of [390, 1440]) {
+    const coupons = await inspectDayFiveCoupons(file, width);
+    assert.equal(coupons.sectionExists, true, `${file} D5 is missing the coupon section`);
+    assert.equal(coupons.sectionTop >= coupons.flightBottom, true, `${file} coupons should follow the D5 itinerary`);
+    assert.equal(coupons.passportOffers, 3);
+    assert.equal(coupons.images.length, 2);
+    assert.equal(coupons.mapLinks.length, 2);
+    assert.equal(coupons.officialLinks, 0);
+    assert.equal(coupons.pageOverflow, false, `${file} coupons overflow at ${width}px`);
+    assert.ok(coupons.images.every((item) => item.complete && item.naturalWidth >= 800));
+    assert.ok(coupons.images.every((item) => item.src.startsWith('coupon-') && item.src === item.linkHref));
+    assert.ok(coupons.images.every((item) => item.alt.length > 0));
+    assert.ok(coupons.images.every((item) => item.target === '_blank' && item.rel.includes('noopener')));
+    assert.ok(coupons.images.every((item) => item.width >= 280), `${file} coupon codes are too small at ${width}px`);
+    assert.ok(coupons.images.every((item) => item.left >= 0 && item.right <= width + 1));
+    assert.ok(coupons.mapLinks.every((item) => item.href.includes('google.com/maps/search/')));
+    assert.ok(coupons.mapLinks.every((item) => item.height >= 44));
+    assert.ok(coupons.mapLinks.every((item) => item.target === '_blank' && item.rel.includes('noopener')));
+  }
 }
 
 socket.close();

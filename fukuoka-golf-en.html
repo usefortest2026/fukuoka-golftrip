@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="fukuoka-golf-v2.css?v=20260928-40">
+<link rel="stylesheet" href="fukuoka-golf-v2.css?v=20260928-41">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{height:100%;-webkit-text-size-adjust:100%}body{margin:0;background:#eef1eb;color:#18181b;font-family:'Noto Sans TC',system-ui,sans-serif;font-size:16px;line-height:1.55;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
@@ -178,7 +178,7 @@ main{flex:0 0 auto;min-height:auto;overflow:visible}
 .restaurant-intro{margin:4px 0 8px;color:#4b5563;font-size:14px;line-height:1.55}
 </style>
 <script>
-(function(){var APP_VERSION="20260928-40",requestedVersion='';try{var u0=new URL(location.href);requestedVersion=u0.searchParams.get('_')||'';}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION&&v!==requestedVersion){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
+(function(){var APP_VERSION="20260928-41",requestedVersion='';try{var u0=new URL(location.href);requestedVersion=u0.searchParams.get('_')||'';}catch(e){}try{fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(v){if(!v)return;v=v.trim();if(v&&v!==APP_VERSION&&v!==requestedVersion){try{var u=new URL(location.href);u.searchParams.set('_',v);location.replace(u.pathname+u.search+u.hash);}catch(e){location.reload();}}}).catch(function(){});}catch(e){}})();
 </script>
 </head>
 <body>
@@ -318,38 +318,37 @@ main{flex:0 0 auto;min-height:auto;overflow:visible}
           <div class="airport"><b>TPE</b><span>Taipei</span><strong>22:40</strong></div>
         </div>
       </div>
+      <section class="v2-trip-coupons" aria-labelledby="day5-coupons-heading">
+        <div class="v2-coupon-heading"><span class="v2-coupon-heading-icon"><i class="fa-solid fa-ticket" aria-hidden="true"></i></span><div><p class="eyebrow">Shopping</p><h2 id="day5-coupons-heading">Fukuoka shopping offers</h2><p>Show scannable coupons at checkout; department-store offers are issued with a passport.</p></div></div>
+        <div class="v2-passport-offers" aria-label="Department store visitor offers">
+          <article class="v2-passport-offer"><span>5% OFF</span><h3>Iwataya / Fukuoka Mitsukoshi</h3><p>Bring your passport to the Iwataya Annex 7F or Mitsukoshi B2 tax-free counter for a Guest Card. Items must be at least ¥3,000; exclusions apply.</p></article>
+          <article class="v2-passport-offer"><span>5% OFF</span><h3>Daimaru Fukuoka Tenjin</h3><p>Show your passport at checkout for 5% off cosmetics and watches. Some brands and items are excluded.</p></article>
+          <article class="v2-passport-offer"><span>5% OFF</span><h3>Hakata Hankyu</h3><p>Bring your passport to the 1F information counter or M3F tax-free counter for a Guest Coupon, valid for seven days. Exclusions apply.</p></article>
+        </div>
+        <div class="v2-scan-coupons">
+          <figure class="v2-scan-coupon">
+            <div class="v2-scan-coupon-title"><div><span>Near The Ritz-Carlton</span><h3>Cocokara Fine Fukuoka PARCO</h3></div><b>UP TO 7% OFF</b></div>
+            <a class="v2-coupon-image-link" href="coupon-cocokara-en.jpg" target="_blank" rel="noopener" aria-label="Enlarge the scannable Cocokara Fine coupon"><img class="v2-coupon-image" src="coupon-cocokara-en.jpg" alt="Scannable Cocokara Fine 3%, 5%, and 7% coupon valid through March 31, 2027"></a>
+            <figcaption><span>PARCO New Building B1F · 10:00–20:30 · Show before payment</span><a class="v2-coupon-map" href="https://www.google.com/maps/search/?api=1&amp;query=Cocokara+Fine+Fukuoka+PARCO" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Map</a></figcaption>
+          </figure>
+          <figure class="v2-scan-coupon">
+            <div class="v2-scan-coupon-title"><div><span>Near Mitsui Garden</span><h3>Matsumoto Kiyoshi Nakasu 5-chome</h3></div><b>UP TO 7% OFF</b></div>
+            <a class="v2-coupon-image-link" href="coupon-matsukiyo-en.jpg" target="_blank" rel="noopener" aria-label="Enlarge the scannable Matsumoto Kiyoshi coupon"><img class="v2-coupon-image" src="coupon-matsukiyo-en.jpg" alt="Scannable Matsumoto Kiyoshi 3%, 5%, and 7% coupon valid through March 31, 2027"></a>
+            <figcaption><span>5-2-1 Nakasu · 09:00–23:30 · Show before payment</span><a class="v2-coupon-map" href="https://www.google.com/maps/search/?api=1&amp;query=Matsumoto+Kiyoshi+Nakasu+5-chome" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Map</a></figcaption>
+          </figure>
+        </div>
+        <p class="v2-coupon-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i>Drugstore discounts are 3%, 5%, or 7% depending on the pre-tax total. Valid through Mar 31, 2027; some items and stores are excluded.</p>
+      </section>
     </div>
 <div id="more" class="page">
       <div class="day-head">
         <h2>Trip Essentials</h2>
-        <p>Overview, offers, hotels and packing in one place</p>
+        <p>Overview, hotels and packing in one place</p>
       </div>
       <div class="tabs" role="tablist" aria-label="Trip essentials">
         <button class="seg active" onclick="switchSub('overview',this)">Overview</button>
-        <button class="seg" onclick="switchSub('coupons',this)">Offers</button>
         <button class="seg" onclick="switchSub('hotels',this)">Hotels</button>
         <button class="seg" onclick="switchSub('packing',this)">Packing</button>
-      </div>
-      <div id="coupons" class="subpage">
-        <div class="day-head"><h2>Fukuoka Offers &amp; Shopping</h2><p>Official offers valid during the trip and pharmacies near each hotel</p></div>
-        <div class="v2-coupon-grid">
-          <section class="v2-offer-panel" aria-labelledby="offer-heading">
-            <div class="v2-offer-head"><span class="v2-offer-head-icon"><i class="fa-solid fa-ticket" aria-hidden="true"></i></span><div><h3 id="offer-heading">Official offers</h3><p>Show your passport or eligible pass</p></div></div>
-            <div class="v2-offer-list">
-              <article class="v2-offer-item"><div class="v2-offer-copy"><span class="v2-offer-badge">5% OFF</span><h3>Iwataya / Fukuoka Mitsukoshi</h3><p>Short-term visitors can request a Guest Card with a passport. Applies to items priced at ¥3,000 or more; exclusions apply.</p></div><a class="v2-offer-link" href="https://www.iwataya-mitsukoshi.mistore.jp/mitsukoshi/shops/other/other_shopnews/shopnews05.html" target="_blank" rel="noopener"><span>Official offer</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></article>
-              <article class="v2-offer-item"><div class="v2-offer-copy"><span class="v2-offer-badge">5% OFF</span><h3>Daimaru Fukuoka Tenjin</h3><p>Present a passport for 5% off cosmetics and watches. Store and brand exclusions may apply.</p></div><a class="v2-offer-link" href="https://www.daimaru-fukuoka.jp/info/detail/?cd=000841" target="_blank" rel="noopener"><span>Official offer</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></article>
-              <article class="v2-offer-item"><div class="v2-offer-copy"><span class="v2-offer-badge">¥640</span><h3>Fukuoka City Subway 1-Day Pass</h3><p>¥640 per adult for unlimited subway travel that day, plus discounts at selected facilities.</p></div><a class="v2-offer-link" href="https://subway.city.fukuoka.lg.jp/eng/fare/one/" target="_blank" rel="noopener"><span>Official details</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></article>
-              <article class="v2-offer-item"><div class="v2-offer-copy"><span class="v2-offer-badge">From ¥2,500</span><h3>Fukuoka Tourist City Pass</h3><p>A one-day transit pass for international visitors; best for a day with frequent city travel.</p></div><a class="v2-offer-link" href="https://gofukuoka.jp/citypass.html" target="_blank" rel="noopener"><span>Official details</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></article>
-              <article class="v2-offer-item"><div class="v2-offer-copy"><span class="v2-offer-badge">Until Mar 31, 2027</span><h3>JR Pass Holder Benefits</h3><p>For holders of selected JR Kyushu Rail Passes. Check that your pass is eligible before use.</p></div><a class="v2-offer-link" href="https://www.jrkyushu.co.jp/english/railpass/coupon/fukuoka/" target="_blank" rel="noopener"><span>Official offers</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></article>
-            </div>
-          </section>
-          <section class="v2-nearby-panel" aria-labelledby="nearby-heading">
-            <div class="v2-offer-head"><span class="v2-offer-head-icon"><i class="fa-solid fa-capsules" aria-hidden="true"></i></span><div><h3 id="nearby-heading">Pharmacies near the hotels</h3><p>Convenient stops before heading back</p></div></div>
-            <div class="v2-nearby-group"><h4><i class="fa-solid fa-hotel" aria-hidden="true"></i>Near The Ritz-Carlton</h4><article class="v2-nearby-item"><h3>Cocokara Fine Fukuoka PARCO</h3><p>Fukuoka PARCO New Building B1F · 10:00–20:30 · Tax-free</p><div class="v2-nearby-actions"><a class="v2-nearby-official" href="https://www.matsukiyococokara-online.com/map?kid=20002399" target="_blank" rel="noopener">Official store</a><a class="v2-nearby-map" href="https://www.google.com/maps/search/?api=1&amp;query=Cocokara+Fine+Fukuoka+PARCO" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Map</a></div></article></div>
-            <div class="v2-nearby-group"><h4><i class="fa-solid fa-hotel" aria-hidden="true"></i>Near Mitsui Garden Fukuoka Nakasu</h4><article class="v2-nearby-item"><h3>Matsumoto Kiyoshi Nakasu 5-chome</h3><p>5-2-1 Nakasu · 09:00–23:30 · Tax-free</p><div class="v2-nearby-actions"><a class="v2-nearby-official" href="https://www.matsukiyococokara-online.com/map?kid=20805830" target="_blank" rel="noopener">Official store</a><a class="v2-nearby-map" href="https://www.google.com/maps/search/?api=1&amp;query=Matsumoto+Kiyoshi+Nakasu+5-chome" target="_blank" rel="noopener"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Map</a></div></article></div>
-          </section>
-        </div>
-        <p class="v2-offers-checked"><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Offers and hours checked: 2026/09/28. Recheck the official page before departure.</p>
       </div>
       <div id="hotels" class="subpage panel">
         <div class="panel-pad">
@@ -483,7 +482,7 @@ loadPacking();
   });
 })();
 </script>
-<script src="fukuoka-golf-en-v2.js?v=20260928-40"></script>
-<script src="private-trip-info.js?v=20260928-40"></script>
+<script src="fukuoka-golf-en-v2.js?v=20260928-41"></script>
+<script src="private-trip-info.js?v=20260928-41"></script>
 </body>
 </html>

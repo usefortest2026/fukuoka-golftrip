@@ -22,6 +22,11 @@ class TripPageParser(HTMLParser):
         self.pickup_route_section_count = 0
         self.pickup_route_link_count = 0
         self.overview_tag_count = 0
+        self.day5_coupon_section_count = 0
+        self.day5_coupon_images = []
+        self.day5_coupon_image_links = []
+        self.day5_coupon_map_links = []
+        self.day5_passport_offer_count = 0
         self._overview_day = None
         self._capture = None
 
@@ -34,6 +39,7 @@ class TripPageParser(HTMLParser):
         classes = self._classes(attrs)
         inside_nav = any(item[0] == "nav" and "nav" in item[2] for item in self.stack)
         inside_more = any(item[1].get("id") == "more" for item in self.stack)
+        inside_day5 = any(item[1].get("id") == "day5" for item in self.stack)
         inside_contact_actions = any(
             item[0] == "div" and "contact-actions" in item[2]
             for item in self.stack
@@ -83,6 +89,16 @@ class TripPageParser(HTMLParser):
             self.overview_tag_count += 1
         if tag == "section" and "pickup-routes" in classes:
             self.pickup_route_section_count += 1
+        if tag == "section" and inside_day5 and "v2-trip-coupons" in classes:
+            self.day5_coupon_section_count += 1
+        if tag == "article" and inside_day5 and "v2-passport-offer" in classes:
+            self.day5_passport_offer_count += 1
+        if tag == "img" and inside_day5 and "v2-coupon-image" in classes:
+            self.day5_coupon_images.append(attrs)
+        if tag == "a" and inside_day5 and "v2-coupon-image-link" in classes:
+            self.day5_coupon_image_links.append(attrs)
+        if tag == "a" and inside_day5 and "v2-coupon-map" in classes:
+            self.day5_coupon_map_links.append(attrs)
         if tag == "a" and any(
             item[0] == "section" and "pickup-routes" in item[2]
             for item in self.stack
@@ -127,9 +143,9 @@ class TripPageParser(HTMLParser):
 
 class FooterNavigationTest(unittest.TestCase):
     CASES = (
-        ("fukuoka-golf.html", "更多", ["總覽", "優惠券", "飯店", "行李"]),
-        ("fukuoka-golf-v2.html", "更多", ["總覽", "優惠券", "飯店", "行李"]),
-        ("fukuoka-golf-en.html", "More", ["Overview", "Offers", "Hotels", "Packing"]),
+        ("fukuoka-golf.html", "更多", ["總覽", "飯店", "行李"]),
+        ("fukuoka-golf-v2.html", "更多", ["總覽", "飯店", "行李"]),
+        ("fukuoka-golf-en.html", "More", ["Overview", "Hotels", "Packing"]),
     )
 
     def parse(self, filename):
@@ -149,7 +165,7 @@ class FooterNavigationTest(unittest.TestCase):
                 self.assertEqual(more_label, page.nav_buttons[-1]["text"])
                 self.assertIn("switchPage('more',this)", page.nav_buttons[-1]["attrs"]["onclick"])
 
-    def test_more_flattens_overview_offers_hotels_and_packing_into_peer_tabs(self):
+    def test_more_contains_only_overview_hotels_and_packing_tabs(self):
         for filename, _, tab_labels in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
@@ -162,11 +178,40 @@ class FooterNavigationTest(unittest.TestCase):
                 self.assertEqual(
                     {
                         "overview": True,
-                        "coupons": False,
                         "hotels": False,
                         "packing": False,
                     },
                     subpages,
+                )
+
+    def test_day_five_shows_redeemable_coupon_images_and_passport_offers(self):
+        for filename, _, _ in self.CASES:
+            with self.subTest(filename=filename):
+                page = self.parse(filename)
+                self.assertEqual(1, page.day5_coupon_section_count)
+                self.assertEqual(3, page.day5_passport_offer_count)
+                self.assertEqual(2, len(page.day5_coupon_images))
+                self.assertEqual(2, len(page.day5_coupon_image_links))
+                self.assertEqual(2, len(page.day5_coupon_map_links))
+                image_sources = [item["src"] for item in page.day5_coupon_images]
+                self.assertTrue(all(source.startswith("coupon-") for source in image_sources))
+                self.assertTrue(all(item.get("alt") for item in page.day5_coupon_images))
+                self.assertEqual(
+                    image_sources,
+                    [item["href"] for item in page.day5_coupon_image_links],
+                )
+                self.assertTrue(
+                    all(
+                        item.get("target") == "_blank"
+                        and "noopener" in item.get("rel", "")
+                        for item in page.day5_coupon_image_links
+                    )
+                )
+                self.assertTrue(
+                    all(
+                        "google.com/maps/search/" in item.get("href", "")
+                        for item in page.day5_coupon_map_links
+                    )
                 )
 
     def test_restaurant_navigation_buttons_match_hotel_google_maps_pattern(self):
