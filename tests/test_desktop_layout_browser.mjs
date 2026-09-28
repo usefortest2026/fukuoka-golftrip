@@ -238,10 +238,13 @@ async function inspectDayFiveOptionLabels(file, width) {
 
 async function inspectDayFiveCoupons(file, width) {
   await setViewport(width);
-  await navigate(file, 'day5');
+  await navigate(file, 'more');
   const result = await evaluate(`(() => {
-    const section = document.querySelector('#day5 > .v2-trip-coupons');
-    const images = [...document.querySelectorAll('#day5 .v2-coupon-image')].map((item) => {
+    const section = document.querySelector('#overview > .v2-trip-coupons');
+    const overviewList = document.querySelector('#overview > .overview-list');
+    const dayCards = [...document.querySelectorAll('#overview .overview-day')];
+    const dayFiveCard = dayCards.at(-1);
+    const images = [...document.querySelectorAll('#overview .v2-coupon-image')].map((item) => {
       const box = item.getBoundingClientRect();
       const link = item.closest('.v2-coupon-image-link');
       return {
@@ -257,26 +260,46 @@ async function inspectDayFiveCoupons(file, width) {
         rel: link?.rel || '',
       };
     });
-    const mapLinks = [...document.querySelectorAll('#day5 .v2-coupon-map')];
+    const mapLinks = [...document.querySelectorAll('#overview .v2-coupon-map')];
+    const referenceButton = document.querySelector('#day2 .contact-actions .v2-nav-button');
+    const visualStyle = (item) => {
+      const style = getComputedStyle(item);
+      return {
+        display: style.display,
+        alignItems: style.alignItems,
+        justifyContent: style.justifyContent,
+        borderColor: style.borderColor,
+        borderRadius: style.borderRadius,
+        backgroundColor: style.backgroundColor,
+        color: style.color,
+        fontSize: style.fontSize,
+        fontWeight: style.fontWeight,
+      };
+    };
     return {
       sectionExists: Boolean(section),
-      passportOffers: document.querySelectorAll('#day5 .v2-passport-offer').length,
+      dayFiveSectionExists: Boolean(document.querySelector('#day5 > .v2-trip-coupons')),
+      followsDayFiveCard: overviewList?.lastElementChild === dayFiveCard && section?.previousElementSibling === overviewList,
+      passportOffers: document.querySelectorAll('#overview .v2-passport-offer').length,
       images,
       mapLinks: mapLinks.map((link) => ({
         href: link.href,
         height: link.getBoundingClientRect().height,
         target: link.target,
         rel: link.rel,
+        classes: link.className,
+        visualStyle: visualStyle(link),
       })),
-      officialLinks: document.querySelectorAll('#day5 .v2-offer-link, #day5 .v2-nearby-official').length,
+      referenceButtonStyle: visualStyle(referenceButton),
+      officialLinks: document.querySelectorAll('#overview .v2-offer-link, #overview .v2-nearby-official').length,
       sectionTop: section?.getBoundingClientRect().top || 0,
-      flightBottom: document.querySelector('#day5 > .flight')?.getBoundingClientRect().bottom || 0,
+      dayFiveCardBottom: dayFiveCard?.getBoundingClientRect().bottom || 0,
       pageOverflow: document.documentElement.scrollWidth > innerWidth,
     };
   })()`);
 
   if (width === 390 || width === 1440) {
-    await evaluate(`document.querySelector('#day5 > .v2-trip-coupons')?.scrollIntoView({ block: 'start' })`);
+    await evaluate(`document.querySelector('#overview > .v2-trip-coupons')?.scrollIntoView({ block: 'start' })`);
     await new Promise((resolve) => setTimeout(resolve, 100));
     const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
     const locale = file.includes('-en') ? 'en' : 'zh';
@@ -526,8 +549,10 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
 
   for (const width of [390, 1440]) {
     const coupons = await inspectDayFiveCoupons(file, width);
-    assert.equal(coupons.sectionExists, true, `${file} D5 is missing the coupon section`);
-    assert.equal(coupons.sectionTop >= coupons.flightBottom, true, `${file} coupons should follow the D5 itinerary`);
+    assert.equal(coupons.sectionExists, true, `${file} overview is missing the coupon section`);
+    assert.equal(coupons.dayFiveSectionExists, false, `${file} coupons should not remain in the D5 detail page`);
+    assert.equal(coupons.followsDayFiveCard, true, `${file} coupons should immediately follow the D5 overview row`);
+    assert.equal(coupons.sectionTop >= coupons.dayFiveCardBottom, true, `${file} coupons should follow the D5 overview row`);
     assert.equal(coupons.passportOffers, 3);
     assert.equal(coupons.images.length, 2);
     assert.equal(coupons.mapLinks.length, 2);
@@ -540,7 +565,9 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.ok(coupons.images.every((item) => item.width >= 280), `${file} coupon codes are too small at ${width}px`);
     assert.ok(coupons.images.every((item) => item.left >= 0 && item.right <= width + 1));
     assert.ok(coupons.mapLinks.every((item) => item.href.includes('google.com/maps/search/')));
-    assert.ok(coupons.mapLinks.every((item) => item.height >= 44));
+    assert.ok(coupons.mapLinks.every((item) => item.classes.split(/\s+/).includes('v2-nav-button')));
+    assert.ok(coupons.mapLinks.every((item) => JSON.stringify(item.visualStyle) === JSON.stringify(coupons.referenceButtonStyle)));
+    assert.ok(coupons.mapLinks.every((item) => item.height >= 32));
     assert.ok(coupons.mapLinks.every((item) => item.target === '_blank' && item.rel.includes('noopener')));
   }
 }

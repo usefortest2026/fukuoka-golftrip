@@ -159,7 +159,8 @@ main {
 
 .v2-quick-action .v2-nav-button,
 .v2-hotel-map-actions .v2-nav-button,
-.contact-actions .v2-nav-button {
+.contact-actions .v2-nav-button,
+.v2-scan-coupon figcaption .v2-nav-button {
   min-height: 32px;
   width: auto;
   padding: 4px 2px;
@@ -1049,23 +1050,6 @@ main {
   line-height: 1.5;
 }
 
-.v2-coupon-map {
-  display: inline-flex;
-  min-width: 72px;
-  min-height: 44px;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 11px;
-  border: 1px solid #cbdacb;
-  border-radius: 9px;
-  color: #24643d;
-  font-size: 12px;
-  font-weight: 800;
-  text-decoration: none;
-}
-
 .v2-coupon-note {
   display: flex;
   align-items: flex-start;
@@ -1081,7 +1065,8 @@ main {
 @media (hover:hover) and (pointer:fine) {
   .v2-nav-button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
   .v2-hotel-map-actions .v2-nav-button:hover,
-  .contact-actions .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
+  .contact-actions .v2-nav-button:hover,
+  .v2-scan-coupon figcaption .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .hero .lang-switch:hover { background: #24643d; color: #fff; }
   .v2-quick-action .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .private-info-form button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
