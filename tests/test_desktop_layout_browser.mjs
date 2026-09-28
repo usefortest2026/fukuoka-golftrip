@@ -239,8 +239,9 @@ async function inspectDayFiveOptionLabels(file, width) {
 async function inspectDayFiveCoupons(file, width) {
   await setViewport(width);
   await navigate(file, 'more');
-  const initialLoadedImages = await evaluate(`([...document.querySelectorAll('#overview .v2-coupon-image')]
-    .filter((image) => image.hasAttribute('src')).length)`);
+  const initialLoadedImageSources = await evaluate(`([...document.querySelectorAll('#overview .v2-coupon-image')]
+    .filter((image) => image.hasAttribute('src'))
+    .map((image) => image.getAttribute('src'))) `);
   await evaluate(`(async () => {
     document.querySelectorAll('#overview details.v2-scan-coupon').forEach((details) => {
       details.open = true;
@@ -283,6 +284,15 @@ async function inspectDayFiveCoupons(file, width) {
       };
     });
     const mapLinks = [...document.querySelectorAll('#overview .v2-coupon-map')];
+    const discountAlignments = [...document.querySelectorAll('#overview .v2-scan-coupon-title')].map((summary) => {
+      const discount = summary.querySelector('b');
+      const summaryBox = summary.getBoundingClientRect();
+      const discountBox = discount.getBoundingClientRect();
+      return Math.abs(
+        (summaryBox.top + summaryBox.height / 2) -
+        (discountBox.top + discountBox.height / 2)
+      );
+    });
     const referenceButton = document.querySelector('#day2 .contact-actions .v2-nav-button');
     const visualStyle = (item) => {
       const style = getComputedStyle(item);
@@ -304,7 +314,8 @@ async function inspectDayFiveCoupons(file, width) {
       followsDayFiveCard: overviewList?.lastElementChild === dayFiveCard && section?.previousElementSibling === overviewList,
       passportOffers: document.querySelectorAll('#overview .v2-passport-offer').length,
       couponDetails: document.querySelectorAll('#overview details.v2-scan-coupon').length,
-      initialLoadedImages: ${initialLoadedImages},
+      initialLoadedImageSources: ${JSON.stringify(initialLoadedImageSources)},
+      discountAlignments,
       images,
       mapLinks: mapLinks.map((link) => ({
         href: link.href,
@@ -580,7 +591,9 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.equal(coupons.passportOffers, 3);
     assert.equal(coupons.images.length, 13);
     assert.equal(coupons.couponDetails, 13);
-    assert.equal(coupons.initialLoadedImages, 1);
+    assert.deepEqual(coupons.initialLoadedImageSources, [file.includes('-en') ? 'coupon-cocokara-en.jpg' : 'coupon-cocokara-zh.jpg']);
+    assert.equal(coupons.images.at(-1).src, 'coupon-airport-dutyfree-zh.jpg');
+    assert.ok(coupons.discountAlignments.every((offset) => offset <= 2), `${file} discount labels are not aligned with expand controls at ${width}px`);
     assert.equal(coupons.mapLinks.length, 13);
     assert.equal(coupons.officialLinks, 0);
     assert.equal(coupons.pageOverflow, false, `${file} coupons overflow at ${width}px`);

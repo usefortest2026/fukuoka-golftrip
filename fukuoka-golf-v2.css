@@ -1003,7 +1003,7 @@ main {
 .v2-scan-coupon-title {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 12px 42px 12px 13px;
@@ -1079,18 +1079,6 @@ main {
   line-height: 1.5;
 }
 
-.v2-coupon-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  margin: 12px 1px 0;
-  color: #656b67;
-  font-size: 11px;
-  line-height: 1.55;
-}
-
-.v2-coupon-note i { margin-top: 3px; color: #54815c; }
-
 @media (hover:hover) and (pointer:fine) {
   .v2-nav-button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
   .v2-hotel-map-actions .v2-nav-button:hover,
@@ -1120,8 +1108,7 @@ main {
   .v2-offer-item { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .v2-offer-link { width: 100%; }
   .v2-trip-coupons { padding: 14px 12px; }
-  .v2-scan-coupon-title { display: block; }
-  .v2-scan-coupon-title b { display: block; margin-top: 5px; }
+  .v2-scan-coupon-title b { max-width: 116px; text-align: right; white-space: normal; }
   .v2-scan-coupon-caption { align-items: flex-start; }
 }
 

@@ -217,6 +217,11 @@ class FooterNavigationTest(unittest.TestCase):
                 image_sources = [
                     item["data-src"] for item in page.overview_coupon_images
                 ]
+                self.assertIn("coupon-cocokara-", image_sources[0])
+                self.assertEqual(
+                    "coupon-airport-dutyfree-zh.jpg",
+                    image_sources[-1],
+                )
                 self.assertTrue(all(source.startswith("coupon-") for source in image_sources))
                 self.assertTrue(all(item.get("alt") for item in page.overview_coupon_images))
                 self.assertTrue(
