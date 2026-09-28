@@ -116,6 +116,7 @@ async function inspect(file, width) {
       const mapArrow = map && getComputedStyle(map, '::after');
       const addressStyle = address && getComputedStyle(address);
       const copyStyle = copy && getComputedStyle(copy);
+      const copyIconFontSize = copy && getComputedStyle(copy.querySelector('i')).fontSize;
       const officialBox = official && official.getBoundingClientRect();
       const mapBox = map && map.getBoundingClientRect();
       const copyInitialText = copy?.textContent.trim();
@@ -146,6 +147,7 @@ async function inspect(file, width) {
         copySuccessIcon: copy?.querySelector('i')?.className,
         copyWidth: copyStyle?.width,
         copyMinHeight: copyStyle?.minHeight,
+        copyIconFontSize,
         copyAriaLabel: copy?.getAttribute('aria-label'),
         copiedText: copiedTexts[index],
         copyStatusText: copyStatus?.textContent.trim(),
@@ -520,6 +522,7 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
       assert.equal(hotel.copySuccessIcon.includes('fa-check'), true);
       assert.equal(hotel.copyWidth, '44px');
       assert.equal(hotel.copyMinHeight, '44px');
+      assert.equal(hotel.copyIconFontSize, '20px');
       assert.equal(hotel.copyAriaLabel.includes(copyLabel), true);
       assert.equal(hotel.copiedText, addresses[index]);
       assert.equal(hotel.copyStatusText, copiedLabel);
