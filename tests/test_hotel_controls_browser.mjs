@@ -107,22 +107,41 @@ async function inspect(file, width) {
       const links = row ? [...row.querySelectorAll(':scope > a')] : [];
       const official = links[0];
       const map = links[1];
-      const address = hotel.querySelector('.v2-hotel-address');
-      const addressText = address?.querySelector('.v2-hotel-address-text');
-      const copy = address?.querySelector('.v2-copy-address');
-      const copyStatus = address?.querySelector('.v2-copy-status');
+      const details = hotel.querySelector('.v2-hotel-details');
+      const detailsTitle = details?.querySelector('.v2-hotel-details-title');
+      const fieldElements = [...(details?.querySelectorAll('.v2-hotel-field') || [])];
+      const fields = [];
+      for (const field of fieldElements) {
+        const copy = field.querySelector('.v2-copy-address');
+        const copyStatus = field.querySelector('.v2-copy-status');
+        const copiedTextIndex = copiedTexts.length;
+        const copyInitialText = copy?.textContent.trim();
+        const copyInitialIcon = copy?.querySelector('i')?.className;
+        const copyStyle = copy && getComputedStyle(copy);
+        const copyIconFontSize = copy && getComputedStyle(copy.querySelector('i')).fontSize;
+        copy?.click();
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        fields.push({
+          label: field.querySelector('.v2-hotel-field-label')?.textContent.trim(),
+          value: field.querySelector('.v2-hotel-field-value')?.textContent.trim(),
+          copyInitialText,
+          copySuccessText: copy?.textContent.trim(),
+          copyInitialIcon,
+          copySuccessIcon: copy?.querySelector('i')?.className,
+          copyWidth: copyStyle?.width,
+          copyMinHeight: copyStyle?.minHeight,
+          copyIconFontSize,
+          copyAriaLabel: copy?.getAttribute('aria-label'),
+          copiedText: copy ? copiedTexts[copiedTextIndex] : null,
+          copyStatusText: copyStatus?.textContent.trim(),
+          copyStatusRole: copyStatus?.getAttribute('role'),
+        });
+      }
       const rowStyle = row && getComputedStyle(row);
       const mapStyle = map && getComputedStyle(map);
       const mapArrow = map && getComputedStyle(map, '::after');
-      const addressStyle = address && getComputedStyle(address);
-      const copyStyle = copy && getComputedStyle(copy);
-      const copyIconFontSize = copy && getComputedStyle(copy.querySelector('i')).fontSize;
       const officialBox = official && official.getBoundingClientRect();
       const mapBox = map && map.getBoundingClientRect();
-      const copyInitialText = copy?.textContent.trim();
-      const copyInitialIcon = copy?.querySelector('i')?.className;
-      copy?.click();
-      await new Promise((resolve) => setTimeout(resolve, 0));
       hotels.push({
         linkCount: links.length,
         rowDisplay: rowStyle?.display,
@@ -139,19 +158,8 @@ async function inspect(file, width) {
         mapTop: mapBox?.top,
         sameLine: Boolean(officialBox && mapBox && Math.abs(officialBox.top - mapBox.top) < 2),
         mapOnRight: Boolean(officialBox && mapBox && mapBox.left > officialBox.left),
-        addressText: addressText?.textContent.trim(),
-        addressDisplay: addressStyle?.display,
-        copyInitialText,
-        copySuccessText: copy?.textContent.trim(),
-        copyInitialIcon,
-        copySuccessIcon: copy?.querySelector('i')?.className,
-        copyWidth: copyStyle?.width,
-        copyMinHeight: copyStyle?.minHeight,
-        copyIconFontSize,
-        copyAriaLabel: copy?.getAttribute('aria-label'),
-        copiedText: copiedTexts[index],
-        copyStatusText: copyStatus?.textContent.trim(),
-        copyStatusRole: copyStatus?.getAttribute('role'),
+        detailsTitle: detailsTitle?.textContent.trim(),
+        fields,
       });
     }
     return {
@@ -446,18 +454,33 @@ await send('Runtime.enable');
 await send('Network.enable');
 await send('Network.setCacheDisabled', { cacheDisabled: true });
 
-for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, copyLabel, copiedLabel, copyFailedLabel] of [
+for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, detailsTitle, hotelFields, copyLabel, copiedLabel, copyFailedLabel] of [
   [
     'fukuoka-golf.html',
     ['官方網站', 'Google Maps 導航'],
     '兩間飯店之間約 6 分鐘車程。',
     '住宿飯店',
     null,
+    'Visit Japan Web 填寫資料',
     [
-      '〒810-0041 福岡県福岡市中央区大名2-6-50 福岡大名ガーデンシティ',
-      '〒810-0801 福岡県福岡市博多区中洲5-5-1',
+      [
+        { label: '郵遞區號', value: '8100041', copy: true },
+        { label: '都道府縣', value: 'FUKUOKA KEN', copy: false },
+        { label: '市區町村名', value: 'FUKUOKA SHI CHUO KU', copy: false },
+        { label: '町字、番地', value: 'DAIMYO 2-6-50', copy: true },
+        { label: '飯店名稱', value: 'THE RITZ-CARLTON FUKUOKA', copy: true },
+        { label: '電話號碼', value: '0924018888', copy: true },
+      ],
+      [
+        { label: '郵遞區號', value: '8100801', copy: true },
+        { label: '都道府縣', value: 'FUKUOKA KEN', copy: false },
+        { label: '市區町村名', value: 'FUKUOKA SHI HAKATA KU', copy: false },
+        { label: '町字、番地', value: 'NAKASU 5-5-1', copy: true },
+        { label: '飯店名稱', value: 'MITSUI GARDEN HOTEL FUKUOKA NAKASU', copy: true },
+        { label: '電話號碼', value: '0922635531', copy: true },
+      ],
     ],
-    '複製地址',
+    '複製',
     '已複製',
     '複製失敗',
   ],
@@ -467,11 +490,26 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
     'The two hotels are about 6 minutes apart by car.',
     'Confirmed Hotels',
     null,
+    'Visit Japan Web details',
     [
-      'Fukuoka Daimyo Garden City 2-6-50, Daimyo, Chuo Ward, Fukuoka 810-0041, Japan',
-      '5-5-1 Nakasu, Hakata Ward, Fukuoka 810-0801, Japan',
+      [
+        { label: 'Postal code', value: '8100041', copy: true },
+        { label: 'Prefecture', value: 'FUKUOKA KEN', copy: false },
+        { label: 'Municipality', value: 'FUKUOKA SHI CHUO KU', copy: false },
+        { label: 'Town / street no.', value: 'DAIMYO 2-6-50', copy: true },
+        { label: 'Hotel name', value: 'THE RITZ-CARLTON FUKUOKA', copy: true },
+        { label: 'Phone number', value: '0924018888', copy: true },
+      ],
+      [
+        { label: 'Postal code', value: '8100801', copy: true },
+        { label: 'Prefecture', value: 'FUKUOKA KEN', copy: false },
+        { label: 'Municipality', value: 'FUKUOKA SHI HAKATA KU', copy: false },
+        { label: 'Town / street no.', value: 'NAKASU 5-5-1', copy: true },
+        { label: 'Hotel name', value: 'MITSUI GARDEN HOTEL FUKUOKA NAKASU', copy: true },
+        { label: 'Phone number', value: '0922635531', copy: true },
+      ],
     ],
-    'Copy address',
+    'Copy',
     'Copied',
     'Copy failed',
   ],
@@ -514,19 +552,30 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
       assert.equal(hotel.mapArrow, 'none');
       assert.equal(hotel.sameLine, true, JSON.stringify(hotel));
       assert.equal(hotel.mapOnRight, true);
-      assert.equal(hotel.addressText, addresses[index]);
-      assert.equal(hotel.addressDisplay, 'grid');
-      assert.equal(hotel.copyInitialText, '');
-      assert.equal(hotel.copySuccessText, '');
-      assert.equal(hotel.copyInitialIcon.includes('fa-copy'), true);
-      assert.equal(hotel.copySuccessIcon.includes('fa-check'), true);
-      assert.equal(hotel.copyWidth, '44px');
-      assert.equal(hotel.copyMinHeight, '44px');
-      assert.equal(hotel.copyIconFontSize, '20px');
-      assert.equal(hotel.copyAriaLabel.includes(copyLabel), true);
-      assert.equal(hotel.copiedText, addresses[index]);
-      assert.equal(hotel.copyStatusText, copiedLabel);
-      assert.equal(hotel.copyStatusRole, 'status');
+      assert.equal(hotel.detailsTitle, detailsTitle);
+      assert.equal(hotel.fields.length, hotelFields[index].length);
+      for (const [fieldIndex, field] of hotel.fields.entries()) {
+        const expectedField = hotelFields[index][fieldIndex];
+        assert.equal(field.label, expectedField.label);
+        assert.equal(field.value, expectedField.value);
+        if (!expectedField.copy) {
+          assert.equal(field.copyInitialText, undefined);
+          assert.equal(field.copiedText, null);
+          continue;
+        }
+        assert.equal(field.copyInitialText, '');
+        assert.equal(field.copySuccessText, '');
+        assert.equal(field.copyInitialIcon.includes('fa-copy'), true);
+        assert.equal(field.copySuccessIcon.includes('fa-check'), true);
+        assert.equal(field.copyWidth, '44px');
+        assert.equal(field.copyMinHeight, '44px');
+        assert.equal(field.copyIconFontSize, '20px');
+        assert.equal(field.copyAriaLabel.includes(copyLabel), true);
+        assert.equal(field.copyAriaLabel.includes(expectedField.label), true);
+        assert.equal(field.copiedText, expectedField.value);
+        assert.equal(field.copyStatusText, copiedLabel);
+        assert.equal(field.copyStatusRole, 'status');
+      }
     }
     if (width === 390) {
       const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
@@ -535,13 +584,13 @@ for (const [file, labels, distanceText, hotelsHeading, moreSubtitle, addresses, 
     }
   }
   assert.deepEqual(await inspectCopyFallback(file), {
-    fallbackText: addresses[0],
+    fallbackText: hotelFields[0][0].value,
     buttonText: '',
     buttonIcon: 'fa-solid fa-check',
     textareaRemoved: true,
   });
   assert.deepEqual(await inspectCopyFailure(file), {
-    fallbackText: addresses[0],
+    fallbackText: hotelFields[0][0].value,
     buttonText: '',
     buttonIcon: 'fa-solid fa-triangle-exclamation',
     statusText: copyFailedLabel,

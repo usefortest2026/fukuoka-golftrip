@@ -365,27 +365,67 @@ main {
   min-height: 44px;
 }
 
-.v2-hotel-address {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 6px 8px;
+.v2-hotel-details {
   margin-top: 10px;
-  color: #52525b;
+  overflow: hidden;
+  border: 1px solid #dfe9e2;
+  border-radius: 10px;
+  background: #f7faf8;
 }
 
-.v2-hotel-address > .fa-location-dot {
-  align-self: start;
-  margin-top: 6px;
+.v2-hotel-details-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 10px;
+  border-bottom: 1px solid #e5ece7;
+  color: #173629;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.v2-hotel-details-title > i {
   color: #24643d;
-  font-size: 12px;
+  font-size: 15px;
 }
 
-.v2-hotel-address-text {
+.v2-hotel-fields {
+  margin: 0;
+}
+
+.v2-hotel-field {
+  display: grid;
+  grid-template-columns: minmax(76px, 0.72fr) minmax(0, 1.3fr) 44px;
+  align-items: center;
+  column-gap: 8px;
+  min-height: 52px;
+  padding: 4px 6px 4px 10px;
+  border-bottom: 1px solid #e5ece7;
+}
+
+.v2-hotel-field:last-child { border-bottom: 0; }
+
+.v2-hotel-field-label,
+.v2-hotel-field-value {
+  margin: 0;
   min-width: 0;
-  font-size: 12px;
-  line-height: 1.5;
   overflow-wrap: anywhere;
+}
+
+.v2-hotel-field-label {
+  color: #71717a;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.v2-hotel-field-value {
+  color: #27272a;
+  font-size: 12px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.015em;
+  line-height: 1.4;
 }
 
 .v2-copy-address {

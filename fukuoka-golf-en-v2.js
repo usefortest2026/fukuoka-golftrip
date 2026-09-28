@@ -108,49 +108,66 @@
     return legacyCopyText(text);
   }
 
-  function makeHotelAddress(address, hotelName) {
-    var row = document.createElement('div');
-    row.className = 'v2-hotel-address';
-    row.innerHTML = '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>';
-    var addressText = document.createElement('span');
-    addressText.className = 'v2-hotel-address-text';
-    addressText.textContent = address;
-    var copyButton = document.createElement('button');
-    copyButton.type = 'button';
-    copyButton.className = 'v2-copy-address';
-    copyButton.setAttribute('aria-label', hotelName + ': Copy address');
-    copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
-    var copyStatus = document.createElement('span');
-    copyStatus.className = 'v2-copy-status';
-    copyStatus.setAttribute('role', 'status');
-    copyStatus.setAttribute('aria-live', 'polite');
-    copyStatus.setAttribute('aria-atomic', 'true');
-    copyButton.addEventListener('click', function () {
-      if (copyButton.dataset.copying === 'true') return;
-      copyButton.dataset.copying = 'true';
-      copyButton.setAttribute('aria-busy', 'true');
-      copyText(address).then(function () {
-        copyButton.classList.add('is-copied');
-        copyButton.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
-        copyStatus.textContent = 'Copied';
-      }).catch(function () {
-        copyButton.classList.add('is-error');
-        copyButton.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>';
-        copyStatus.textContent = 'Copy failed';
-      }).finally(function () {
-        copyButton.removeAttribute('aria-busy');
-        window.setTimeout(function () {
-          copyButton.classList.remove('is-copied', 'is-error');
-          copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
-          copyStatus.textContent = '';
-          delete copyButton.dataset.copying;
-        }, 1600);
-      });
+  function makeHotelDetails(fields, hotelName) {
+    var panel = document.createElement('div');
+    panel.className = 'v2-hotel-details';
+    var title = document.createElement('div');
+    title.className = 'v2-hotel-details-title';
+    title.innerHTML = '<i class="fa-solid fa-passport" aria-hidden="true"></i><span>Visit Japan Web details</span>';
+    panel.appendChild(title);
+    var list = document.createElement('dl');
+    list.className = 'v2-hotel-fields';
+    fields.forEach(function (field) {
+      var row = document.createElement('div');
+      row.className = 'v2-hotel-field';
+      var label = document.createElement('dt');
+      label.className = 'v2-hotel-field-label';
+      label.textContent = field.label;
+      var value = document.createElement('dd');
+      value.className = 'v2-hotel-field-value';
+      value.textContent = field.value;
+      row.appendChild(label);
+      row.appendChild(value);
+      if (field.copy) {
+        var copyButton = document.createElement('button');
+        copyButton.type = 'button';
+        copyButton.className = 'v2-copy-address';
+        copyButton.setAttribute('aria-label', hotelName + ': Copy ' + field.label);
+        copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
+        var copyStatus = document.createElement('span');
+        copyStatus.className = 'v2-copy-status';
+        copyStatus.setAttribute('role', 'status');
+        copyStatus.setAttribute('aria-live', 'polite');
+        copyStatus.setAttribute('aria-atomic', 'true');
+        copyButton.addEventListener('click', function () {
+          if (copyButton.dataset.copying === 'true') return;
+          copyButton.dataset.copying = 'true';
+          copyButton.setAttribute('aria-busy', 'true');
+          copyText(field.value).then(function () {
+            copyButton.classList.add('is-copied');
+            copyButton.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+            copyStatus.textContent = 'Copied';
+          }).catch(function () {
+            copyButton.classList.add('is-error');
+            copyButton.innerHTML = '<i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>';
+            copyStatus.textContent = 'Copy failed';
+          }).finally(function () {
+            copyButton.removeAttribute('aria-busy');
+            window.setTimeout(function () {
+              copyButton.classList.remove('is-copied', 'is-error');
+              copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i>';
+              copyStatus.textContent = '';
+              delete copyButton.dataset.copying;
+            }, 1600);
+          });
+        });
+        row.appendChild(copyButton);
+        row.appendChild(copyStatus);
+      }
+      list.appendChild(row);
     });
-    row.appendChild(addressText);
-    row.appendChild(copyButton);
-    row.appendChild(copyStatus);
-    return row;
+    panel.appendChild(list);
+    return panel;
   }
 
   function makeHeading(title) {
@@ -254,8 +271,30 @@
   });
 
   var hotelMaps = [
-    ['The Ritz-Carlton, Fukuoka', 'https://www.google.com/maps/search/?api=1&query=The+Ritz-Carlton+Fukuoka', 'Fukuoka Daimyo Garden City 2-6-50, Daimyo, Chuo Ward, Fukuoka 810-0041, Japan'],
-    ['Mitsui Garden Hotel Fukuoka Nakasu', 'https://www.google.com/maps/search/?api=1&query=Mitsui+Garden+Hotel+Fukuoka+Nakasu', '5-5-1 Nakasu, Hakata Ward, Fukuoka 810-0801, Japan']
+    {
+      name: 'The Ritz-Carlton, Fukuoka',
+      mapUrl: 'https://www.google.com/maps/search/?api=1&query=The+Ritz-Carlton+Fukuoka',
+      fields: [
+        { label: 'Postal code', value: '8100041', copy: true },
+        { label: 'Prefecture', value: 'FUKUOKA KEN' },
+        { label: 'Municipality', value: 'FUKUOKA SHI CHUO KU' },
+        { label: 'Town / street no.', value: 'DAIMYO 2-6-50', copy: true },
+        { label: 'Hotel name', value: 'THE RITZ-CARLTON FUKUOKA', copy: true },
+        { label: 'Phone number', value: '0924018888', copy: true }
+      ]
+    },
+    {
+      name: 'Mitsui Garden Hotel Fukuoka Nakasu',
+      mapUrl: 'https://www.google.com/maps/search/?api=1&query=Mitsui+Garden+Hotel+Fukuoka+Nakasu',
+      fields: [
+        { label: 'Postal code', value: '8100801', copy: true },
+        { label: 'Prefecture', value: 'FUKUOKA KEN' },
+        { label: 'Municipality', value: 'FUKUOKA SHI HAKATA KU' },
+        { label: 'Town / street no.', value: 'NAKASU 5-5-1', copy: true },
+        { label: 'Hotel name', value: 'MITSUI GARDEN HOTEL FUKUOKA NAKASU', copy: true },
+        { label: 'Phone number', value: '0922635531', copy: true }
+      ]
+    }
   ];
   var tripToolsSubtitle = document.querySelector('#more > .day-head > p');
   if (tripToolsSubtitle) tripToolsSubtitle.remove();
@@ -266,9 +305,9 @@
     if (!destination || !officialLink) return;
     var actions = document.createElement('div');
     actions.className = 'v2-map-actions v2-hotel-map-actions';
-    destination.appendChild(makeHotelAddress(hotelMaps[index][2], hotelMaps[index][0]));
+    destination.appendChild(makeHotelDetails(hotelMaps[index].fields, hotelMaps[index].name));
     actions.appendChild(officialLink);
-    var mapButton = makeMapButton(hotelMaps[index][1], hotelMaps[index][0]);
+    var mapButton = makeMapButton(hotelMaps[index].mapUrl, hotelMaps[index].name);
     mapButton.querySelector('span').textContent = 'Open in Google Maps';
     actions.appendChild(mapButton);
     destination.appendChild(actions);
