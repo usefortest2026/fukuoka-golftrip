@@ -211,7 +211,7 @@ class FooterNavigationTest(unittest.TestCase):
                 self.assertEqual(13, len(page.overview_coupon_image_links))
                 self.assertEqual(13, len(page.overview_coupon_map_links))
                 self.assertEqual(
-                    1,
+                    0,
                     sum("src" in item for item in page.overview_coupon_images),
                 )
                 image_sources = [

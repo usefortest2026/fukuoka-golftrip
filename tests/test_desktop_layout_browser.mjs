@@ -242,6 +242,7 @@ async function inspectDayFiveCoupons(file, width) {
   const initialLoadedImageSources = await evaluate(`([...document.querySelectorAll('#overview .v2-coupon-image')]
     .filter((image) => image.hasAttribute('src'))
     .map((image) => image.getAttribute('src'))) `);
+  const initialOpenCouponCount = await evaluate(`document.querySelectorAll('#overview details.v2-scan-coupon[open]').length`);
   await evaluate(`(async () => {
     document.querySelectorAll('#overview details.v2-scan-coupon').forEach((details) => {
       details.open = true;
@@ -315,6 +316,7 @@ async function inspectDayFiveCoupons(file, width) {
       passportOffers: document.querySelectorAll('#overview .v2-passport-offer').length,
       couponDetails: document.querySelectorAll('#overview details.v2-scan-coupon').length,
       initialLoadedImageSources: ${JSON.stringify(initialLoadedImageSources)},
+      initialOpenCouponCount: ${JSON.stringify(initialOpenCouponCount)},
       discountAlignments,
       images,
       mapLinks: mapLinks.map((link) => ({
@@ -591,7 +593,8 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.equal(coupons.passportOffers, 3);
     assert.equal(coupons.images.length, 13);
     assert.equal(coupons.couponDetails, 13);
-    assert.deepEqual(coupons.initialLoadedImageSources, [file.includes('-en') ? 'coupon-cocokara-en.jpg' : 'coupon-cocokara-zh.jpg']);
+    assert.deepEqual(coupons.initialLoadedImageSources, []);
+    assert.equal(coupons.initialOpenCouponCount, 0);
     assert.equal(coupons.images.at(-1).src, 'coupon-airport-dutyfree-zh.jpg');
     assert.ok(coupons.discountAlignments.every((offset) => offset <= 2), `${file} discount labels are not aligned with expand controls at ${width}px`);
     assert.equal(coupons.mapLinks.length, 13);
