@@ -82,6 +82,7 @@ async function inspectDayTwo(file, width) {
     const navInner = document.querySelector('.nav-inner');
     const main = document.querySelector('main');
     const buttons = [...document.querySelectorAll('.tab-btn')];
+    const summaryListStyle = getComputedStyle(document.querySelector('#day2 .v2-summary-list'));
     const summary = rect('#day2 > .v2-summary');
     const quick = rect('#day2 > .v2-golf-quick');
     const firstDetail = rect('#day2 > .panel');
@@ -123,6 +124,10 @@ async function inspectDayTwo(file, width) {
       }),
       summaryDividerWidths: [...document.querySelectorAll('#day2 .v2-summary-list li')]
         .map((item) => getComputedStyle(item).borderRightWidth),
+      summaryListPadding: {
+        top: summaryListStyle.paddingTop,
+        bottom: summaryListStyle.paddingBottom,
+      },
       quickDividerWidths: [...document.querySelectorAll('#day2 .v2-quick-grid > div')]
         .map((item) => getComputedStyle(item).borderRightWidth),
       summary,
@@ -427,6 +432,11 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.ok(result.detailsCount > 0);
     assert.ok(result.closedDetailsCount > 0, `${file} mobile/tablet details should remain collapsible`);
     assert.deepEqual(
+      result.summaryListPadding,
+      { top: '8px', bottom: '8px' },
+      `${file} summary content should have balanced vertical padding at ${width}px`,
+    );
+    assert.deepEqual(
       result.navWeekdays.map((weekday) => weekday?.display),
       ['none', 'none', 'none', 'none', 'none'],
       `${file} weekdays should stay hidden in the mobile bottom navigation`,
@@ -488,6 +498,11 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.ok(Math.abs(result.firstDetail.width - result.summary.width) < 2, `${file} detail panels should use the full content width`);
     assert.ok(result.detailsCount > 0);
     assert.equal(result.closedDetailsCount, 0, `${file} desktop details should all be expanded`);
+    assert.deepEqual(
+      result.summaryListPadding,
+      { top: '8px', bottom: '8px' },
+      `${file} summary content should have balanced vertical padding at ${width}px`,
+    );
 
     await evaluate(`document.querySelectorAll('.tab-btn')[3].click()`);
     await new Promise((resolve) => setTimeout(resolve, 50));
