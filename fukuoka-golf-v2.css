@@ -736,6 +736,156 @@ main {
 .private-info-content p { margin: 0 0 6px; overflow-wrap: anywhere; }
 .private-info-content p:last-child { margin-bottom: 0; }
 
+#more .tabs .seg {
+  min-width: 0;
+  padding-inline: 5px;
+  white-space: nowrap;
+}
+
+#coupons { padding-bottom: 12px; }
+
+.v2-coupon-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.v2-offer-panel,
+.v2-nearby-panel {
+  overflow: hidden;
+  border: 1px solid #dfe8e1;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(23, 54, 41, .045);
+}
+
+.v2-offer-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 15px;
+  border-bottom: 1px solid #e7ece7;
+  background: #f7faf6;
+}
+
+.v2-offer-head-icon {
+  display: inline-grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e3efe0;
+  color: #24643d;
+}
+
+.v2-offer-head h3,
+.v2-offer-head p,
+.v2-offer-item h3,
+.v2-offer-item p,
+.v2-nearby-item h3,
+.v2-nearby-item p { margin: 0; }
+
+.v2-offer-head h3 {
+  color: #173629;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.v2-offer-head p {
+  margin-top: 1px;
+  color: #71717a;
+  font-size: 12px;
+}
+
+.v2-offer-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 15px;
+  border-bottom: 1px solid #ecefec;
+}
+
+.v2-offer-item:last-child { border-bottom: 0; }
+.v2-offer-copy { min-width: 0; }
+
+.v2-offer-badge {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin-bottom: 6px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #fff3d8;
+  color: #875d12;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.v2-offer-item h3,
+.v2-nearby-item h3 {
+  color: #27272a;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.v2-offer-item p,
+.v2-nearby-item p {
+  margin-top: 4px;
+  color: #71717a;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.v2-offer-link,
+.v2-nearby-actions a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #cbdacb;
+  border-radius: 10px;
+  color: #24643d;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.v2-offer-link { min-width: 92px; padding: 8px 10px; }
+.v2-offer-link i { font-size: 10px; }
+
+.v2-nearby-group { padding: 13px 15px 4px; }
+.v2-nearby-group + .v2-nearby-group { border-top: 1px solid #ecefec; }
+
+.v2-nearby-group > h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 7px;
+  color: #24643d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.v2-nearby-item { padding-bottom: 12px; }
+.v2-nearby-actions { display: flex; gap: 8px; margin-top: 9px; }
+.v2-nearby-actions a { flex: 1; padding: 8px 12px; }
+
+.v2-offers-checked {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 10px 2px 0;
+  color: #71717a;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.v2-offers-checked i { margin-top: 3px; color: #54815c; }
+
 @media (hover:hover) and (pointer:fine) {
   .v2-nav-button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
   .v2-hotel-map-actions .v2-nav-button:hover,
@@ -759,6 +909,9 @@ main {
   .v2-route-stop .v2-nav-button { justify-self: start; }
   .private-info-form { grid-template-columns: 1fr 1fr; }
   .private-info-form input { grid-column: 1 / -1; }
+  html[lang="en"] #more .tabs .seg { font-size: 12px; }
+  .v2-offer-item { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .v2-offer-link { width: 100%; }
 }
 
 @media (max-width:380px) {
@@ -1017,6 +1170,11 @@ details > summary {
   }
 
   #overview .overview-day { padding: 16px; }
+
+  #coupons .v2-coupon-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
+    align-items: start;
+  }
 
   #hotels .panel-pad {
     display: grid;

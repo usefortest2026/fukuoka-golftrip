@@ -261,6 +261,47 @@ async function inspectMore(file, width) {
 
   await evaluate(`document.querySelectorAll('#more .seg')[1].click()`);
   await new Promise((resolve) => setTimeout(resolve, 50));
+  const coupons = await evaluate(`(() => {
+    const offers = [...document.querySelectorAll('#coupons .v2-offer-item')].map((item) => {
+      const link = item.querySelector('.v2-offer-link');
+      return {
+        title: item.querySelector('h3')?.textContent.trim() || '',
+        badge: item.querySelector('.v2-offer-badge')?.textContent.trim() || '',
+        href: link?.href || '',
+        target: link?.target || '',
+        rel: link?.rel || '',
+        linkHeight: link?.getBoundingClientRect().height || 0,
+      };
+    });
+    const stores = [...document.querySelectorAll('#coupons .v2-nearby-item')].map((item) => {
+      const official = item.querySelector('.v2-nearby-official');
+      const map = item.querySelector('.v2-nearby-map');
+      return {
+        name: item.querySelector('h3')?.textContent.trim() || '',
+        officialHref: official?.href || '',
+        mapHref: map?.href || '',
+        officialHeight: official?.getBoundingClientRect().height || 0,
+        mapHeight: map?.getBoundingClientRect().height || 0,
+        linksSafe: [official, map].every((link) => link?.target === '_blank' && link?.rel.includes('noopener')),
+      };
+    });
+    return {
+      activeSubpage: document.querySelector('#more .subpage.active')?.id,
+      offers,
+      stores,
+      checkedText: document.querySelector('#coupons .v2-offers-checked')?.textContent.trim() || '',
+      pageOverflow: document.documentElement.scrollWidth > innerWidth,
+    };
+  })()`);
+
+  if (width === 1440) {
+    const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
+    const locale = file.includes('-en') ? 'en' : 'zh';
+    fs.writeFileSync(`/private/tmp/fukuoka-desktop-offers-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
+  }
+
+  await evaluate(`document.querySelectorAll('#more .seg')[2].click()`);
+  await new Promise((resolve) => setTimeout(resolve, 50));
   const hotelActive = await evaluate(`document.querySelector('#more .subpage.active')?.id`);
   if (width === 1440) {
     const screenshot = await send('Page.captureScreenshot', { format: 'png', fromSurface: true });
@@ -268,7 +309,7 @@ async function inspectMore(file, width) {
     fs.writeFileSync(`/private/tmp/fukuoka-desktop-hotels-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
   }
 
-  await evaluate(`document.querySelectorAll('#more .seg')[2].click()`);
+  await evaluate(`document.querySelectorAll('#more .seg')[3].click()`);
   await new Promise((resolve) => setTimeout(resolve, 50));
   const packing = await evaluate(`(() => {
     const groups = [...document.querySelectorAll('#packing .pack-group')].map((item) => {
@@ -291,7 +332,7 @@ async function inspectMore(file, width) {
     fs.writeFileSync(`/private/tmp/fukuoka-desktop-packing-${locale}.png`, Buffer.from(screenshot.data, 'base64'));
   }
 
-  return { overview, hotelActive, packing };
+  return { overview, coupons, hotelActive, packing };
 }
 
 await send('Page.enable');
@@ -446,6 +487,7 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   }
 
   const more = await inspectMore(file, 1440);
+  const mobileMore = await inspectMore(file, 390);
   assert.equal(more.overview.activeSubpage, 'overview');
   assert.ok(more.overview.moreIconClass.includes('fa-circle-info'), `${file} More should use an information icon`);
   assert.equal(more.overview.moreIconClass.includes('fa-ellipsis'), false, `${file} More should not look expandable`);
@@ -454,6 +496,30 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   assert.ok(more.overview.cards[1].top >= more.overview.cards[0].bottom, `${file} overview should be a single desktop column`);
   assert.ok(Math.abs(more.overview.cards[1].left - more.overview.cards[0].left) < 2, `${file} overview rows should align`);
   assert.ok(Math.abs(more.overview.cards[1].width - more.overview.cards[0].width) < 2, `${file} overview rows should share a width`);
+  assert.equal(more.coupons.activeSubpage, 'coupons');
+  assert.equal(more.coupons.pageOverflow, false);
+  assert.equal(mobileMore.coupons.pageOverflow, false, `${file} offers overflow on mobile`);
+  assert.equal(more.coupons.offers.length, 5);
+  assert.deepEqual(
+    more.coupons.offers.map((offer) => offer.title),
+    file.includes('-en')
+      ? ['Iwataya / Fukuoka Mitsukoshi', 'Daimaru Fukuoka Tenjin', 'Fukuoka City Subway 1-Day Pass', 'Fukuoka Tourist City Pass', 'JR Pass Holder Benefits']
+      : ['岩田屋本店／福岡三越', '大丸福岡天神店', '福岡市地下鐵一日券', '福岡悠遊卡', 'JR Pass 持有人優惠'],
+  );
+  assert.ok(more.coupons.offers.every((offer) => offer.href.startsWith('http')));
+  assert.ok(more.coupons.offers.every((offer) => offer.target === '_blank' && offer.rel.includes('noopener')));
+  assert.ok(more.coupons.offers.every((offer) => offer.linkHeight >= 44));
+  assert.deepEqual(
+    more.coupons.stores.map((store) => store.name),
+    file.includes('-en')
+      ? ['Cocokara Fine Fukuoka PARCO', 'Matsumoto Kiyoshi Nakasu 5-chome']
+      : ['Cocokara Fine 福岡 PARCO 店', '松本清 中洲 5 丁目店'],
+  );
+  assert.ok(more.coupons.stores.every((store) => store.officialHref.startsWith('http')));
+  assert.ok(more.coupons.stores.every((store) => store.mapHref.includes('google.com/maps/search/')));
+  assert.ok(more.coupons.stores.every((store) => store.linksSafe));
+  assert.ok(more.coupons.stores.every((store) => store.officialHeight >= 44 && store.mapHeight >= 44));
+  assert.ok(more.coupons.checkedText.includes('2026/09/28'));
   assert.equal(more.hotelActive, 'hotels');
   assert.equal(more.packing.activeSubpage, 'packing');
   assert.equal(more.packing.pageOverflow, false);

@@ -73,7 +73,7 @@ async function navigate(file) {
   await send('Page.navigate', { url: `${baseUrl}/${file}?p=more` });
   await loaded;
   await new Promise((resolve) => setTimeout(resolve, 250));
-  await evaluate(`document.querySelectorAll('#more .seg')[1].click()`);
+  await evaluate(`document.querySelectorAll('#more .seg')[2].click()`);
   await new Promise((resolve) => setTimeout(resolve, 100));
 }
 

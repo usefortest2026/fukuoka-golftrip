@@ -127,9 +127,9 @@ class TripPageParser(HTMLParser):
 
 class FooterNavigationTest(unittest.TestCase):
     CASES = (
-        ("fukuoka-golf.html", "更多", ["總覽", "飯店", "行李"]),
-        ("fukuoka-golf-v2.html", "更多", ["總覽", "飯店", "行李"]),
-        ("fukuoka-golf-en.html", "More", ["Overview", "Hotels", "Packing"]),
+        ("fukuoka-golf.html", "更多", ["總覽", "優惠券", "飯店", "行李"]),
+        ("fukuoka-golf-v2.html", "更多", ["總覽", "優惠券", "飯店", "行李"]),
+        ("fukuoka-golf-en.html", "More", ["Overview", "Offers", "Hotels", "Packing"]),
     )
 
     def parse(self, filename):
@@ -149,7 +149,7 @@ class FooterNavigationTest(unittest.TestCase):
                 self.assertEqual(more_label, page.nav_buttons[-1]["text"])
                 self.assertIn("switchPage('more',this)", page.nav_buttons[-1]["attrs"]["onclick"])
 
-    def test_more_flattens_overview_hotels_and_packing_into_peer_tabs(self):
+    def test_more_flattens_overview_offers_hotels_and_packing_into_peer_tabs(self):
         for filename, _, tab_labels in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
@@ -160,7 +160,12 @@ class FooterNavigationTest(unittest.TestCase):
                 self.assertEqual(tab_labels, [tab["text"] for tab in page.more_tabs])
                 subpages = {item["id"]: item["active"] for item in page.more_subpages}
                 self.assertEqual(
-                    {"overview": True, "hotels": False, "packing": False},
+                    {
+                        "overview": True,
+                        "coupons": False,
+                        "hotels": False,
+                        "packing": False,
+                    },
                     subpages,
                 )
 
