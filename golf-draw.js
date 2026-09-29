@@ -1,7 +1,10 @@
 (function (root, factory) {
   var api = factory(root);
   if (typeof module === 'object' && module.exports) module.exports = api;
-  else root.FukuokaGolfDraw = api;
+  else {
+    root.FukuokaGolfDraw = api;
+    if (root.document) api.mountGolfDraw(root.document);
+  }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root) {
   'use strict';
 
@@ -93,10 +96,262 @@
     };
   }
 
+  var COPY = {
+    zh: {
+      eyebrow: 'Golf Day',
+      entryTitle: '今日分組抽籤',
+      entryBody: '六顆球分成兩組，關閉後不保留結果。',
+      open: '開始抽籤',
+      dialogTitle: '今天誰跟誰一組？',
+      dialogBody: '按下開始後，六顆球會隨機落入兩組。',
+      start: '開始抽籤',
+      again: '再抽一次',
+      close: '關閉',
+      ready: '準備好了，按下開始抽籤。',
+      drawing: '正在洗牌…',
+      complete: '分組完成',
+      groupA: '第一組',
+      groupB: '第二組',
+      error: '暫時無法完成 4＋4 分組，請再試一次。'
+    },
+    en: {
+      eyebrow: 'Golf Day',
+      entryTitle: 'Today’s group draw',
+      entryBody: 'Six balls, two groups. Results disappear when you close.',
+      open: 'Start the draw',
+      dialogTitle: 'Who’s playing together today?',
+      dialogBody: 'Start the draw and watch six balls land in two groups.',
+      start: 'Start the draw',
+      again: 'Draw again',
+      close: 'Close',
+      ready: 'Ready when you are.',
+      drawing: 'Shuffling the balls…',
+      complete: 'Groups are ready',
+      groupA: 'Group 1',
+      groupB: 'Group 2',
+      error: 'We could not make a valid 4 + 4 grouping. Please try again.'
+    }
+  };
+
+  function element(doc, tag, className, text) {
+    var node = doc.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  }
+
+  function mountGolfDraw(doc, options) {
+    if (!doc || doc.querySelector('.golf-draw-modal')) return;
+    var locale = doc.documentElement.lang && doc.documentElement.lang.toLowerCase().indexOf('en') === 0 ? 'en' : 'zh';
+    var copy = COPY[locale];
+    var cryptoLike = options && options.crypto;
+    var openers = [];
+    var opener = null;
+    var drawTimer = null;
+
+    ['day2', 'day4', 'day5'].forEach(function (dayId) {
+      var day = doc.getElementById(dayId);
+      if (!day) return;
+      var entry = element(doc, 'section', 'golf-draw-entry');
+      var copyWrap = element(doc, 'div', 'golf-draw-entry-copy');
+      copyWrap.appendChild(element(doc, 'span', 'golf-draw-entry-eyebrow', copy.eyebrow));
+      copyWrap.appendChild(element(doc, 'h3', 'golf-draw-entry-title', copy.entryTitle));
+      copyWrap.appendChild(element(doc, 'p', 'golf-draw-entry-body', copy.entryBody));
+      var button = element(doc, 'button', 'golf-draw-entry-button', copy.open);
+      button.type = 'button';
+      button.setAttribute('data-golf-draw-open', '');
+      entry.appendChild(copyWrap);
+      entry.appendChild(button);
+      day.appendChild(entry);
+      openers.push(button);
+    });
+
+    if (!openers.length) return;
+
+    var modal = element(doc, 'dialog', 'golf-draw-modal');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'golf-draw-title');
+    modal.setAttribute('aria-describedby', 'golf-draw-description');
+    modal.setAttribute('aria-busy', 'false');
+    modal.dataset.state = 'ready';
+
+    var shell = element(doc, 'div', 'golf-draw-shell');
+    var closeButton = element(doc, 'button', 'golf-draw-close', '×');
+    closeButton.type = 'button';
+    closeButton.setAttribute('data-golf-draw-close', '');
+    closeButton.setAttribute('aria-label', copy.close);
+
+    var heading = element(doc, 'div', 'golf-draw-heading');
+    heading.appendChild(element(doc, 'span', 'golf-draw-eyebrow', copy.eyebrow));
+    var title = element(doc, 'h2', 'golf-draw-title', copy.dialogTitle);
+    title.id = 'golf-draw-title';
+    heading.appendChild(title);
+    var description = element(doc, 'p', 'golf-draw-description', copy.dialogBody);
+    description.id = 'golf-draw-description';
+    heading.appendChild(description);
+
+    var stage = element(doc, 'div', 'golf-draw-stage');
+    stage.setAttribute('role', 'list');
+    DRAW_UNITS.forEach(function (unit, index) {
+      var ball = element(doc, 'span', 'golf-draw-ball', unit.name);
+      ball.setAttribute('role', 'listitem');
+      ball.style.setProperty('--ball-index', index);
+      ball.style.setProperty('--ball-x', ((index % 3) - 1) * 28 + 'px');
+      ball.style.setProperty('--ball-y', (index % 2 ? 18 : -16) + 'px');
+      stage.appendChild(ball);
+    });
+
+    var results = element(doc, 'div', 'golf-draw-results');
+    var groupA = element(doc, 'section', 'golf-draw-group');
+    var groupB = element(doc, 'section', 'golf-draw-group');
+    groupA.dataset.group = 'a';
+    groupB.dataset.group = 'b';
+    groupA.appendChild(element(doc, 'h3', '', copy.groupA));
+    groupB.appendChild(element(doc, 'h3', '', copy.groupB));
+    var groupAList = element(doc, 'div', 'golf-draw-group-list');
+    var groupBList = element(doc, 'div', 'golf-draw-group-list');
+    groupA.appendChild(groupAList);
+    groupB.appendChild(groupBList);
+    results.appendChild(groupA);
+    results.appendChild(groupB);
+    results.hidden = true;
+
+    var status = element(doc, 'p', 'golf-draw-status', copy.ready);
+    status.setAttribute('data-golf-draw-status', '');
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+
+    var actions = element(doc, 'div', 'golf-draw-actions');
+    var startButton = element(doc, 'button', 'golf-draw-primary', copy.start);
+    startButton.type = 'button';
+    startButton.setAttribute('data-golf-draw-start', '');
+    var againButton = element(doc, 'button', 'golf-draw-primary', copy.again);
+    againButton.type = 'button';
+    againButton.setAttribute('data-golf-draw-again', '');
+    againButton.hidden = true;
+    actions.appendChild(startButton);
+    actions.appendChild(againButton);
+
+    shell.appendChild(closeButton);
+    shell.appendChild(heading);
+    shell.appendChild(stage);
+    shell.appendChild(results);
+    shell.appendChild(status);
+    shell.appendChild(actions);
+    modal.appendChild(shell);
+    doc.body.appendChild(modal);
+
+    function clearResults() {
+      groupAList.replaceChildren();
+      groupBList.replaceChildren();
+    }
+
+    function reset() {
+      root.clearTimeout(drawTimer);
+      drawTimer = null;
+      clearResults();
+      modal.dataset.state = 'ready';
+      modal.setAttribute('aria-busy', 'false');
+      stage.hidden = false;
+      results.hidden = true;
+      startButton.hidden = false;
+      startButton.disabled = false;
+      againButton.hidden = true;
+      status.textContent = copy.ready;
+    }
+
+    function renderGroup(list, units) {
+      units.forEach(function (unit, index) {
+        var player = element(doc, 'span', 'golf-draw-player', unit.name);
+        player.setAttribute('data-golf-draw-player', '');
+        player.dataset.playerSize = unit.size;
+        player.style.setProperty('--player-index', index);
+        list.appendChild(player);
+      });
+    }
+
+    function finishDraw() {
+      try {
+        var groups = drawGroups(DRAW_UNITS, cryptoLike);
+        clearResults();
+        renderGroup(groupAList, groups.groupA);
+        renderGroup(groupBList, groups.groupB);
+        stage.hidden = true;
+        results.hidden = false;
+        modal.dataset.state = 'complete';
+        modal.setAttribute('aria-busy', 'false');
+        startButton.hidden = true;
+        startButton.disabled = false;
+        againButton.hidden = false;
+        var namesA = groups.groupA.map(function (unit) { return unit.name; });
+        var namesB = groups.groupB.map(function (unit) { return unit.name; });
+        status.textContent = locale === 'en'
+          ? copy.complete + '. ' + copy.groupA + ': ' + namesA.join(', ') + '; ' + copy.groupB + ': ' + namesB.join(', ')
+          : copy.complete + '。' + copy.groupA + '：' + namesA.join('、') + '；' + copy.groupB + '：' + namesB.join('、');
+      } catch (error) {
+        modal.dataset.state = 'error';
+        modal.setAttribute('aria-busy', 'false');
+        startButton.disabled = false;
+        status.textContent = copy.error;
+      }
+    }
+
+    function beginDraw() {
+      if (modal.dataset.state === 'drawing') return;
+      clearResults();
+      modal.dataset.state = 'drawing';
+      modal.setAttribute('aria-busy', 'true');
+      stage.hidden = false;
+      results.hidden = true;
+      startButton.hidden = false;
+      startButton.disabled = true;
+      againButton.hidden = true;
+      status.textContent = copy.drawing;
+      var reduced = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      drawTimer = root.setTimeout(finishDraw, reduced ? 80 : 1800);
+    }
+
+    function openModal(event) {
+      opener = event.currentTarget;
+      reset();
+      doc.body.classList.add('golf-draw-open');
+      if (typeof modal.showModal === 'function') modal.showModal();
+      else {
+        modal.setAttribute('open', '');
+        modal.classList.add('is-fallback-open');
+      }
+      startButton.focus();
+    }
+
+    function closeModal() {
+      reset();
+      doc.body.classList.remove('golf-draw-open');
+      if (typeof modal.close === 'function' && modal.open) modal.close();
+      else {
+        modal.removeAttribute('open');
+        modal.classList.remove('is-fallback-open');
+      }
+      if (opener) opener.focus();
+    }
+
+    openers.forEach(function (button) { button.addEventListener('click', openModal); });
+    closeButton.addEventListener('click', closeModal);
+    startButton.addEventListener('click', beginDraw);
+    againButton.addEventListener('click', beginDraw);
+    modal.addEventListener('cancel', function (event) {
+      event.preventDefault();
+      closeModal();
+    });
+
+    return { modal: modal, reset: reset };
+  }
+
   return {
     DRAW_UNITS: DRAW_UNITS,
     buildValidPartitions: buildValidPartitions,
     randomIndex: randomIndex,
-    drawGroups: drawGroups
+    drawGroups: drawGroups,
+    mountGolfDraw: mountGolfDraw
   };
 });
