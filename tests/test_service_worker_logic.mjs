@@ -4,8 +4,10 @@ import test from 'node:test';
 import vm from 'node:vm';
 
 const workerSource = fs.readFileSync(new URL('../service-worker.js', import.meta.url), 'utf8');
+const appVersion = /const APP_VERSION = '([^']+)'/.exec(workerSource)?.[1];
+const coreCache = `fukuoka-trip-core-${appVersion}`;
 
-function createHarness({ failInstall = false, serverVersion = '20260929-48' } = {}) {
+function createHarness({ failInstall = false, serverVersion = appVersion } = {}) {
   const listeners = new Map();
   const cacheNames = new Set(['fukuoka-trip-core-20260929-47', 'unrelated-cache']);
   const stores = new Map();
@@ -18,7 +20,7 @@ function createHarness({ failInstall = false, serverVersion = '20260929-48' } = 
       stores.set(name, {
         async addAll(requests) {
           installRequests = requests;
-          if (failInstall && name === 'fukuoka-trip-core-20260929-48') {
+          if (failInstall && name === coreCache) {
             throw new Error('simulated core failure');
           }
         },
@@ -79,7 +81,7 @@ test('a failed core install preserves the previous working cache', async () => {
   harness.listeners.get('install')({ waitUntil(promise) { lifetimes.push(promise); } });
   await assert.rejects(lifetimes[0], /simulated core failure/);
   assert.equal(harness.cacheNames.has('fukuoka-trip-core-20260929-47'), true);
-  assert.equal(harness.cacheNames.has('fukuoka-trip-core-20260929-48'), false);
+  assert.equal(harness.cacheNames.has(coreCache), false);
   assert.equal(harness.skipped, false);
 });
 
