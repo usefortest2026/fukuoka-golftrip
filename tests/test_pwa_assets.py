@@ -1,4 +1,5 @@
 import json
+import re
 import struct
 import unittest
 from html.parser import HTMLParser
@@ -72,6 +73,19 @@ class PwaAssetsTest(unittest.TestCase):
                 self.assertEqual(["yes"], [item.get("content") for item in capable])
                 self.assertEqual(1, len(viewport))
                 self.assertIn("viewport-fit=cover", viewport[0].get("content", ""))
+
+    def test_release_version_is_aligned_across_offline_assets(self):
+        version = (ROOT / "version.txt").read_text(encoding="utf-8").strip()
+        self.assertEqual("20260929-48", version)
+        for filename in HTML_FILES:
+            source = (ROOT / filename).read_text(encoding="utf-8")
+            self.assertEqual([version], re.findall(r'APP_VERSION="([0-9-]+)"', source), filename)
+            query_versions = re.findall(r'(?:src|href)="[^"?]+\?v=([0-9-]+)"', source)
+            self.assertTrue(query_versions, filename)
+            self.assertEqual({version}, set(query_versions), filename)
+        worker = (ROOT / "service-worker.js").read_text(encoding="utf-8")
+        self.assertEqual([version], re.findall(r"const APP_VERSION = '([0-9-]+)'", worker))
+        self.assertIn(version, (ROOT / "README.md").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
