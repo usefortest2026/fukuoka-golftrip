@@ -45,7 +45,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CORE_CACHE);
     try {
-      await cache.addAll(CORE_ASSETS);
+      const requests = CORE_ASSETS.map((asset) => new Request(
+        new URL(asset, self.location.href).href,
+        { cache: 'reload' }
+      ));
+      await cache.addAll(requests);
     } catch (error) {
       await caches.delete(CORE_CACHE);
       throw error;

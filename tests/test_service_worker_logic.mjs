@@ -11,11 +11,13 @@ function createHarness({ failInstall = false, serverVersion = '20260929-48' } = 
   const stores = new Map();
   let unregistered = false;
   let skipped = false;
+  let installRequests = [];
 
   function cacheFor(name) {
     if (!stores.has(name)) {
       stores.set(name, {
-        async addAll() {
+        async addAll(requests) {
+          installRequests = requests;
           if (failInstall && name === 'fukuoka-trip-core-20260929-48') {
             throw new Error('simulated core failure');
           }
@@ -67,6 +69,7 @@ function createHarness({ failInstall = false, serverVersion = '20260929-48' } = 
     cacheNames,
     get unregistered() { return unregistered; },
     get skipped() { return skipped; },
+    get installRequests() { return installRequests; },
   };
 }
 
@@ -78,6 +81,15 @@ test('a failed core install preserves the previous working cache', async () => {
   assert.equal(harness.cacheNames.has('fukuoka-trip-core-20260929-47'), true);
   assert.equal(harness.cacheNames.has('fukuoka-trip-core-20260929-48'), false);
   assert.equal(harness.skipped, false);
+});
+
+test('core install bypasses stale browser HTTP-cache entries', async () => {
+  const harness = createHarness();
+  const lifetimes = [];
+  harness.listeners.get('install')({ waitUntil(promise) { lifetimes.push(promise); } });
+  await lifetimes[0];
+  assert.ok(harness.installRequests.length > 0);
+  assert.equal(harness.installRequests.every((request) => request.cache === 'reload'), true);
 });
 
 test('a server rollback unregisters the newer worker and clears only app caches', async () => {

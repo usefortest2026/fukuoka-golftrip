@@ -1645,6 +1645,26 @@ details > summary {
   animation: golfDrawBackdropIn 220ms cubic-bezier(.16, 1, .3, 1);
 }
 
+.golf-draw-fallback-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(8, 24, 17, .66);
+}
+
+.golf-draw-fallback-backdrop[hidden] { display: none !important; }
+.golf-draw-modal.is-fallback-open {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: auto;
+}
+
+body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-backdrop):not(script) {
+  pointer-events: none !important;
+  user-select: none;
+}
+
 .golf-draw-modal[open] {
   display: block;
   animation: golfDrawModalIn 320ms cubic-bezier(.16, 1, .3, 1);

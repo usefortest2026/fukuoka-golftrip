@@ -237,6 +237,7 @@ const dialogFallbackOverride = await send('Page.addScriptToEvaluateOnNewDocument
   source: `
     Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value: undefined });
     Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: undefined });
+    try { delete HTMLElement.prototype.inert; } catch (error) {}
   `,
 });
 await navigate('fukuoka-golf.html');
@@ -244,11 +245,23 @@ await click('#day2 [data-golf-draw-open]');
 assert.deepEqual(
   await evaluate(`(() => ({
     fallback: document.querySelector('.golf-draw-modal').classList.contains('is-fallback-open'),
-    backgroundInert: document.querySelector('.app').inert,
-    backgroundHidden: document.querySelector('.app').getAttribute('aria-hidden')
+    nativeInert: 'inert' in HTMLElement.prototype,
+    backgroundHidden: document.querySelector('.app').getAttribute('aria-hidden'),
+    backgroundPointerEvents: getComputedStyle(document.querySelector('.app')).pointerEvents,
+    backdropVisible: !document.querySelector('.golf-draw-fallback-backdrop').hidden,
+    modalPosition: getComputedStyle(document.querySelector('.golf-draw-modal')).position,
+    fallbackBodyClass: document.body.classList.contains('golf-draw-fallback-open')
   }))()`),
-  { fallback: true, backgroundInert: true, backgroundHidden: 'true' },
-  'dialog fallback makes background content inert',
+  {
+    fallback: true,
+    nativeInert: false,
+    backgroundHidden: 'true',
+    backgroundPointerEvents: 'none',
+    backdropVisible: true,
+    modalPosition: 'fixed',
+    fallbackBodyClass: true
+  },
+  'dialog fallback isolates the background without native inert or dialog styling',
 );
 await evaluate(`(() => {
   const modal = document.querySelector('.golf-draw-modal');
@@ -266,11 +279,12 @@ await new Promise((resolve) => setTimeout(resolve, 80));
 assert.deepEqual(
   await evaluate(`(() => ({
     open: document.querySelector('.golf-draw-modal').hasAttribute('open'),
-    backgroundInert: document.querySelector('.app').inert,
     backgroundHidden: document.querySelector('.app').hasAttribute('aria-hidden'),
+    backdropHidden: document.querySelector('.golf-draw-fallback-backdrop').hidden,
+    fallbackBodyClass: document.body.classList.contains('golf-draw-fallback-open'),
     openerFocused: document.activeElement === document.querySelector('#day2 [data-golf-draw-open]')
   }))()`),
-  { open: false, backgroundInert: false, backgroundHidden: false, openerFocused: true },
+  { open: false, backgroundHidden: false, backdropHidden: true, fallbackBodyClass: false, openerFocused: true },
   'dialog fallback closes on Escape, restores background and returns focus',
 );
 await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: dialogFallbackOverride.identifier });

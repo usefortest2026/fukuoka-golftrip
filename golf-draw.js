@@ -176,6 +176,9 @@
     modal.setAttribute('aria-describedby', 'golf-draw-description');
     modal.setAttribute('aria-busy', 'false');
     modal.dataset.state = 'ready';
+    var fallbackBackdrop = element(doc, 'div', 'golf-draw-fallback-backdrop');
+    fallbackBackdrop.hidden = true;
+    fallbackBackdrop.setAttribute('aria-hidden', 'true');
 
     var shell = element(doc, 'div', 'golf-draw-shell');
     var closeButton = element(doc, 'button', 'golf-draw-close', '×');
@@ -241,6 +244,7 @@
     shell.appendChild(status);
     shell.appendChild(actions);
     modal.appendChild(shell);
+    doc.body.appendChild(fallbackBackdrop);
     doc.body.appendChild(modal);
 
     function clearResults() {
@@ -316,20 +320,22 @@
     function isolateFallbackBackground() {
       fallbackBackground = [];
       Array.prototype.forEach.call(doc.body.children, function (node) {
-        if (node === modal || node.tagName === 'SCRIPT') return;
+        if (node === modal || node === fallbackBackdrop || node.tagName === 'SCRIPT') return;
+        var supportsInert = 'inert' in node;
         fallbackBackground.push({
           node: node,
-          inert: Boolean(node.inert),
+          supportsInert: supportsInert,
+          inert: supportsInert ? Boolean(node.inert) : false,
           ariaHidden: node.getAttribute('aria-hidden')
         });
-        node.inert = true;
+        if (supportsInert) node.inert = true;
         node.setAttribute('aria-hidden', 'true');
       });
     }
 
     function restoreFallbackBackground() {
       fallbackBackground.forEach(function (state) {
-        state.node.inert = state.inert;
+        if (state.supportsInert) state.node.inert = state.inert;
         if (state.ariaHidden === null) state.node.removeAttribute('aria-hidden');
         else state.node.setAttribute('aria-hidden', state.ariaHidden);
       });
@@ -364,6 +370,13 @@
       }
     }
 
+    function handleFallbackFocus(event) {
+      if (!modal.classList.contains('is-fallback-open') || modal.contains(event.target)) return;
+      event.stopPropagation();
+      var focusable = fallbackFocusable();
+      (focusable[0] || modal).focus();
+    }
+
     function openModal(event) {
       opener = event.currentTarget;
       reset();
@@ -372,6 +385,8 @@
       else {
         modal.setAttribute('open', '');
         modal.classList.add('is-fallback-open');
+        fallbackBackdrop.hidden = false;
+        doc.body.classList.add('golf-draw-fallback-open');
         isolateFallbackBackground();
       }
       startButton.focus();
@@ -384,6 +399,8 @@
       else {
         modal.removeAttribute('open');
         modal.classList.remove('is-fallback-open');
+        fallbackBackdrop.hidden = true;
+        doc.body.classList.remove('golf-draw-fallback-open');
         restoreFallbackBackground();
       }
       if (opener) opener.focus();
@@ -398,6 +415,8 @@
       closeModal();
     });
     doc.addEventListener('keydown', handleFallbackKeydown);
+    doc.addEventListener('focusin', handleFallbackFocus);
+    fallbackBackdrop.addEventListener('click', closeModal);
 
     return { modal: modal, reset: reset };
   }
