@@ -198,9 +198,12 @@ assert.deepEqual(
   await evaluate(`(async () => ({
     closed: [...document.querySelectorAll('.v2-scan-coupon')].every((item) => !item.open),
     hydrated: document.querySelectorAll('.v2-coupon-image[src]').length,
-    couponCaches: (await caches.keys()).filter((name) => name.startsWith('fukuoka-trip-coupons-')).length
+    couponEntries: (await Promise.all((await caches.keys())
+      .filter((name) => name.startsWith('fukuoka-trip-coupons-'))
+      .map(async (name) => (await (await caches.open(name)).keys()).length)))
+      .reduce((total, count) => total + count, 0)
   }))()`),
-  { closed: true, hydrated: 0, couponCaches: 0 },
+  { closed: true, hydrated: 0, couponEntries: 0 },
   'coupons remain closed, lazy, and uncached before opt-in',
 );
 
@@ -238,6 +241,67 @@ assert.equal(
 await navigate('fukuoka-golf-en.html?p=more');
 await waitForValue(`document.querySelector('.v2-coupon-download')?.dataset.state === 'ready'`, 'English coupon status');
 assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label').textContent.trim()`), 'Available offline');
+
+const overviewTools = await evaluate(`({
+  finalChild: document.querySelector('#overview')?.lastElementChild?.classList.contains('v2-offline-tools'),
+  tabCount: document.querySelectorAll('#more > .tabs > .seg').length,
+  status: document.querySelector('.v2-offline-ready-status')?.textContent.trim()
+})`);
+assert.equal(overviewTools.finalChild, true, 'offline tools follow the Overview footer');
+assert.equal(overviewTools.tabCount, 3, 'offline tools do not add a More sub-tab');
+assert.ok(overviewTools.status, 'offline-ready status remains visible');
+
+assert.equal(await evaluate(`(() => {
+  window.__installPromptCalls = 0;
+  const event = new Event('beforeinstallprompt', { cancelable: true });
+  Object.defineProperties(event, {
+    prompt: { value: () => { window.__installPromptCalls += 1; return Promise.resolve(); } },
+    userChoice: { value: Promise.resolve({ outcome: 'dismissed' }) }
+  });
+  window.dispatchEvent(event);
+  return event.defaultPrevented;
+})()`), true, 'install prompt is retained for the explicit button');
+await waitForValue(`Boolean(document.querySelector('.v2-install-button:not([hidden])'))`, 'supported install action');
+await evaluate(`document.querySelector('.v2-install-button').click()`);
+await waitForValue(`window.__installPromptCalls === 1`, 'one native install prompt');
+
+const iosOverride = await send('Page.addScriptToEvaluateOnNewDocument', {
+  source: `
+    Object.defineProperty(Navigator.prototype, 'userAgent', { configurable: true, get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)' });
+    Object.defineProperty(Navigator.prototype, 'platform', { configurable: true, get: () => 'iPhone' });
+    Object.defineProperty(Navigator.prototype, 'standalone', { configurable: true, get: () => false });
+  `,
+});
+await navigate('fukuoka-golf-en.html?p=more&mode=ios');
+await waitForValue(`Boolean(document.querySelector('.v2-offline-tools'))`, 'iOS install guidance');
+assert.match(
+  await evaluate(`document.querySelector('.v2-install-guidance')?.textContent.trim()`),
+  /Share.*Add to Home Screen/,
+  'iOS receives Share to Add to Home Screen guidance',
+);
+await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: iosOverride.identifier });
+
+const standaloneOverride = await send('Page.addScriptToEvaluateOnNewDocument', {
+  source: `
+    Object.defineProperty(Navigator.prototype, 'standalone', { configurable: true, get: () => true });
+    const nativeMatchMedia = window.matchMedia.bind(window);
+    window.matchMedia = (query) => query === '(display-mode: standalone)'
+      ? { matches: true, media: query, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent() { return true; } }
+      : nativeMatchMedia(query);
+  `,
+});
+await navigate('fukuoka-golf.html?p=more&mode=standalone');
+await waitForValue(`Boolean(document.querySelector('.v2-offline-tools'))`, 'standalone offline status');
+assert.deepEqual(
+  await evaluate(`({
+    installVisible: Boolean(document.querySelector('.v2-install-button:not([hidden])')),
+    guidanceVisible: Boolean(document.querySelector('.v2-install-guidance:not([hidden])')),
+    status: document.querySelector('.v2-offline-ready-status')?.textContent.trim()
+  })`),
+  { installVisible: false, guidanceVisible: false, status: '行程已可離線開啟' },
+  'standalone mode hides redundant install guidance but keeps offline status',
+);
+await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: standaloneOverride.identifier });
 
 await setOffline(true);
 for (const file of ['fukuoka-golf.html', 'fukuoka-golf-v2.html', 'fukuoka-golf-en.html']) {

@@ -993,6 +993,60 @@ main {
 .v2-coupon-download:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
 .v2-coupon-download:active:not(:disabled) { transform: scale(.985); }
 
+.v2-offline-tools {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 4px 11px;
+  align-items: center;
+  margin: -6px 0 24px;
+  padding: 13px 14px;
+  border: 1px solid #dfe8e1;
+  border-radius: 12px;
+  background: #f7faf6;
+}
+
+.v2-offline-tools-icon {
+  display: inline-grid;
+  grid-row: 1 / span 2;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e1eee0;
+  color: #24643d;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.v2-offline-tools-copy { min-width: 0; }
+.v2-offline-tools h3,
+.v2-offline-tools p { margin: 0; }
+.v2-offline-tools h3 { color: #173629; font-size: 14px; line-height: 1.4; }
+.v2-offline-ready-status,
+.v2-install-guidance { color: #656b67; font-size: 12px; line-height: 1.5; }
+.v2-install-guidance { margin-top: 2px !important; }
+
+.v2-install-button {
+  grid-column: 2;
+  justify-self: start;
+  min-height: 38px;
+  margin-top: 5px;
+  padding: 8px 13px;
+  border: 0;
+  border-radius: 9px;
+  background: #24643d;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.v2-install-button[hidden],
+.v2-install-guidance[hidden] { display: none; }
+.v2-install-button:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
+.v2-install-button:active { transform: scale(.97); }
+
 .v2-passport-offers {
   display: grid;
   margin-top: 15px;
@@ -1141,6 +1195,7 @@ main {
   .v2-scan-coupon-caption .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .v2-scan-coupon > summary:hover { background: #f8faf8; }
   .v2-coupon-download:hover:not(:disabled) { background: #edf5e7; }
+  .v2-install-button:hover { background: #173629; }
   .hero .lang-switch:hover { background: #24643d; color: #fff; }
   .v2-quick-action .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .private-info-form button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
@@ -1166,6 +1221,7 @@ main {
   .v2-trip-coupons { padding: 14px 12px; }
   .v2-scan-coupon-title b { max-width: 116px; text-align: right; white-space: normal; }
   .v2-scan-coupon-caption { align-items: flex-start; }
+  .v2-offline-tools { padding-inline: 12px; }
 }
 
 @media (max-width:380px) {
