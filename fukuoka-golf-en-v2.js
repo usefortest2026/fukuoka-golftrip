@@ -1,6 +1,41 @@
 (function () {
   'use strict';
 
+  function setupMoreTabs() {
+    var ids = ['overview', 'hotels', 'packing'];
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('#more > .tabs > .seg'));
+    if (tabs.length !== ids.length) return;
+
+    function sync(selectedId) {
+      tabs.forEach(function (tab, index) {
+        var id = ids[index];
+        var selected = id === selectedId;
+        tab.id = 'more-tab-' + id;
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-controls', id);
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+        tab.tabIndex = selected ? 0 : -1;
+        var panel = document.getElementById(id);
+        if (!panel) return;
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tab.id);
+        panel.setAttribute('aria-hidden', selected ? 'false' : 'true');
+      });
+    }
+
+    var originalSwitchSub = window.switchSub;
+    if (typeof originalSwitchSub === 'function') {
+      window.switchSub = function (id, button) {
+        originalSwitchSub(id, button);
+        sync(id);
+      };
+    }
+    var active = document.querySelector('#more > .subpage.active');
+    sync(active ? active.id : ids[0]);
+  }
+
+  setupMoreTabs();
+
   function hydrateCoupon(details) {
     if (!details.open) return;
     var image = details.querySelector('.v2-coupon-image[data-src]');

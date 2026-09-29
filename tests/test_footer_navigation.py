@@ -29,6 +29,9 @@ class TripPageParser(HTMLParser):
         self.overview_coupon_image_links = []
         self.overview_coupon_map_links = []
         self.overview_passport_offer_count = 0
+        self.course_photos = []
+        self.hero_images = []
+        self.hotel_heading = None
         self._overview_day = None
         self._capture = None
 
@@ -47,6 +50,7 @@ class TripPageParser(HTMLParser):
         inside_more = active_page is not None and active_page[1].get("id") == "more"
         inside_day5 = active_page is not None and active_page[1].get("id") == "day5"
         inside_overview = any(item[1].get("id") == "overview" for item in self.stack)
+        inside_hotels = any(item[1].get("id") == "hotels" for item in self.stack)
         inside_contact_actions = any(
             item[0] == "div" and "contact-actions" in item[2]
             for item in self.stack
@@ -81,6 +85,18 @@ class TripPageParser(HTMLParser):
                 "text": [],
                 "day": self._overview_day,
             }
+        elif (
+            tag == "div"
+            and inside_hotels
+            and "section-label" in classes
+            and self.hotel_heading is None
+        ):
+            self._capture = {
+                "kind": "hotel-heading",
+                "depth": len(self.stack) + 1,
+                "attrs": attrs,
+                "text": [],
+            }
 
         if tag == "a" and "contact-call" in classes:
             self.contact_call_count += 1
@@ -101,6 +117,10 @@ class TripPageParser(HTMLParser):
         if tag == "section" and inside_overview and "v2-trip-coupons" in classes:
             self.overview_coupon_section_count += 1
             self.overview_coupon_after_day_count = len(self.overview_days)
+        if tag == "img" and "course-photo" in classes:
+            self.course_photos.append(attrs)
+        if tag == "img" and attrs.get("src") == "favicon.png":
+            self.hero_images.append(attrs)
         if tag == "article" and inside_overview and "v2-passport-offer" in classes:
             self.overview_passport_offer_count += 1
         if tag == "img" and inside_overview and "v2-coupon-image" in classes:
@@ -139,9 +159,13 @@ class TripPageParser(HTMLParser):
                 target = self.more_tabs
             elif self._capture["kind"] == "overview-line":
                 target = self._capture["day"]
+            elif self._capture["kind"] == "hotel-heading":
+                self.hotel_heading = self._capture["text"]
+                target = None
             else:
                 target = self.contact_navigation_labels
-            target.append(self._capture)
+            if target is not None:
+                target.append(self._capture)
             self._capture = None
 
         if tag == "a" and self.stack and "overview-day" in self.stack[-1][2]:
@@ -193,6 +217,34 @@ class FooterNavigationTest(unittest.TestCase):
                     },
                     subpages,
                 )
+
+    def test_course_photos_defer_offscreen_loading_without_layout_shift(self):
+        for filename, _, _ in self.CASES:
+            with self.subTest(filename=filename):
+                page = self.parse(filename)
+                self.assertEqual(3, len(page.course_photos))
+                self.assertTrue(
+                    all(
+                        image.get("loading") == "lazy"
+                        and image.get("decoding") == "async"
+                        and image.get("width") == "1200"
+                        and image.get("height") == "600"
+                        for image in page.course_photos
+                    )
+                )
+
+    def test_header_image_is_decorative_and_hotel_fallback_is_localized(self):
+        expected_headings = {
+            "fukuoka-golf.html": "住宿飯店",
+            "fukuoka-golf-v2.html": "住宿飯店",
+            "fukuoka-golf-en.html": "Confirmed Hotels",
+        }
+        for filename, expected_heading in expected_headings.items():
+            with self.subTest(filename=filename):
+                page = self.parse(filename)
+                self.assertEqual(1, len(page.hero_images))
+                self.assertEqual("", page.hero_images[0].get("alt"))
+                self.assertEqual(expected_heading, page.hotel_heading)
 
     def test_overview_coupon_section_follows_the_fifth_day_row(self):
         for filename, _, _ in self.CASES:

@@ -69,6 +69,15 @@ async function navigate(file, query = '') {
 
 await send('Page.enable');
 await send('Runtime.enable');
+await send('Network.enable');
+await send('Network.setBypassServiceWorker', { bypass: true });
+await send('Network.setCacheDisabled', { cacheDisabled: true });
+await send('Emulation.setDeviceMetricsOverride', {
+  width: 390,
+  height: 844,
+  deviceScaleFactor: 2,
+  mobile: true,
+});
 await send('Page.addScriptToEvaluateOnNewDocument', {
   source: `(() => {
     const RealDate = Date;
@@ -102,6 +111,42 @@ for (const file of files) {
 
   await navigate(file, '?p=more');
   assert.equal(await evaluate(`document.querySelector('.page.active')?.id`), 'more', `${file} opens More directly`);
+  assert.deepEqual(
+    await evaluate(`(() => ({
+      tabs: [...document.querySelectorAll('#more > .tabs > .seg')].map((tab) => ({
+        role: tab.getAttribute('role'),
+        selected: tab.getAttribute('aria-selected'),
+        controls: tab.getAttribute('aria-controls'),
+      })),
+      panels: [...document.querySelectorAll('#more > .subpage')].map((panel) => ({
+        id: panel.id,
+        role: panel.getAttribute('role'),
+        labelledBy: panel.getAttribute('aria-labelledby'),
+        hidden: panel.getAttribute('aria-hidden'),
+      })),
+    }))()`),
+    {
+      tabs: [
+        { role: 'tab', selected: 'true', controls: 'overview' },
+        { role: 'tab', selected: 'false', controls: 'hotels' },
+        { role: 'tab', selected: 'false', controls: 'packing' },
+      ],
+      panels: [
+        { id: 'hotels', role: 'tabpanel', labelledBy: 'more-tab-hotels', hidden: 'true' },
+        { id: 'packing', role: 'tabpanel', labelledBy: 'more-tab-packing', hidden: 'true' },
+        { id: 'overview', role: 'tabpanel', labelledBy: 'more-tab-overview', hidden: 'false' },
+      ],
+    },
+    `${file} exposes the initial More tab relationships`,
+  );
+  assert.deepEqual(
+    await evaluate(`(() => {
+      document.querySelectorAll('#more > .tabs > .seg')[1].click();
+      return [...document.querySelectorAll('#more > .tabs > .seg')].map((tab) => tab.getAttribute('aria-selected'));
+    })()`),
+    ['false', 'true', 'false'],
+    `${file} updates the selected More tab`,
+  );
 
   await navigate(file, '?p=bogus');
   assert.equal(await evaluate(`document.querySelector('.page.active')?.id`), 'day1', `${file} rejects invalid page ids`);
@@ -120,6 +165,31 @@ for (const file of files) {
     'day5',
     `${file} keeps a manual selection after automatic routing`,
   );
+
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await navigate(file);
+  assert.equal(
+    await evaluate(`(() => {
+      const app = document.querySelector('.app');
+      let behavior = null;
+      app.scrollTo = (options) => { behavior = options.behavior; };
+      [...document.querySelectorAll('.tab-btn')].find((button) =>
+        (button.getAttribute('onclick') || '').includes("'day4'")
+      ).click();
+      return behavior;
+    })()`),
+    'auto',
+    `${file} avoids smooth scrolling when reduced motion is requested`,
+  );
+  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+
+  if (file === 'fukuoka-golf-en.html') {
+    assert.equal(
+      await evaluate(`getComputedStyle(document.querySelector('.hero-note')).display`),
+      'none',
+      'English mobile header deliberately omits its lowest-priority metadata',
+    );
+  }
 }
 
 assert.deepEqual(pageErrors, [], `Page errors: ${pageErrors.join('\n')}`);

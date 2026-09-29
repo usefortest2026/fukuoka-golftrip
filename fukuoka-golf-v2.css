@@ -1215,6 +1215,7 @@ main {
 }
 
 @media (max-width:420px) {
+  html[lang="en"] .hero-note { display: none; }
   .v2-quick-grid { grid-template-columns: 1fr; }
   .v2-quick-grid > div:last-child { border-bottom: 0; }
   .v2-route-stop { grid-template-columns: minmax(0, 1fr); }
