@@ -30,6 +30,19 @@
         sync(id);
       };
     }
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener('keydown', function (event) {
+        var nextIndex;
+        if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft') nextIndex = (index + tabs.length - 1) % tabs.length;
+        else if (event.key === 'Home') nextIndex = 0;
+        else if (event.key === 'End') nextIndex = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        window.switchSub(ids[nextIndex], tabs[nextIndex]);
+        tabs[nextIndex].focus();
+      });
+    });
     var active = document.querySelector('#more > .subpage.active');
     sync(active ? active.id : ids[0]);
   }

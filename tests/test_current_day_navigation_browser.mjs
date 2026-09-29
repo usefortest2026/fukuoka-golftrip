@@ -139,6 +139,43 @@ for (const file of files) {
     },
     `${file} exposes the initial More tab relationships`,
   );
+
+  await evaluate(`document.querySelector('#more-tab-overview').focus()`);
+  async function assertKeyboardTab(key, focusedId, selectedIndex) {
+    if (key) {
+      await evaluate(`document.activeElement.dispatchEvent(new KeyboardEvent('keydown', {
+        key: '${key}', bubbles: true, cancelable: true
+      }))`);
+    }
+    const state = await evaluate(`(() => ({
+      focusedId: document.activeElement.id,
+      selected: [...document.querySelectorAll('#more > .tabs > .seg')]
+        .map((tab) => tab.getAttribute('aria-selected')),
+      tabIndexes: [...document.querySelectorAll('#more > .tabs > .seg')]
+        .map((tab) => tab.tabIndex),
+      activePanel: document.querySelector('#more > .subpage.active')?.id,
+      visiblePanels: [...document.querySelectorAll('#more > .subpage')]
+        .filter((panel) => panel.getAttribute('aria-hidden') === 'false')
+        .map((panel) => panel.id),
+    }))()`);
+    const ids = ['overview', 'hotels', 'packing'];
+    assert.deepEqual(state, {
+      focusedId,
+      selected: ids.map((_, index) => index === selectedIndex ? 'true' : 'false'),
+      tabIndexes: ids.map((_, index) => index === selectedIndex ? 0 : -1),
+      activePanel: ids[selectedIndex],
+      visiblePanels: [ids[selectedIndex]],
+    }, `${file} keeps keyboard focus, selection, and panel aligned after ${key || 'initial focus'}`);
+  }
+  await assertKeyboardTab(null, 'more-tab-overview', 0);
+  await assertKeyboardTab('ArrowRight', 'more-tab-hotels', 1);
+  await assertKeyboardTab('ArrowRight', 'more-tab-packing', 2);
+  await assertKeyboardTab('ArrowRight', 'more-tab-overview', 0);
+  await assertKeyboardTab('ArrowLeft', 'more-tab-packing', 2);
+  await assertKeyboardTab('Home', 'more-tab-overview', 0);
+  await assertKeyboardTab('End', 'more-tab-packing', 2);
+  await assertKeyboardTab('ArrowLeft', 'more-tab-hotels', 1);
+
   assert.deepEqual(
     await evaluate(`(() => {
       document.querySelectorAll('#more > .tabs > .seg')[1].click();
