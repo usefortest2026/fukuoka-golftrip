@@ -451,22 +451,4 @@
     new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class'] });
   });
 
-  var tripDays = ['2026-11-06', '2026-11-07', '2026-11-08', '2026-11-09', '2026-11-10'];
-  var nowParts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
-  var parts = {};
-  nowParts.forEach(function (part) { parts[part.type] = part.value; });
-  var today = parts.year + '-' + parts.month + '-' + parts.day;
-  var todayIndex = tripDays.indexOf(today);
-  if (todayIndex !== -1) {
-    [todayIndex, todayIndex + 1].forEach(function (index, stateIndex) {
-      if (!tripDays[index]) return;
-      var head = document.querySelector('#day' + (index + 1) + ' .v2-block-head');
-      if (!head) return;
-      var badge = document.createElement('span');
-      badge.className = 'v2-day-state';
-      badge.dataset.state = stateIndex === 0 ? 'today' : 'next';
-      badge.textContent = stateIndex === 0 ? 'Today' : 'Next';
-      head.appendChild(badge);
-    });
-  }
 })();
