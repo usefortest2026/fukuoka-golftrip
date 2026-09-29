@@ -82,6 +82,7 @@ async function inspectDayTwo(file, width) {
     const navInner = document.querySelector('.nav-inner');
     const main = document.querySelector('main');
     const buttons = [...document.querySelectorAll('.tab-btn')];
+    const heroLogo = document.querySelector('.hero img');
     const summaryListStyle = getComputedStyle(document.querySelector('#day2 .v2-summary-list'));
     const summary = rect('#day2 > .v2-summary');
     const quick = rect('#day2 > .v2-golf-quick');
@@ -89,6 +90,9 @@ async function inspectDayTwo(file, width) {
     return {
       app: rect('.app'),
       heroLogo: rect('.hero img'),
+      heroLogoUsesTabIcon: new URL(heroLogo.src).pathname.endsWith('/favicon.png'),
+      heroLogoNaturalWidth: heroLogo.naturalWidth,
+      heroLogoBorderRadius: getComputedStyle(heroLogo).borderRadius,
       heroTitle: rect('.hero h1'),
       appPaddingBottom: getComputedStyle(app).paddingBottom,
       main: rect('main'),
@@ -428,6 +432,9 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.equal(result.navPosition, 'fixed');
     assert.equal(result.navBottom, '0px');
     assert.equal(result.mainMarginLeft, '0px');
+    assert.equal(result.heroLogoUsesTabIcon, true, `${file} header should use the browser-tab icon`);
+    assert.equal(result.heroLogoNaturalWidth, 256, `${file} header tab icon did not load at ${width}px`);
+    assert.equal(result.heroLogoBorderRadius, '10px', `${file} header tab icon should retain its rounded-square shape`);
     assert.ok(result.quick.top >= result.summary.bottom, `${file} quick info should remain stacked at ${width}px`);
     assert.ok(result.detailsCount > 0);
     assert.ok(result.closedDetailsCount > 0, `${file} mobile/tablet details should remain collapsible`);
@@ -456,6 +463,9 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     );
     assert.equal(result.appPaddingBottom, '0px');
     assert.equal(result.navPosition, 'fixed');
+    assert.equal(result.heroLogoUsesTabIcon, true, `${file} desktop header should use the browser-tab icon`);
+    assert.equal(result.heroLogoNaturalWidth, 256, `${file} desktop header tab icon did not load at ${width}px`);
+    assert.equal(result.heroLogoBorderRadius, '10px', `${file} desktop header tab icon should retain its rounded-square shape`);
     assert.ok(result.nav.bottom < 500, `${file} desktop navigation is still attached to the bottom edge`);
     assert.ok(result.nav.width >= 160 && result.nav.width <= 190, `${file} desktop navigation width is unexpected`);
     assert.ok(result.nav.top >= 72, `${file} desktop navigation should sit below the header`);
