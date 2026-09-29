@@ -30,7 +30,7 @@
   function resolveInitialPage(options) {
     var requestedPage = options.requestedPage;
     var validPages = options.validPages || [];
-    if (requestedPage) {
+    if (requestedPage !== null && requestedPage !== undefined) {
       return validPages.indexOf(requestedPage) !== -1 ? requestedPage : 'day1';
     }
     return TRIP_PAGES[getTokyoDate(options.now)] || 'day1';

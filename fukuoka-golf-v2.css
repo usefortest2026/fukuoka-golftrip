@@ -1023,8 +1023,10 @@ main {
 .v2-offline-tools p { margin: 0; }
 .v2-offline-tools h3 { color: #173629; font-size: 14px; line-height: 1.4; }
 .v2-offline-ready-status,
-.v2-install-guidance { color: #656b67; font-size: 12px; line-height: 1.5; }
+.v2-install-guidance,
+.v2-offline-network-note { color: #656b67; font-size: 12px; line-height: 1.5; }
 .v2-install-guidance { margin-top: 2px !important; }
+.v2-offline-network-note { margin-top: 4px !important; color: #777d79 !important; font-size: 11px !important; }
 
 .v2-install-button {
   grid-column: 2;
@@ -1175,6 +1177,18 @@ main {
   max-width: 850px;
   height: auto;
   margin: 0 auto;
+}
+
+.v2-coupon-image-error {
+  margin: 0;
+  padding: 18px 14px;
+  border-top: 1px solid #edf0ed;
+  border-bottom: 1px solid #edf0ed;
+  background: #fff8e8;
+  color: #74520f;
+  font-size: 13px;
+  line-height: 1.55;
+  text-align: center;
 }
 
 .v2-scan-coupon-caption {

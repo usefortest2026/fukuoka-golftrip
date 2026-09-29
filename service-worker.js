@@ -67,13 +67,7 @@ self.addEventListener('activate', (event) => {
 async function networkFirst(request) {
   const cache = await caches.open(CORE_CACHE);
   try {
-    const response = await fetch(request);
-    if (response.ok && new URL(request.url).origin === self.location.origin) {
-      const cleanUrl = new URL(request.url);
-      cleanUrl.search = '';
-      await cache.put(cleanUrl.href, response.clone());
-    }
-    return response;
+    return await fetch(request);
   } catch (error) {
     const cached = await cache.match(request, { ignoreSearch: true });
     if (cached) return cached;
@@ -85,22 +79,47 @@ async function networkFirst(request) {
   }
 }
 
-async function cachedCore(request, event) {
+function releaseParts(version) {
+  const match = /^(\d{8})-(\d+)$/.exec(version || '');
+  return match ? [Number(match[1]), Number(match[2])] : null;
+}
+
+function isOlderRelease(candidate, current) {
+  const next = releaseParts(candidate);
+  const active = releaseParts(current);
+  if (!next || !active) return false;
+  return next[0] < active[0] || (next[0] === active[0] && next[1] < active[1]);
+}
+
+async function versionNetworkFirst(request) {
+  const cache = await caches.open(CORE_CACHE);
+  try {
+    const response = await fetch(request);
+    const version = response.ok ? (await response.clone().text()).trim() : null;
+    return { response, version };
+  } catch (error) {
+    const cached = await cache.match(request, { ignoreSearch: true });
+    if (cached) return { response: cached, version: null };
+    throw error;
+  }
+}
+
+async function retireAfterRollback(serverVersion) {
+  if (!isOlderRelease(serverVersion, APP_VERSION)) return;
+  await self.registration.unregister();
+  const names = await caches.keys();
+  await Promise.all(names
+    .filter((name) => name.startsWith(APP_CACHE_PREFIX))
+    .map((name) => caches.delete(name)));
+}
+
+async function cachedCore(request) {
+  const url = new URL(request.url);
+  const requestedVersion = url.searchParams.get('v');
+  if (requestedVersion && requestedVersion !== APP_VERSION) return fetch(request);
   const cache = await caches.open(CORE_CACHE);
   const cached = await cache.match(request, { ignoreSearch: true });
-  const refresh = fetch(request).then(async (response) => {
-    if (response.ok) {
-      const cleanUrl = new URL(request.url);
-      cleanUrl.search = '';
-      await cache.put(cleanUrl.href, response.clone());
-    }
-    return response;
-  });
-  if (cached) {
-    event.waitUntil(refresh.catch(() => undefined));
-    return cached;
-  }
-  return refresh;
+  return cached || fetch(request);
 }
 
 async function cachedCoupon(request) {
@@ -168,8 +187,17 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (request.mode === 'navigate' || url.pathname.endsWith('/version.txt')) {
+  if (request.mode === 'navigate') {
     event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (url.pathname.endsWith('/version.txt')) {
+    const operation = versionNetworkFirst(request);
+    event.respondWith(operation.then((result) => result.response));
+    event.waitUntil(operation
+      .then((result) => retireAfterRollback(result.version))
+      .catch(() => undefined));
     return;
   }
 
@@ -179,6 +207,6 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (CORE_PATHS.has(url.pathname)) {
-    event.respondWith(cachedCore(request, event));
+    event.respondWith(cachedCore(request));
   }
 });

@@ -106,6 +106,9 @@ for (const file of files) {
   await navigate(file, '?p=bogus');
   assert.equal(await evaluate(`document.querySelector('.page.active')?.id`), 'day1', `${file} rejects invalid page ids`);
 
+  await navigate(file, '?p=');
+  assert.equal(await evaluate(`document.querySelector('.page.active')?.id`), 'day1', `${file} rejects an explicitly empty page id`);
+
   await navigate(file);
   assert.equal(
     await evaluate(`(() => {

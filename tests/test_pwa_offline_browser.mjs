@@ -129,6 +129,7 @@ await send('Storage.clearDataForOrigin', {
   origin: new URL(baseUrl).origin,
   storageTypes: 'service_workers,cache_storage',
 });
+await send('Network.clearBrowserCache');
 await new Promise((resolve) => setTimeout(resolve, 200));
 await navigate(`fukuoka-golf.html?fresh=${Date.now()}`);
 
@@ -174,6 +175,22 @@ assert.equal(cacheSnapshot.urls.some((url) => /coupon-.*\.jpg/.test(url)), false
 assert.equal(cacheSnapshot.urls.some((url) => !url.startsWith(baseUrl)), false, 'remote assets stay out of core cache');
 assert.equal(cacheSnapshot.urls.some((url) => /private-trip-info\.json(?:\?|$)/.test(url)), false, 'no unencrypted private payload is cached');
 
+const immutableProbe = await evaluate(`(async () => {
+  const name = (await caches.keys()).find((item) => item.startsWith('fukuoka-trip-core-'));
+  const cache = await caches.open(name);
+  const assetUrl = new URL('fukuoka-golf-v2.css', location.href).href;
+  const original = await cache.match(assetUrl);
+  const sentinel = '/* old-worker-sentinel */';
+  await cache.put(assetUrl, new Response(sentinel, { headers: { 'Content-Type': 'text/css' } }));
+  const delivered = await fetch('fukuoka-golf-v2.css?v=20991231-99').then((response) => response.text());
+  await new Promise((resolve) => setTimeout(resolve, 150));
+  const retained = await cache.match(assetUrl).then((response) => response.text());
+  await cache.put(assetUrl, original);
+  return { delivered, retained, sentinel };
+})()`);
+assert.notEqual(immutableProbe.delivered, immutableProbe.sentinel, 'an old worker does not serve an old asset for a newer version URL');
+assert.equal(immutableProbe.retained, immutableProbe.sentinel, 'runtime fetches do not mutate an installed core cache');
+
 const couponAssets = [
   'coupon-airport-dutyfree-zh.jpg',
   'coupon-alpen-zh.jpg',
@@ -208,6 +225,61 @@ assert.deepEqual(
 );
 
 const workerConnection = await connectToServiceWorker();
+await workerConnection.send('Network.setBlockedURLs', { urls: ['*coupon-cocokara-zh.jpg*', '*coupon-cocokara-en.jpg*'] });
+await setOffline(true);
+await workerConnection.send('Network.emulateNetworkConditions', {
+  offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
+});
+await evaluate(`document.querySelector('.v2-scan-coupon summary').click()`);
+await waitForValue(`Boolean(document.querySelector('.v2-coupon-image-error'))`, 'Chinese uncached coupon offline error');
+assert.equal(
+  await evaluate(`document.querySelector('.v2-coupon-image-error').textContent.trim()`),
+  '這張優惠券尚未下載，請連上網路後再試。',
+);
+await setOffline(false);
+await workerConnection.send('Network.emulateNetworkConditions', {
+  offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1, connectionType: 'wifi'
+});
+await navigate('fukuoka-golf-en.html?p=more&uncached=1');
+await waitForValue(`Boolean(document.querySelector('.v2-coupon-download:not(:disabled)'))`, 'English coupon control');
+await setOffline(true);
+await workerConnection.send('Network.emulateNetworkConditions', {
+  offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
+});
+await evaluate(`document.querySelector('.v2-scan-coupon summary').click()`);
+await waitForValue(`Boolean(document.querySelector('.v2-coupon-image-error'))`, 'English uncached coupon offline error');
+assert.equal(
+  await evaluate(`document.querySelector('.v2-coupon-image-error').textContent.trim()`),
+  'This coupon has not been downloaded. Connect to the internet and try again.',
+);
+await setOffline(false);
+await workerConnection.send('Network.emulateNetworkConditions', {
+  offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1, connectionType: 'wifi'
+});
+await workerConnection.send('Network.setBlockedURLs', { urls: [] });
+await navigate('fukuoka-golf.html?controller-replacement=1');
+await waitForValue(`Boolean(document.querySelector('.v2-coupon-download:not(:disabled)'))`, 'coupon control after reconnect');
+
+await evaluate(`(() => {
+  window.__replacementWorkerMessages = [];
+  window.__replacementWorker = { postMessage: (message) => window.__replacementWorkerMessages.push(message.type) };
+  Object.defineProperty(navigator.serviceWorker, 'controller', {
+    configurable: true,
+    get: () => window.__replacementWorker
+  });
+  navigator.serviceWorker.dispatchEvent(new Event('controllerchange'));
+  document.querySelector('.v2-coupon-download').click();
+})()`);
+assert.ok(
+  (await evaluate(`window.__replacementWorkerMessages`)).includes('CACHE_COUPONS'),
+  'coupon commands use the replacement service-worker controller',
+);
+await evaluate(`(() => {
+  delete navigator.serviceWorker.controller;
+  navigator.serviceWorker.dispatchEvent(new Event('controllerchange'));
+})()`);
+await waitForValue(`document.querySelector('.v2-coupon-download')?.dataset.state === 'idle'`, 'active coupon worker after controller replacement');
+
 await workerConnection.send('Network.setBlockedURLs', { urls: ['*coupon-yamada-zh.jpg*'] });
 await evaluate(`document.querySelector('.v2-coupon-download').click()`);
 await waitForValue(`document.querySelector('.v2-coupon-download')?.dataset.state === 'partial'`, 'partial coupon result');
@@ -245,11 +317,13 @@ assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label')
 const overviewTools = await evaluate(`({
   finalChild: document.querySelector('#overview')?.lastElementChild?.classList.contains('v2-offline-tools'),
   tabCount: document.querySelectorAll('#more > .tabs > .seg').length,
-  status: document.querySelector('.v2-offline-ready-status')?.textContent.trim()
+  status: document.querySelector('.v2-offline-ready-status')?.textContent.trim(),
+  networkNote: document.querySelector('.v2-offline-network-note')?.textContent.trim()
 })`);
 assert.equal(overviewTools.finalChild, true, 'offline tools follow the Overview footer');
 assert.equal(overviewTools.tabCount, 3, 'offline tools do not add a More sub-tab');
 assert.ok(overviewTools.status, 'offline-ready status remains visible');
+assert.equal(overviewTools.networkNote, 'Google Maps, live weather and external sites still require internet.');
 
 assert.equal(await evaluate(`(() => {
   window.__installPromptCalls = 0;
@@ -267,8 +341,9 @@ await waitForValue(`window.__installPromptCalls === 1`, 'one native install prom
 
 const iosOverride = await send('Page.addScriptToEvaluateOnNewDocument', {
   source: `
-    Object.defineProperty(Navigator.prototype, 'userAgent', { configurable: true, get: () => 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)' });
-    Object.defineProperty(Navigator.prototype, 'platform', { configurable: true, get: () => 'iPhone' });
+    Object.defineProperty(Navigator.prototype, 'userAgent', { configurable: true, get: () => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15' });
+    Object.defineProperty(Navigator.prototype, 'platform', { configurable: true, get: () => 'MacIntel' });
+    Object.defineProperty(Navigator.prototype, 'maxTouchPoints', { configurable: true, get: () => 5 });
     Object.defineProperty(Navigator.prototype, 'standalone', { configurable: true, get: () => false });
   `,
 });
@@ -304,6 +379,9 @@ assert.deepEqual(
 await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: standaloneOverride.identifier });
 
 await setOffline(true);
+await workerConnection.send('Network.emulateNetworkConditions', {
+  offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
+});
 for (const file of ['fukuoka-golf.html', 'fukuoka-golf-v2.html', 'fukuoka-golf-en.html']) {
   await navigate(`${file}?p=day4`);
   const state = await evaluate(`({
@@ -323,11 +401,26 @@ await evaluate(`document.querySelector('.v2-scan-coupon summary').click()`);
 await waitForValue(`document.querySelector('.v2-coupon-image')?.naturalWidth > 0`, 'cached coupon image offline');
 
 await setOffline(false);
+await workerConnection.send('Network.emulateNetworkConditions', {
+  offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1, connectionType: 'wifi'
+});
 const unsupportedOverride = await send('Page.addScriptToEvaluateOnNewDocument', {
   source: `Object.defineProperty(Navigator.prototype, 'serviceWorker', { configurable: true, get: () => undefined });`,
 });
 await navigate('fukuoka-golf.html?p=day4');
-assert.equal(await evaluate(`document.querySelector('.page.active')?.id`), 'day4', 'online page works without service-worker support');
+assert.deepEqual(
+  await evaluate(`({
+    active: document.querySelector('.page.active')?.id,
+    offlineStatus: document.querySelector('.v2-offline-ready-status')?.textContent.trim(),
+    couponStatus: document.querySelector('.v2-coupon-download-label')?.textContent.trim()
+  })`),
+  {
+    active: 'day4',
+    offlineStatus: '此瀏覽器不支援離線行程',
+    couponStatus: '此瀏覽器不支援優惠券離線下載'
+  },
+  'unsupported-service-worker fallback stays usable and explains unavailable offline controls',
+);
 await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: unsupportedOverride.identifier });
 
 assert.deepEqual(pageErrors, [], `Page errors: ${pageErrors.join('\n')}`);

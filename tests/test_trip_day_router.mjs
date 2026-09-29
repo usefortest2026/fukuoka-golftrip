@@ -58,3 +58,11 @@ test('invalid_or_outside_trip_defaults_to_day1', () => {
     'day1',
   );
 });
+
+test('an_explicit_empty_page_is_invalid_instead_of_triggering_date_routing', () => {
+  assert.equal(resolveInitialPage({
+    now: new Date('2026-11-07T03:00:00.000Z'),
+    requestedPage: '',
+    validPages,
+  }), 'day1');
+});

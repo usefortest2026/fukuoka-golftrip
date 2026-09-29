@@ -233,6 +233,48 @@ for (const file of files) {
   );
 }
 
+const dialogFallbackOverride = await send('Page.addScriptToEvaluateOnNewDocument', {
+  source: `
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value: undefined });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: undefined });
+  `,
+});
+await navigate('fukuoka-golf.html');
+await click('#day2 [data-golf-draw-open]');
+assert.deepEqual(
+  await evaluate(`(() => ({
+    fallback: document.querySelector('.golf-draw-modal').classList.contains('is-fallback-open'),
+    backgroundInert: document.querySelector('.app').inert,
+    backgroundHidden: document.querySelector('.app').getAttribute('aria-hidden')
+  }))()`),
+  { fallback: true, backgroundInert: true, backgroundHidden: 'true' },
+  'dialog fallback makes background content inert',
+);
+await evaluate(`(() => {
+  const modal = document.querySelector('.golf-draw-modal');
+  modal.querySelector('[data-golf-draw-start]').focus();
+  modal.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }));
+})()`);
+assert.equal(
+  await evaluate(`document.activeElement === document.querySelector('[data-golf-draw-close]')`),
+  true,
+  'dialog fallback traps forward focus',
+);
+await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 });
+await new Promise((resolve) => setTimeout(resolve, 80));
+assert.deepEqual(
+  await evaluate(`(() => ({
+    open: document.querySelector('.golf-draw-modal').hasAttribute('open'),
+    backgroundInert: document.querySelector('.app').inert,
+    backgroundHidden: document.querySelector('.app').hasAttribute('aria-hidden'),
+    openerFocused: document.activeElement === document.querySelector('#day2 [data-golf-draw-open]')
+  }))()`),
+  { open: false, backgroundInert: false, backgroundHidden: false, openerFocused: true },
+  'dialog fallback closes on Escape, restores background and returns focus',
+);
+await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: dialogFallbackOverride.identifier });
+
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
 await navigate('fukuoka-golf.html');
 await click('#day2 [data-golf-draw-open]');

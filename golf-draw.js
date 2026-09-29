@@ -148,6 +148,7 @@
     var openers = [];
     var opener = null;
     var drawTimer = null;
+    var fallbackBackground = [];
 
     ['day2', 'day4', 'day5'].forEach(function (dayId) {
       var day = doc.getElementById(dayId);
@@ -312,6 +313,57 @@
       drawTimer = root.setTimeout(finishDraw, reduced ? 80 : 1800);
     }
 
+    function isolateFallbackBackground() {
+      fallbackBackground = [];
+      Array.prototype.forEach.call(doc.body.children, function (node) {
+        if (node === modal || node.tagName === 'SCRIPT') return;
+        fallbackBackground.push({
+          node: node,
+          inert: Boolean(node.inert),
+          ariaHidden: node.getAttribute('aria-hidden')
+        });
+        node.inert = true;
+        node.setAttribute('aria-hidden', 'true');
+      });
+    }
+
+    function restoreFallbackBackground() {
+      fallbackBackground.forEach(function (state) {
+        state.node.inert = state.inert;
+        if (state.ariaHidden === null) state.node.removeAttribute('aria-hidden');
+        else state.node.setAttribute('aria-hidden', state.ariaHidden);
+      });
+      fallbackBackground = [];
+    }
+
+    function fallbackFocusable() {
+      return Array.prototype.filter.call(
+        modal.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'),
+        function (node) { return !node.hidden; }
+      );
+    }
+
+    function handleFallbackKeydown(event) {
+      if (!modal.classList.contains('is-fallback-open')) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeModal();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      var focusable = fallbackFocusable();
+      if (!focusable.length) return;
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (event.shiftKey && (doc.activeElement === first || !modal.contains(doc.activeElement))) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (doc.activeElement === last || !modal.contains(doc.activeElement))) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
     function openModal(event) {
       opener = event.currentTarget;
       reset();
@@ -320,6 +372,7 @@
       else {
         modal.setAttribute('open', '');
         modal.classList.add('is-fallback-open');
+        isolateFallbackBackground();
       }
       startButton.focus();
     }
@@ -331,6 +384,7 @@
       else {
         modal.removeAttribute('open');
         modal.classList.remove('is-fallback-open');
+        restoreFallbackBackground();
       }
       if (opener) opener.focus();
     }
@@ -343,6 +397,7 @@
       event.preventDefault();
       closeModal();
     });
+    doc.addEventListener('keydown', handleFallbackKeydown);
 
     return { modal: modal, reset: reset };
   }

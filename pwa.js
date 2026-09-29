@@ -11,6 +11,10 @@
     offlineTitle: 'Offline trip access',
     offlinePreparing: 'Preparing the itinerary for offline use…',
     offlineReady: 'Trip itinerary is available offline',
+    offlineUnsupported: 'Offline trips are unavailable in this browser',
+    networkNote: 'Google Maps, live weather and external sites still require internet.',
+    couponUnsupported: 'Offline coupon downloads are unavailable in this browser',
+    couponOfflineError: 'This coupon has not been downloaded. Connect to the internet and try again.',
     install: 'Install trip app',
     installGeneric: 'Use your browser menu to add this trip to your Home Screen.',
     installIOS: 'Tap Share → Add to Home Screen.'
@@ -24,6 +28,10 @@
     offlineTitle: '離線行程',
     offlinePreparing: '正在準備離線行程…',
     offlineReady: '行程已可離線開啟',
+    offlineUnsupported: '此瀏覽器不支援離線行程',
+    networkNote: 'Google Maps、即時天氣與外部網站仍需網路。',
+    couponUnsupported: '此瀏覽器不支援優惠券離線下載',
+    couponOfflineError: '這張優惠券尚未下載，請連上網路後再試。',
     install: '安裝到主畫面',
     installGeneric: '可從瀏覽器選單將行程加入主畫面。',
     installIOS: '點分享，再選「加入主畫面」。'
@@ -32,6 +40,7 @@
   var couponLabel;
   var couponStatus;
   var activeWorker;
+  var activeRegistration;
   var installPrompt;
   var installButton;
   var installGuidance;
@@ -56,10 +65,66 @@
     couponStatus = control.querySelector('.v2-coupon-download-status');
     couponLabel.textContent = copy.download;
     couponButton.addEventListener('click', function () {
-      if (!activeWorker || couponButton.disabled) return;
+      if (couponButton.disabled) return;
       couponButton.disabled = true;
       couponButton.dataset.state = 'downloading';
-      activeWorker.postMessage({ type: 'CACHE_COUPONS' });
+      if (!postWorkerMessage({ type: 'CACHE_COUPONS' })) showPwaUnavailable();
+    });
+  }
+
+  function bindCouponImageErrors() {
+    function retryCouponImage(image) {
+      image.removeAttribute('src');
+      image.hidden = false;
+      delete image.dataset.offlineFailed;
+      image.src = image.dataset.src;
+    }
+
+    function showCouponImageError(image) {
+      var link = image.closest('.v2-coupon-image-link');
+      if (!link) return;
+      image.hidden = true;
+      image.dataset.offlineFailed = 'true';
+      var message = link.parentElement.querySelector('.v2-coupon-image-error');
+      if (!message) {
+        message = document.createElement('p');
+        message.className = 'v2-coupon-image-error';
+        message.setAttribute('role', 'status');
+        link.insertAdjacentElement('afterend', message);
+      }
+      message.textContent = copy.couponOfflineError;
+    }
+    document.querySelectorAll('.v2-coupon-image').forEach(function (image) {
+      if (image.dataset.offlineErrorBound === 'true') return;
+      image.dataset.offlineErrorBound = 'true';
+      image.addEventListener('error', function () { showCouponImageError(image); });
+      image.addEventListener('load', function () {
+        image.hidden = false;
+        delete image.dataset.offlineFailed;
+        var details = image.closest('.v2-scan-coupon');
+        var message = details && details.querySelector('.v2-coupon-image-error');
+        if (message) message.remove();
+      });
+      var details = image.closest('.v2-scan-coupon');
+      if (details) details.addEventListener('toggle', function () {
+        if (!details.open) return;
+        if (root.navigator.onLine !== false && image.dataset.offlineFailed === 'true') {
+          retryCouponImage(image);
+          return;
+        }
+        if (root.navigator.onLine !== false || !root.caches) return;
+        root.caches.match(new URL(image.dataset.src, root.location.href).href)
+          .then(function (cached) {
+            if (!cached && details.open) showCouponImageError(image);
+          });
+      });
+    });
+    root.addEventListener('online', function () {
+      document.querySelectorAll('.v2-coupon-image[data-offline-failed="true"]').forEach(function (image) {
+        var details = image.closest('.v2-scan-coupon');
+        if (!details || !details.open) return;
+        retryCouponImage(image);
+      });
     });
   }
 
@@ -70,7 +135,8 @@
 
   function isIOS() {
     return /iPad|iPhone|iPod/.test(root.navigator.userAgent || '') ||
-      /iPad|iPhone|iPod/.test(root.navigator.platform || '');
+      /iPad|iPhone|iPod/.test(root.navigator.platform || '') ||
+      (root.navigator.platform === 'MacIntel' && root.navigator.maxTouchPoints > 1);
   }
 
   function updateInstallUI() {
@@ -99,13 +165,15 @@
     tools.innerHTML = '<span class="v2-offline-tools-icon" aria-hidden="true">↓</span>' +
       '<div class="v2-offline-tools-copy"><h3 id="offline-tools-title"></h3>' +
       '<p class="v2-offline-ready-status" role="status" aria-live="polite"></p>' +
-      '<p class="v2-install-guidance"></p></div>' +
+      '<p class="v2-install-guidance"></p>' +
+      '<p class="v2-offline-network-note"></p></div>' +
       '<button class="v2-install-button" type="button" hidden></button>';
     footer.insertAdjacentElement('afterend', tools);
     tools.querySelector('h3').textContent = copy.offlineTitle;
     offlineReadyStatus = tools.querySelector('.v2-offline-ready-status');
     offlineReadyStatus.textContent = copy.offlinePreparing;
     installGuidance = tools.querySelector('.v2-install-guidance');
+    tools.querySelector('.v2-offline-network-note').textContent = copy.networkNote;
     installButton = tools.querySelector('.v2-install-button');
     installButton.textContent = copy.install;
     installButton.addEventListener('click', function () {
@@ -151,32 +219,67 @@
     }
   }
 
+  function currentWorker() {
+    if (!root.navigator || !root.navigator.serviceWorker) return null;
+    return root.navigator.serviceWorker.controller ||
+      (activeRegistration && activeRegistration.active) || activeWorker || null;
+  }
+
+  function postWorkerMessage(message) {
+    var worker = currentWorker();
+    if (!worker || !worker.postMessage) return false;
+    activeWorker = worker;
+    worker.postMessage(message);
+    return true;
+  }
+
+  function showPwaUnavailable() {
+    activeWorker = null;
+    if (offlineReadyStatus) offlineReadyStatus.textContent = copy.offlineUnsupported;
+    if (couponButton) {
+      couponButton.disabled = true;
+      couponButton.dataset.state = 'unavailable';
+      couponLabel.textContent = copy.couponUnsupported;
+      couponStatus.textContent = '';
+    }
+  }
+
   function connectCouponControl(registration) {
-    activeWorker = root.navigator.serviceWorker.controller || registration.active;
+    activeRegistration = registration || activeRegistration;
+    activeWorker = currentWorker();
     if (!activeWorker || !couponButton) return;
     couponButton.disabled = false;
     couponButton.dataset.state = 'idle';
-    activeWorker.postMessage({ type: 'GET_COUPON_CACHE_STATUS' });
+    postWorkerMessage({ type: 'GET_COUPON_CACHE_STATUS' });
     if (offlineReadyStatus) offlineReadyStatus.textContent = copy.offlineReady;
   }
 
   function register() {
     renderCouponControl();
+    bindCouponImageErrors();
     renderOfflineTools();
     if (!root.navigator || !root.navigator.serviceWorker || !root.navigator.serviceWorker.register) {
+      showPwaUnavailable();
       return Promise.resolve(null);
     }
     root.navigator.serviceWorker.addEventListener('message', function (event) {
       if (event.data && /^COUPON_CACHE_/.test(event.data.type || '')) applyCouponStatus(event.data);
     });
+    root.navigator.serviceWorker.addEventListener('controllerchange', function () {
+      connectCouponControl(activeRegistration);
+    });
     return root.navigator.serviceWorker.register('./service-worker.js', { scope: './' })
       .then(function (registration) {
+        activeRegistration = registration;
         return root.navigator.serviceWorker.ready.then(function () {
           connectCouponControl(registration);
           return registration;
         });
       })
-      .catch(function () { return null; });
+      .catch(function () {
+        showPwaUnavailable();
+        return null;
+      });
   }
 
   root.addEventListener('beforeinstallprompt', function (event) {
