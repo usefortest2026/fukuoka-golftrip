@@ -8,7 +8,7 @@
     retryMany: 'Retry {count} missing coupons',
     partial: 'Downloaded {completed}/{total}; {failed} failed.',
     ready: 'Available offline',
-    offlineTitle: 'Offline trip access',
+    offlineTitle: 'Offline use',
     offlinePreparing: 'Preparing the itinerary for offline use…',
     offlineReady: 'Trip itinerary is available offline',
     offlineUnsupported: 'Offline trips are unavailable in this browser',
@@ -25,7 +25,7 @@
     retryMany: '重試未完成的 {count} 張',
     partial: '已下載 {completed}/{total}，{failed} 張失敗',
     ready: '已可離線使用',
-    offlineTitle: '離線行程',
+    offlineTitle: '離線使用',
     offlinePreparing: '正在準備離線行程…',
     offlineReady: '行程已可離線開啟',
     offlineUnsupported: '此瀏覽器不支援離線行程',
@@ -156,14 +156,19 @@
     installGuidance.textContent = isIOS() ? copy.installIOS : copy.installGeneric;
   }
 
+  function setOfflineStatus(state, text) {
+    if (!offlineReadyStatus) return;
+    offlineReadyStatus.dataset.state = state;
+    offlineReadyStatus.textContent = text;
+  }
+
   function renderOfflineTools() {
     var footer = document.querySelector('#overview .overview-foot');
     if (!footer || document.querySelector('.v2-offline-tools')) return;
     var tools = document.createElement('section');
     tools.className = 'v2-offline-tools';
     tools.setAttribute('aria-labelledby', 'offline-tools-title');
-    tools.innerHTML = '<span class="v2-offline-tools-icon" aria-hidden="true">↓</span>' +
-      '<div class="v2-offline-tools-copy"><h3 id="offline-tools-title"></h3>' +
+    tools.innerHTML = '<div class="v2-offline-tools-copy"><h3 id="offline-tools-title"></h3>' +
       '<p class="v2-offline-ready-status" role="status" aria-live="polite"></p>' +
       '<p class="v2-install-guidance"></p>' +
       '<p class="v2-offline-network-note"></p></div>' +
@@ -171,7 +176,7 @@
     footer.insertAdjacentElement('afterend', tools);
     tools.querySelector('h3').textContent = copy.offlineTitle;
     offlineReadyStatus = tools.querySelector('.v2-offline-ready-status');
-    offlineReadyStatus.textContent = copy.offlinePreparing;
+    setOfflineStatus('preparing', copy.offlinePreparing);
     installGuidance = tools.querySelector('.v2-install-guidance');
     tools.querySelector('.v2-offline-network-note').textContent = copy.networkNote;
     installButton = tools.querySelector('.v2-install-button');
@@ -235,7 +240,7 @@
 
   function showPwaUnavailable() {
     activeWorker = null;
-    if (offlineReadyStatus) offlineReadyStatus.textContent = copy.offlineUnsupported;
+    setOfflineStatus('unsupported', copy.offlineUnsupported);
     if (couponButton) {
       couponButton.disabled = true;
       couponButton.dataset.state = 'unavailable';
@@ -251,7 +256,7 @@
     couponButton.disabled = false;
     couponButton.dataset.state = 'idle';
     postWorkerMessage({ type: 'GET_COUPON_CACHE_STATUS' });
-    if (offlineReadyStatus) offlineReadyStatus.textContent = copy.offlineReady;
+    setOfflineStatus('ready', copy.offlineReady);
   }
 
   function register() {

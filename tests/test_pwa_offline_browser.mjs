@@ -211,6 +211,34 @@ const couponAssets = [
 
 await waitForValue(`Boolean(document.querySelector('.v2-coupon-download:not(:disabled)'))`, 'coupon download control');
 assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label')?.textContent.trim()`), '下載優惠券供離線使用');
+const utilityPresentation = await evaluate(`(() => {
+  const couponIcon = document.querySelector('.v2-coupon-download-icon');
+  const couponStatus = document.querySelector('.v2-coupon-download-status');
+  const tools = document.querySelector('.v2-offline-tools');
+  const networkNote = document.querySelector('.v2-offline-network-note');
+  const iconStyle = getComputedStyle(couponIcon);
+  const toolsStyle = getComputedStyle(tools);
+  return {
+    couponIconWidth: couponIcon.getBoundingClientRect().width,
+    couponIconBackground: iconStyle.backgroundColor,
+    emptyCouponStatusDisplay: getComputedStyle(couponStatus).display,
+    hasOfflineIconTile: Boolean(tools.querySelector('.v2-offline-tools-icon')),
+    offlineTitle: tools.querySelector('h3').textContent.trim(),
+    offlineBackground: toolsStyle.backgroundColor,
+    offlineMarginTop: parseFloat(toolsStyle.marginTop),
+    offlineState: document.querySelector('.v2-offline-ready-status').dataset.state,
+    networkNoteSize: getComputedStyle(networkNote).fontSize,
+  };
+})()`);
+assert.ok(utilityPresentation.couponIconWidth <= 16, 'coupon download uses a small linear icon');
+assert.equal(utilityPresentation.couponIconBackground, 'rgba(0, 0, 0, 0)', 'coupon download removes the nested icon tile');
+assert.equal(utilityPresentation.emptyCouponStatusDisplay, 'none', 'empty coupon status does not reserve space');
+assert.equal(utilityPresentation.hasOfflineIconTile, false, 'offline tools remove the ambiguous download tile');
+assert.equal(utilityPresentation.offlineTitle, '離線使用');
+assert.equal(utilityPresentation.offlineBackground, 'rgb(255, 255, 255)', 'offline tools use the quiet utility surface');
+assert.ok(utilityPresentation.offlineMarginTop >= 0, 'offline tools use natural page rhythm');
+assert.equal(utilityPresentation.offlineState, 'ready');
+assert.equal(utilityPresentation.networkNoteSize, '12px');
 assert.deepEqual(
   await evaluate(`(async () => ({
     closed: [...document.querySelectorAll('.v2-scan-coupon')].every((item) => !item.open),
@@ -294,6 +322,11 @@ const partial = await evaluate(`(async () => {
 assert.equal(partial.count, couponAssets.length - 1, 'successful coupon downloads survive one failed response');
 assert.match(partial.label, /重試/);
 assert.match(partial.status, /1 張失敗/);
+assert.equal(
+  await evaluate(`getComputedStyle(document.querySelector('.v2-coupon-download-status')).color`),
+  'rgb(128, 88, 13)',
+  'partial coupon state uses the existing warning tone',
+);
 
 await workerConnection.send('Network.setBlockedURLs', { urls: [] });
 const requestsBeforeRetry = couponRequests.length;
@@ -336,6 +369,20 @@ assert.equal(await evaluate(`(() => {
   return event.defaultPrevented;
 })()`), true, 'install prompt is retained for the explicit button');
 await waitForValue(`Boolean(document.querySelector('.v2-install-button:not([hidden])'))`, 'supported install action');
+assert.deepEqual(
+  await evaluate(`(() => {
+    const button = document.querySelector('.v2-install-button');
+    const style = getComputedStyle(button);
+    return {
+      minHeight: style.minHeight,
+      background: style.backgroundColor,
+      color: style.color,
+      borderStyle: style.borderStyle,
+    };
+  })()`),
+  { minHeight: '44px', background: 'rgb(237, 245, 231)', color: 'rgb(36, 100, 61)', borderStyle: 'solid' },
+  'install action uses the shared quiet secondary treatment',
+);
 await evaluate(`document.querySelector('.v2-install-button').click()`);
 await waitForValue(`window.__installPromptCalls === 1`, 'one native install prompt');
 
@@ -412,11 +459,13 @@ assert.deepEqual(
   await evaluate(`({
     active: document.querySelector('.page.active')?.id,
     offlineStatus: document.querySelector('.v2-offline-ready-status')?.textContent.trim(),
+    offlineState: document.querySelector('.v2-offline-ready-status')?.dataset.state,
     couponStatus: document.querySelector('.v2-coupon-download-label')?.textContent.trim()
   })`),
   {
     active: 'day4',
     offlineStatus: '此瀏覽器不支援離線行程',
+    offlineState: 'unsupported',
     couponStatus: '此瀏覽器不支援優惠券離線下載'
   },
   'unsupported-service-worker fallback stays usable and explains unavailable offline controls',

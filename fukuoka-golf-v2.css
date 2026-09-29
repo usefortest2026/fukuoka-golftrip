@@ -955,7 +955,7 @@ main {
   gap: 9px;
   padding: 10px 14px;
   border: 1px solid #cbdaca;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
   color: #24643d;
   font: inherit;
@@ -967,77 +967,69 @@ main {
 }
 
 .v2-coupon-download-icon {
-  display: inline-grid;
-  width: 22px;
-  height: 22px;
-  place-items: center;
-  border-radius: 50%;
-  background: #e1eee0;
-  font-size: 15px;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  background: transparent;
+  font-size: 14px;
   line-height: 1;
 }
 
 .v2-coupon-download:disabled { cursor: wait; }
+.v2-coupon-download[data-state="downloading"] { background: #f7faf6; }
 .v2-coupon-download[data-state="ready"] { cursor: default; background: #edf5e7; }
+.v2-coupon-download[data-state="unavailable"] { cursor: default; border-color: #d8dadf; background: #f0f2f5; color: #71717a; }
 .v2-coupon-download[data-state="ready"] .v2-coupon-download-icon { color: transparent; font-size: 0; }
 .v2-coupon-download[data-state="ready"] .v2-coupon-download-icon::after { color: #24643d; content: '✓'; font-size: 15px; line-height: 1; }
 .v2-coupon-download-status {
-  min-height: 18px;
-  margin: 0;
+  margin: 6px 0 0;
   color: #656b67;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
-  text-align: center;
+  text-align: left;
 }
+.v2-coupon-download-status:empty { display: none; }
+.v2-coupon-download[data-state="partial"] + .v2-coupon-download-status { color: #80580d; }
 
 .v2-coupon-download:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
 .v2-coupon-download:active:not(:disabled) { transform: scale(.985); }
 
 .v2-offline-tools {
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
-  gap: 4px 11px;
-  align-items: center;
-  margin: -6px 0 24px;
-  padding: 13px 14px;
-  border: 1px solid #dfe8e1;
-  border-radius: 12px;
-  background: #f7faf6;
-}
-
-.v2-offline-tools-icon {
-  display: inline-grid;
-  grid-row: 1 / span 2;
-  width: 36px;
-  height: 36px;
-  place-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 12px 0 24px;
+  padding: 14px 12px;
+  border: 1px solid #d8dadf;
   border-radius: 10px;
-  background: #e1eee0;
-  color: #24643d;
-  font-size: 18px;
-  font-weight: 800;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(24, 24, 27, .035);
 }
 
 .v2-offline-tools-copy { min-width: 0; }
 .v2-offline-tools h3,
 .v2-offline-tools p { margin: 0; }
-.v2-offline-tools h3 { color: #173629; font-size: 14px; line-height: 1.4; }
+.v2-offline-tools h3 { color: #18181b; font-size: 15px; font-weight: 800; line-height: 1.4; }
 .v2-offline-ready-status,
 .v2-install-guidance,
-.v2-offline-network-note { color: #656b67; font-size: 12px; line-height: 1.5; }
+.v2-offline-network-note { color: #65676b; font-size: 13px; line-height: 1.5; }
+.v2-offline-ready-status { display: flex; align-items: baseline; gap: 7px; margin-top: 2px !important; font-weight: 600; }
+.v2-offline-ready-status::before { color: #a1a1aa; content: '•'; font-size: 14px; line-height: 1; }
+.v2-offline-ready-status[data-state="ready"]::before { color: #24643d; content: '✓'; font-weight: 900; }
+.v2-offline-ready-status[data-state="unsupported"]::before { color: #a1a1aa; content: '•'; }
 .v2-install-guidance { margin-top: 2px !important; }
-.v2-offline-network-note { margin-top: 4px !important; color: #777d79 !important; font-size: 11px !important; }
+.v2-offline-network-note { margin-top: 6px !important; color: #71717a !important; font-size: 12px !important; }
 
 .v2-install-button {
-  grid-column: 2;
+  grid-column: 1;
   justify-self: start;
-  min-height: 38px;
-  margin-top: 5px;
-  padding: 8px 13px;
-  border: 0;
-  border-radius: 9px;
-  background: #24643d;
-  color: #fff;
+  min-height: 44px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid #bad3c1;
+  border-radius: 8px;
+  background: #edf5e7;
+  color: #24643d;
   font: inherit;
   font-size: 12px;
   font-weight: 800;
@@ -1209,7 +1201,7 @@ main {
   .v2-scan-coupon-caption .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .v2-scan-coupon > summary:hover { background: #f8faf8; }
   .v2-coupon-download:hover:not(:disabled) { background: #edf5e7; }
-  .v2-install-button:hover { background: #173629; }
+  .v2-install-button:hover { background: #e3efe0; }
   .hero .lang-switch:hover { background: #24643d; color: #fff; }
   .v2-quick-action .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .private-info-form button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
