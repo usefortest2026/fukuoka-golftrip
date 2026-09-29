@@ -94,11 +94,14 @@ function assertValidGroups(result, file) {
     `${file} includes every visible draw unit exactly once`,
   );
   assert.equal(result.playerCount, 6, `${file} renders six result balls`);
-  assert.ok(result.liveText.length > 0, `${file} announces the result`);
+  assert.ok(result.announcement.length > 0, `${file} announces the result`);
 }
 
 await send('Page.enable');
 await send('Runtime.enable');
+await send('Network.enable');
+await send('Network.setBypassServiceWorker', { bypass: true });
+await send('Network.setCacheDisabled', { cacheDisabled: true });
 await send('Emulation.setDeviceMetricsOverride', {
   width: 390,
   height: 844,
@@ -149,6 +152,51 @@ for (const file of files) {
   assert.equal(opened.bodyLocked, true);
   assert.equal(opened.activeInside, true);
 
+  const visualTreatment = await evaluate(`(() => {
+    function rgb(value) {
+      return (value.match(/[\\d.]+/g) || []).slice(0, 3).map(Number);
+    }
+    function luminance(value) {
+      const channels = rgb(value).map((channel) => {
+        const normalized = channel / 255;
+        return normalized <= .04045 ? normalized / 12.92 : ((normalized + .055) / 1.055) ** 2.4;
+      });
+      return .2126 * channels[0] + .7152 * channels[1] + .0722 * channels[2];
+    }
+    function contrast(foreground, background) {
+      const light = Math.max(luminance(foreground), luminance(background));
+      const dark = Math.min(luminance(foreground), luminance(background));
+      return (light + .05) / (dark + .05);
+    }
+
+    const entry = document.querySelector('#day2 > .golf-draw-entry');
+    const entryEyebrow = entry.querySelector('.golf-draw-entry-eyebrow');
+    const modal = document.querySelector('.golf-draw-modal');
+    const modalEyebrow = modal.querySelector('.golf-draw-eyebrow');
+    const ball = modal.querySelector('.golf-draw-ball');
+    const entryStyle = getComputedStyle(entry);
+    const modalStyle = getComputedStyle(modal);
+    const ballStyle = getComputedStyle(ball);
+    const entryEyebrowStyle = getComputedStyle(entryEyebrow);
+    const entryButtonStyle = getComputedStyle(entry.querySelector('.golf-draw-entry-button'));
+    return {
+      entryEyebrowDisplay: entryEyebrowStyle.display,
+      entryBackgroundLuminance: luminance(entryStyle.backgroundColor),
+      entryButtonBackgroundLuminance: luminance(entryButtonStyle.backgroundColor),
+      entryButtonContrast: contrast(entryButtonStyle.color, entryButtonStyle.backgroundColor),
+      modalEyebrowContrast: contrast(getComputedStyle(modalEyebrow).color, modalStyle.backgroundColor),
+      ballGradientLayers: (ballStyle.backgroundImage.match(/gradient\\(/g) || []).length,
+      ballTextContrast: contrast(ballStyle.color, 'rgb(248, 246, 238)'),
+    };
+  })()`);
+  assert.equal(visualTreatment.entryEyebrowDisplay, 'none', `${file} removes the promotional Golf Day label from the quiet entry card`);
+  assert.ok(visualTreatment.entryBackgroundLuminance >= .9, `${file} keeps the draw entry visually consistent with light itinerary cards`);
+  assert.ok(visualTreatment.entryButtonBackgroundLuminance >= .8, `${file} keeps the entry action visually secondary`);
+  assert.ok(visualTreatment.entryButtonContrast >= 4.5, `${file} keeps the entry action readable`);
+  assert.ok(visualTreatment.modalEyebrowContrast >= 4.5, `${file} keeps the modal Golf Day label readable`);
+  assert.ok(visualTreatment.ballGradientLayers >= 3, `${file} gives the draw balls a layered golf-ball texture`);
+  assert.ok(visualTreatment.ballTextContrast >= 4.5, `${file} keeps names readable over the ivory golf balls`);
+
   await click('[data-golf-draw-start]');
   await click('[data-golf-draw-start]');
   const drawing = await evaluate(`(() => {
@@ -173,17 +221,26 @@ for (const file of files) {
         .reduce((sum, player) => sum + Number(player.dataset.playerSize), 0)),
       names: players.map((player) => player.textContent.trim()),
       playerCount: players.length,
-      liveText: modal.querySelector('[data-golf-draw-status]').textContent.trim(),
+      statusText: modal.querySelector('[data-golf-draw-status]').textContent.trim(),
+      announcement: modal.querySelector('[data-golf-draw-announcement]').textContent.trim(),
+      announcementHidden: modal.querySelector('[data-golf-draw-announcement]').getBoundingClientRect().width <= 1,
+      announcementRole: modal.querySelector('[data-golf-draw-announcement]').getAttribute('role'),
+      announcementLive: modal.querySelector('[data-golf-draw-announcement]').getAttribute('aria-live'),
       drawAgainVisible: !modal.querySelector('[data-golf-draw-again]').hidden,
     };
   })()`);
   assert.equal(result.state, 'complete');
   assert.equal(result.drawAgainVisible, true);
+  assert.equal(result.announcementHidden, true, `${file} keeps the detailed roster visually hidden`);
+  assert.equal(result.announcementRole, 'status');
+  assert.equal(result.announcementLive, 'polite');
   assertValidGroups(result, file);
   if (file.includes('-en')) {
-    assert.match(result.liveText, /^Groups are ready\. Group 1: .+; Group 2: .+$/);
+    assert.equal(result.statusText, 'Groups are ready');
+    assert.match(result.announcement, /^Groups are ready\. Group 1: .+; Group 2: .+$/);
   } else {
-    assert.match(result.liveText, /^分組完成。第一組：.+；第二組：.+$/);
+    assert.equal(result.statusText, '分組完成');
+    assert.match(result.announcement, /^分組完成。第一組：.+；第二組：.+$/);
   }
 
   await click('[data-golf-draw-again]');
@@ -198,7 +255,7 @@ for (const file of files) {
         .reduce((sum, player) => sum + Number(player.dataset.playerSize), 0)),
       names: players.map((player) => player.textContent.trim()),
       playerCount: players.length,
-      liveText: modal.querySelector('[data-golf-draw-status]').textContent.trim(),
+      announcement: modal.querySelector('[data-golf-draw-announcement]').textContent.trim(),
     };
   })()`), file);
 

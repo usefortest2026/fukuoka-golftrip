@@ -1571,55 +1571,62 @@ details > summary {
 .golf-draw-entry {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
-  margin: 20px 0 12px;
-  padding: 18px;
-  background: #173629;
-  color: #f7fbf4;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(23, 54, 41, .13);
+  margin: 12px 0 16px;
+  padding: 14px 12px;
+  border: 1px solid #d8dadf;
+  border-radius: 10px;
+  background: #fff;
+  color: #18181b;
+  box-shadow: 0 2px 8px rgba(24, 24, 27, .035);
 }
 
 .golf-draw-entry-copy { min-width: 0; }
-.golf-draw-entry-eyebrow,
+.golf-draw-entry-eyebrow { display: none; }
 .golf-draw-eyebrow {
   display: block;
-  color: #cfe5c5;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .12em;
+  color: #24643d;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .1em;
   text-transform: uppercase;
 }
 
 .golf-draw-entry-title {
-  margin: 3px 0 2px;
-  color: #fff;
-  font-size: 17px;
+  margin: 0 0 2px;
+  color: #18181b;
+  font-size: 15px;
+  font-weight: 800;
   line-height: 1.4;
 }
 
 .golf-draw-entry-body {
   margin: 0;
-  color: #dce8d7;
+  color: #65676b;
   font-size: 13px;
+  font-weight: 500;
   line-height: 1.5;
 }
 
 .golf-draw-entry-button,
 .golf-draw-primary {
   min-height: 44px;
-  border: 0;
-  border-radius: 10px;
-  padding: 10px 16px;
-  background: #eef6e8;
-  color: #173629;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 12px;
   font: inherit;
   font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
   cursor: pointer;
   transition: transform 140ms cubic-bezier(.16, 1, .3, 1), background-color 180ms cubic-bezier(.16, 1, .3, 1), opacity 180ms cubic-bezier(.16, 1, .3, 1);
+}
+
+.golf-draw-entry-button {
+  border-color: #bad3c1;
+  background: #edf5e7;
+  color: #24643d;
 }
 
 .golf-draw-entry-button:active,
@@ -1728,14 +1735,19 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
   min-width: 0;
   align-items: center;
   justify-content: center;
-  border: 1px solid #d4dbd0;
+  border: 1px solid #d4d8cc;
   border-radius: 50%;
-  background: radial-gradient(circle at 34% 28%, #fff 0 15%, #f5f6ef 43%, #dfe5da 100%);
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, .9) 0 8%, transparent 30%),
+    radial-gradient(circle at 50% 50%, rgba(23, 54, 41, .09) 0 1.4px, rgba(255, 255, 255, .52) 1.5px 2.2px, transparent 2.3px) 0 0 / 13px 13px,
+    linear-gradient(145deg, #fbf9f1, #ede9dc);
   color: #173629;
-  box-shadow: inset -5px -7px 12px rgba(23, 54, 41, .08), 0 7px 16px rgba(23, 54, 41, .09);
+  box-shadow: inset -3px -4px 7px rgba(23, 54, 41, .055), 0 6px 14px rgba(23, 54, 41, .1);
   font-size: clamp(13px, 4vw, 16px);
   font-weight: 800;
+  line-height: 1.2;
   text-align: center;
+  text-shadow: 0 1px rgba(255, 255, 255, .7);
 }
 
 .golf-draw-modal[data-state="drawing"] .golf-draw-ball {
@@ -1754,9 +1766,9 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
 .golf-draw-group {
   min-width: 0;
   padding: 14px 10px 12px;
-  border-top: 3px solid #34744d;
+  border-top: 2px solid #34744d;
   background: #fff;
-  border-radius: 4px 4px 12px 12px;
+  border-radius: 4px 4px 10px 10px;
   box-shadow: 0 8px 24px rgba(23, 54, 41, .07);
 }
 
@@ -1775,6 +1787,7 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
 
 .golf-draw-player {
   width: 100%;
+  box-shadow: inset -3px -4px 7px rgba(23, 54, 41, .045), 0 3px 8px rgba(23, 54, 41, .08);
   font-size: 12px;
   animation: golfDrawPlayerIn 420ms cubic-bezier(.16, 1, .3, 1) both;
   animation-delay: calc(var(--player-index) * 70ms);
@@ -1788,6 +1801,18 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
   font-weight: 600;
   line-height: 1.5;
   text-align: center;
+}
+
+.golf-draw-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .golf-draw-actions { display: grid; }
@@ -1813,12 +1838,12 @@ body.golf-draw-open .app { overflow: hidden; }
 }
 
 @keyframes golfDrawShuffle {
-  from { transform: translate3d(calc(var(--ball-x) * -1), calc(var(--ball-y) * -1), 0) rotate(-7deg); }
-  to { transform: translate3d(var(--ball-x), var(--ball-y), 0) rotate(7deg); }
+  from { transform: translate3d(calc(var(--ball-x) * -1), calc(var(--ball-y) * -1), 0) rotate(-4deg); }
+  to { transform: translate3d(var(--ball-x), var(--ball-y), 0) rotate(4deg); }
 }
 
 @keyframes golfDrawPlayerIn {
-  from { opacity: 0; transform: translate3d(0, -22px, 0) scale(.9); }
+  from { opacity: 0; transform: translate3d(0, -12px, 0) scale(.96); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
@@ -1835,7 +1860,7 @@ body.golf-draw-open .app { overflow: hidden; }
   .golf-draw-player { font-size: 14px; }
 }
 
-@media (max-width:360px) {
+@media (max-width:340px) {
   .golf-draw-entry { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
   .golf-draw-entry-button { width: 100%; }
   .golf-draw-shell { padding-left: 14px; padding-right: 14px; }
@@ -1846,7 +1871,7 @@ body.golf-draw-open .app { overflow: hidden; }
 }
 
 @media (hover:hover) and (pointer:fine) {
-  .golf-draw-entry-button:hover { background: #fff; transform: translateY(-1px); }
+  .golf-draw-entry-button:hover { background: #e3efe0; transform: translateY(-1px); }
   .golf-draw-primary:hover { background: #24513d; transform: translateY(-1px); }
   .golf-draw-close:hover { background: #d7e0d3; }
 }

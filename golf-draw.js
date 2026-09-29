@@ -201,8 +201,8 @@
       var ball = element(doc, 'span', 'golf-draw-ball', unit.name);
       ball.setAttribute('role', 'listitem');
       ball.style.setProperty('--ball-index', index);
-      ball.style.setProperty('--ball-x', ((index % 3) - 1) * 28 + 'px');
-      ball.style.setProperty('--ball-y', (index % 2 ? 18 : -16) + 'px');
+      ball.style.setProperty('--ball-x', ((index % 3) - 1) * 16 + 'px');
+      ball.style.setProperty('--ball-y', (index % 2 ? 10 : -9) + 'px');
       stage.appendChild(ball);
     });
 
@@ -223,8 +223,10 @@
 
     var status = element(doc, 'p', 'golf-draw-status', copy.ready);
     status.setAttribute('data-golf-draw-status', '');
-    status.setAttribute('role', 'status');
-    status.setAttribute('aria-live', 'polite');
+    var announcement = element(doc, 'p', 'golf-draw-announcement', copy.ready);
+    announcement.setAttribute('data-golf-draw-announcement', '');
+    announcement.setAttribute('role', 'status');
+    announcement.setAttribute('aria-live', 'polite');
 
     var actions = element(doc, 'div', 'golf-draw-actions');
     var startButton = element(doc, 'button', 'golf-draw-primary', copy.start);
@@ -242,6 +244,7 @@
     shell.appendChild(stage);
     shell.appendChild(results);
     shell.appendChild(status);
+    shell.appendChild(announcement);
     shell.appendChild(actions);
     modal.appendChild(shell);
     doc.body.appendChild(fallbackBackdrop);
@@ -264,6 +267,7 @@
       startButton.disabled = false;
       againButton.hidden = true;
       status.textContent = copy.ready;
+      announcement.textContent = copy.ready;
     }
 
     function renderGroup(list, units) {
@@ -291,7 +295,8 @@
         againButton.hidden = false;
         var namesA = groups.groupA.map(function (unit) { return unit.name; });
         var namesB = groups.groupB.map(function (unit) { return unit.name; });
-        status.textContent = locale === 'en'
+        status.textContent = copy.complete;
+        announcement.textContent = locale === 'en'
           ? copy.complete + '. ' + copy.groupA + ': ' + namesA.join(', ') + '; ' + copy.groupB + ': ' + namesB.join(', ')
           : copy.complete + '。' + copy.groupA + '：' + namesA.join('、') + '；' + copy.groupB + '：' + namesB.join('、');
       } catch (error) {
@@ -299,6 +304,7 @@
         modal.setAttribute('aria-busy', 'false');
         startButton.disabled = false;
         status.textContent = copy.error;
+        announcement.textContent = copy.error;
       }
     }
 
@@ -313,6 +319,7 @@
       startButton.disabled = true;
       againButton.hidden = true;
       status.textContent = copy.drawing;
+      announcement.textContent = copy.drawing;
       var reduced = root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches;
       drawTimer = root.setTimeout(finishDraw, reduced ? 80 : 1800);
     }
