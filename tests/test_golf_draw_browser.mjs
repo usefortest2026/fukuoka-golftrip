@@ -137,8 +137,10 @@ for (const file of files) {
       role: modal.getAttribute('role'),
       ariaModal: modal.getAttribute('aria-modal'),
       state: modal.dataset.state,
+      title: modal.querySelector('.golf-draw-title').textContent.trim(),
       names: [...modal.querySelectorAll('.golf-draw-ball')].map((ball) => ball.textContent.trim()).sort(),
-      ticketNumbers: [...modal.querySelectorAll('.golf-draw-ball')].map((ball) => ball.dataset.ticketNumber),
+      hasTicketNumbers: [...modal.querySelectorAll('.golf-draw-ball')].some((ball) => ball.hasAttribute('data-ticket-number')),
+      statusHidden: modal.querySelector('[data-golf-draw-status]').hidden,
       hasHiddenPartnerCopy: modal.textContent.includes('女伴'),
       bodyLocked: document.body.classList.contains('golf-draw-open'),
       activeInside: modal.contains(document.activeElement),
@@ -148,8 +150,10 @@ for (const file of files) {
   assert.equal(opened.role, 'dialog');
   assert.equal(opened.ariaModal, 'true');
   assert.equal(opened.state, 'ready');
+  assert.equal(opened.title, file.includes('-en') ? 'Today’s groups' : '今日分組');
   assert.deepEqual(opened.names, ['偉哥', 'Asa', '小林', 'Derek', 'Jack', 'Alex'].sort());
-  assert.deepEqual(opened.ticketNumbers, ['01', '02', '03', '04', '05', '06']);
+  assert.equal(opened.hasTicketNumbers, false, `${file} removes decorative roster numbering`);
+  assert.equal(opened.statusHidden, true, `${file} does not repeat a ready message under the visible roster`);
   assert.equal(opened.hasHiddenPartnerCopy, false);
   assert.equal(opened.bodyLocked, true);
   assert.equal(opened.activeInside, true);
@@ -165,6 +169,7 @@ for (const file of files) {
     const entryStyle = getComputedStyle(entry);
     const modalStyle = getComputedStyle(modal);
     const ballStyle = getComputedStyle(ball);
+    const stageStyle = getComputedStyle(modal.querySelector('.golf-draw-stage'));
     const entryEyebrowStyle = getComputedStyle(entryEyebrow);
     const entryButtonStyle = getComputedStyle(entry.querySelector('.golf-draw-entry-button'));
     const modalEyebrowStyle = getComputedStyle(modalEyebrow);
@@ -181,7 +186,10 @@ for (const file of files) {
       modalHeight: modalRect.height,
       modalBottomGap: Math.abs(innerHeight - modalRect.bottom),
       modalRadius: modalStyle.borderTopLeftRadius,
-      ticketRadius: ballStyle.borderRadius,
+      rosterDisplay: stageStyle.display,
+      rosterFlexWrap: stageStyle.flexWrap,
+      ticketBorderStyle: ballStyle.borderStyle,
+      ticketBackground: ballStyle.backgroundColor,
       ticketAspectRatio: ballStyle.aspectRatio,
       ticketBackgroundImage: ballStyle.backgroundImage,
       ticketBoxShadow: ballStyle.boxShadow,
@@ -196,10 +204,13 @@ for (const file of files) {
   assert.equal(visualTreatment.entryButtonBackground, 'rgba(0, 0, 0, 0)', `${file} treats the entry action as a quiet text control`);
   assert.equal(visualTreatment.entryButtonBorderStyle, 'none');
   assert.equal(visualTreatment.modalEyebrowDisplay, 'none', `${file} removes the leftover Golf Day promotion from the sheet`);
-  assert.ok(visualTreatment.modalHeight < 700, `${file} keeps the draw in a compact bottom sheet`);
+  assert.ok(visualTreatment.modalHeight < 310, `${file} keeps the ready state genuinely compact`);
   assert.ok(visualTreatment.modalBottomGap <= 2, `${file} anchors the mobile sheet to the bottom edge`);
   assert.ok(parseFloat(visualTreatment.modalRadius) >= 18, `${file} gives the sheet a deliberate top edge`);
-  assert.ok(parseFloat(visualTreatment.ticketRadius) <= 6, `${file} renders scorecard slips instead of balls`);
+  assert.equal(visualTreatment.rosterDisplay, 'flex', `${file} presents one compact inline roster`);
+  assert.equal(visualTreatment.rosterFlexWrap, 'wrap');
+  assert.equal(visualTreatment.ticketBorderStyle, 'none', `${file} removes the six boxed name cards`);
+  assert.equal(visualTreatment.ticketBackground, 'rgba(0, 0, 0, 0)');
   assert.equal(visualTreatment.ticketAspectRatio, 'auto');
   assert.equal(visualTreatment.ticketBackgroundImage, 'none');
   assert.equal(visualTreatment.ticketBoxShadow, 'none');
@@ -235,10 +246,12 @@ for (const file of files) {
       announcementRole: modal.querySelector('[data-golf-draw-announcement]').getAttribute('role'),
       announcementLive: modal.querySelector('[data-golf-draw-announcement]').getAttribute('aria-live'),
       drawAgainVisible: !modal.querySelector('[data-golf-draw-again]').hidden,
+      statusHidden: modal.querySelector('[data-golf-draw-status]').hidden,
     };
   })()`);
   assert.equal(result.state, 'complete');
   assert.equal(result.drawAgainVisible, true);
+  assert.equal(result.statusHidden, true, `${file} lets the visible group rows be the completion message`);
   assert.equal(result.announcementHidden, true, `${file} keeps the detailed roster visually hidden`);
   assert.equal(result.announcementRole, 'status');
   assert.equal(result.announcementLive, 'polite');
@@ -246,22 +259,36 @@ for (const file of files) {
   const resultTreatment = await evaluate(`(() => {
     const results = document.querySelector('.golf-draw-results');
     const group = results.querySelector('.golf-draw-group');
+    const groups = [...results.querySelectorAll('.golf-draw-group')];
     const player = results.querySelector('.golf-draw-player');
+    const firstRect = groups[0].getBoundingClientRect();
+    const secondRect = groups[1].getBoundingClientRect();
+    const playerMarker = getComputedStyle(player, '::before').content;
     return {
       resultsBackground: getComputedStyle(results).backgroundColor,
+      resultsHeight: results.getBoundingClientRect().height,
       groupBackground: getComputedStyle(group).backgroundColor,
       groupShadow: getComputedStyle(group).boxShadow,
+      groupListDisplay: getComputedStyle(group.querySelector('.golf-draw-group-list')).display,
+      groupsStacked: secondRect.top >= firstRect.bottom - 1,
+      secondGroupLeftBorder: getComputedStyle(groups[1]).borderLeftWidth,
       playerRadius: getComputedStyle(player).borderRadius,
       playerAspectRatio: getComputedStyle(player).aspectRatio,
       playerShadow: getComputedStyle(player).boxShadow,
+      playerHasNumberMarker: playerMarker !== 'none' && playerMarker !== 'normal',
     };
   })()`);
-  assert.equal(resultTreatment.resultsBackground, 'rgb(250, 249, 243)', `${file} presents results as one scorecard sheet`);
+  assert.equal(resultTreatment.resultsBackground, 'rgba(0, 0, 0, 0)', `${file} keeps the two result rows out of another card`);
+  assert.ok(resultTreatment.resultsHeight <= 120, `${file} removes the empty column tail from uneven visible rosters`);
   assert.equal(resultTreatment.groupBackground, 'rgba(0, 0, 0, 0)', `${file} removes nested result cards`);
   assert.equal(resultTreatment.groupShadow, 'none');
+  assert.equal(resultTreatment.groupListDisplay, 'flex');
+  assert.equal(resultTreatment.groupsStacked, true, `${file} renders the two groups as horizontal rows`);
+  assert.equal(resultTreatment.secondGroupLeftBorder, '0px');
   assert.ok(parseFloat(resultTreatment.playerRadius) <= 2, `${file} presents the roster as ruled rows`);
   assert.equal(resultTreatment.playerAspectRatio, 'auto');
   assert.equal(resultTreatment.playerShadow, 'none');
+  assert.equal(resultTreatment.playerHasNumberMarker, false, `${file} removes decorative player numbering from results`);
   if (file.includes('-en')) {
     assert.equal(result.statusText, 'Groups are ready');
     assert.match(result.announcement, /^Groups are ready\. Group 1: .+; Group 2: .+$/);

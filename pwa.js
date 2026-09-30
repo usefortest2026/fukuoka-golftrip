@@ -2,12 +2,12 @@
   'use strict';
 
   var copy = document.documentElement.lang === 'en' ? {
-    download: 'Save coupons',
+    download: 'Save offline',
     downloading: 'Downloading {completed}/{total}',
     retry: 'Retry {count} missing coupon',
     retryMany: 'Retry {count} missing coupons',
     partial: 'Downloaded {completed}/{total}; {failed} failed.',
-    ready: 'Coupons saved',
+    ready: 'Saved',
     offlineTitle: 'Offline use',
     offlinePreparing: 'Preparing the itinerary for offline use…',
     offlineReady: 'Itinerary available offline',
@@ -19,12 +19,12 @@
     installGeneric: 'Use your browser menu to add this trip to your Home Screen.',
     installIOS: 'Tap Share → Add to Home Screen.'
   } : {
-    download: '儲存優惠券',
+    download: '離線儲存',
     downloading: '正在下載 {completed}/{total}',
     retry: '重試未完成的 {count} 張',
     retryMany: '重試未完成的 {count} 張',
     partial: '已下載 {completed}/{total}，{failed} 張失敗',
-    ready: '優惠券已儲存',
+    ready: '已儲存',
     offlineTitle: '離線使用',
     offlinePreparing: '正在準備離線行程…',
     offlineReady: '行程可離線使用',
@@ -60,7 +60,7 @@
       '<span class="v2-coupon-download-icon" aria-hidden="true">↓</span>' +
       '<span class="v2-coupon-download-label"></span></button>' +
       '<p class="v2-coupon-download-status" role="status" aria-live="polite"></p>';
-    (heading.lastElementChild || heading).appendChild(control);
+    heading.appendChild(control);
     couponButton = control.querySelector('.v2-coupon-download');
     couponLabel = control.querySelector('.v2-coupon-download-label');
     couponStatus = control.querySelector('.v2-coupon-download-status');
@@ -145,16 +145,19 @@
     if (isStandalone()) {
       installButton.hidden = true;
       installGuidance.hidden = true;
+      updateUtilityVisibility();
       return;
     }
     if (installPrompt) {
       installButton.hidden = false;
       installGuidance.hidden = true;
+      updateUtilityVisibility();
       return;
     }
     installButton.hidden = true;
-    installGuidance.hidden = false;
-    installGuidance.textContent = isIOS() ? copy.installIOS : copy.installGeneric;
+    installGuidance.hidden = !isIOS();
+    installGuidance.textContent = isIOS() ? copy.installIOS : '';
+    updateUtilityVisibility();
   }
 
   function setOfflineStatus(state, text) {
@@ -163,26 +166,41 @@
     offlineReadyStatus.textContent = text;
   }
 
-  function updateNetworkUI() {
+  function updateUtilityVisibility() {
     if (!offlineTools) return;
-    offlineTools.dataset.network = root.navigator.onLine === false ? 'offline' : 'online';
+    var offline = root.navigator.onLine === false;
+    var standalone = isStandalone();
+    var installAvailable = !standalone && Boolean(installPrompt);
+    var iosGuidanceAvailable = !standalone && !installPrompt && isIOS();
+    if (installButton) installButton.hidden = offline || !installAvailable;
+    if (installGuidance) installGuidance.hidden = offline || !iosGuidanceAvailable;
+    offlineTools.dataset.network = offline ? 'offline' : 'online';
+    offlineTools.dataset.mode = offline ? 'offline' : (installAvailable ? 'install' : (iosGuidanceAvailable ? 'guidance' : 'hidden'));
+    offlineTools.hidden = !(offline || installAvailable || iosGuidanceAvailable);
+    if (offlineReadyStatus) offlineReadyStatus.hidden = !offline;
+  }
+
+  function updateNetworkUI() {
+    updateUtilityVisibility();
   }
 
   function renderOfflineTools() {
-    var footer = document.querySelector('#overview .overview-foot');
-    if (!footer || document.querySelector('.v2-offline-tools')) return;
+    var header = document.querySelector('#more > .day-head');
+    if (!header || document.querySelector('.v2-offline-tools')) return;
     var tools = document.createElement('section');
     tools.className = 'v2-offline-tools';
+    tools.hidden = true;
     tools.setAttribute('aria-labelledby', 'offline-tools-title');
     tools.innerHTML = '<div class="v2-offline-tools-copy"><h3 id="offline-tools-title"></h3>' +
       '<p class="v2-offline-ready-status" role="status" aria-live="polite"></p>' +
       '<p class="v2-install-guidance"></p>' +
       '<p class="v2-offline-network-note"></p></div>' +
       '<button class="v2-install-button" type="button" hidden></button>';
-    footer.insertAdjacentElement('afterend', tools);
+    header.appendChild(tools);
     offlineTools = tools;
     tools.querySelector('h3').textContent = copy.offlineTitle;
     offlineReadyStatus = tools.querySelector('.v2-offline-ready-status');
+    offlineReadyStatus.hidden = true;
     setOfflineStatus('preparing', copy.offlinePreparing);
     installGuidance = tools.querySelector('.v2-install-guidance');
     tools.querySelector('.v2-offline-network-note').textContent = copy.networkNote;

@@ -191,6 +191,8 @@ const immutableProbe = await evaluate(`(async () => {
 assert.notEqual(immutableProbe.delivered, immutableProbe.sentinel, 'an old worker does not serve an old asset for a newer version URL');
 assert.equal(immutableProbe.retained, immutableProbe.sentinel, 'runtime fetches do not mutate an installed core cache');
 
+await navigate('fukuoka-golf.html?p=more&layout=1');
+
 const couponAssets = [
   'coupon-airport-dutyfree-zh.jpg',
   'coupon-alpen-zh.jpg',
@@ -210,59 +212,75 @@ const couponAssets = [
 ];
 
 await waitForValue(`Boolean(document.querySelector('.v2-coupon-download:not(:disabled)'))`, 'coupon download control');
-assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label')?.textContent.trim()`), '儲存優惠券');
+assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label')?.textContent.trim()`), '離線儲存');
 const utilityPresentation = await evaluate(`(() => {
   const couponIcon = document.querySelector('.v2-coupon-download-icon');
   const couponStatus = document.querySelector('.v2-coupon-download-status');
   const couponButton = document.querySelector('.v2-coupon-download');
   const couponHeading = document.querySelector('.v2-coupon-heading');
+  const couponTitle = couponHeading.querySelector('h2');
+  const couponSection = document.querySelector('.v2-trip-coupons');
+  const couponEyebrow = couponHeading.querySelector('.eyebrow');
+  const headingIcon = couponHeading.querySelector('.v2-coupon-heading-icon');
   const tools = document.querySelector('.v2-offline-tools');
   const networkNote = document.querySelector('.v2-offline-network-note');
   const iconStyle = getComputedStyle(couponIcon);
   const couponButtonStyle = getComputedStyle(couponButton);
-  const toolsStyle = getComputedStyle(tools);
-  const installButtonStyle = getComputedStyle(document.querySelector('.v2-install-button'));
+  const couponSectionStyle = getComputedStyle(couponSection);
+  const couponTitleRect = couponTitle.getBoundingClientRect();
+  const couponButtonRect = couponButton.getBoundingClientRect();
   return {
     couponIconWidth: couponIcon.getBoundingClientRect().width,
     couponIconBackground: iconStyle.backgroundColor,
     emptyCouponStatusDisplay: getComputedStyle(couponStatus).display,
-    couponControlInHeading: couponHeading.contains(couponButton),
-    couponButtonWidth: couponButton.getBoundingClientRect().width,
+    couponControlDirectlyInHeading: couponButton.closest('.v2-coupon-offline').parentElement === couponHeading,
+    couponButtonWidth: couponButtonRect.width,
     couponButtonBackground: couponButtonStyle.backgroundColor,
     couponButtonBorderStyle: couponButtonStyle.borderStyle,
-    hasOfflineIconTile: Boolean(tools.querySelector('.v2-offline-tools-icon')),
-    offlineTitle: tools.querySelector('h3').textContent.trim(),
-    offlineBackground: toolsStyle.backgroundColor,
-    offlineBoxShadow: toolsStyle.boxShadow,
-    offlineRadius: toolsStyle.borderRadius,
-    offlineBorderWidths: [toolsStyle.borderTopWidth, toolsStyle.borderRightWidth, toolsStyle.borderBottomWidth, toolsStyle.borderLeftWidth],
-    offlineMarginTop: parseFloat(toolsStyle.marginTop),
-    offlineState: document.querySelector('.v2-offline-ready-status').dataset.state,
-    networkNoteSize: getComputedStyle(networkNote).fontSize,
+    couponHeadingHeight: couponHeading.getBoundingClientRect().height,
+    couponTitleActionCenterGap: Math.abs((couponTitleRect.top + couponTitleRect.height / 2) - (couponButtonRect.top + couponButtonRect.height / 2)),
+    headingIconDisplay: getComputedStyle(headingIcon).display,
+    eyebrowDisplay: getComputedStyle(couponEyebrow).display,
+    couponSectionBackground: couponSectionStyle.backgroundColor,
+    couponSectionBorderStyle: couponSectionStyle.borderStyle,
+    couponSectionRadius: couponSectionStyle.borderRadius,
+    couponSectionPadding: couponSectionStyle.padding,
+    toolsInMoreHeader: tools.parentElement === document.querySelector('#more > .day-head'),
+    toolsHiddenOnline: tools.hidden,
+    toolsHeightOnline: tools.getBoundingClientRect().height,
+    toolsModeOnline: tools.dataset.mode,
+    toolsPositionOnline: getComputedStyle(tools).position,
+    installVisibleOnline: Boolean(tools.querySelector('.v2-install-button:not([hidden])')),
+    readyStatusHiddenOnline: document.querySelector('.v2-offline-ready-status').hidden,
     networkNoteDisplay: getComputedStyle(networkNote).display,
-    installButtonBackground: installButtonStyle.backgroundColor,
-    installButtonBorderStyle: installButtonStyle.borderStyle,
   };
 })()`);
 assert.ok(utilityPresentation.couponIconWidth <= 16, 'coupon download uses a small linear icon');
 assert.equal(utilityPresentation.couponIconBackground, 'rgba(0, 0, 0, 0)', 'coupon download removes the nested icon tile');
 assert.equal(utilityPresentation.emptyCouponStatusDisplay, 'none', 'empty coupon status does not reserve space');
-assert.equal(utilityPresentation.couponControlInHeading, true, 'coupon saving stays with the coupon heading instead of becoming a separate bar');
+assert.equal(utilityPresentation.couponControlDirectlyInHeading, true, 'coupon saving is a direct title-row action');
 assert.ok(utilityPresentation.couponButtonWidth < 180, 'coupon saving is a compact text action');
 assert.equal(utilityPresentation.couponButtonBackground, 'rgba(0, 0, 0, 0)');
 assert.equal(utilityPresentation.couponButtonBorderStyle, 'none');
-assert.equal(utilityPresentation.hasOfflineIconTile, false, 'offline tools remove the ambiguous download tile');
-assert.equal(utilityPresentation.offlineTitle, '離線使用');
-assert.equal(utilityPresentation.offlineBackground, 'rgba(0, 0, 0, 0)', 'offline status sits directly in the page footer');
-assert.equal(utilityPresentation.offlineBoxShadow, 'none');
-assert.equal(utilityPresentation.offlineRadius, '0px');
-assert.deepEqual(utilityPresentation.offlineBorderWidths, ['1px', '0px', '0px', '0px']);
-assert.ok(utilityPresentation.offlineMarginTop >= 0, 'offline tools use natural page rhythm');
-assert.equal(utilityPresentation.offlineState, 'ready');
-assert.equal(utilityPresentation.networkNoteSize, '12px');
-assert.equal(utilityPresentation.networkNoteDisplay, 'none', 'network-dependent exceptions stay hidden while online');
-assert.equal(utilityPresentation.installButtonBackground, 'rgba(0, 0, 0, 0)');
-assert.equal(utilityPresentation.installButtonBorderStyle, 'none');
+assert.ok(utilityPresentation.couponHeadingHeight < 90, 'coupon heading does not grow a separate download row');
+assert.ok(utilityPresentation.couponTitleActionCenterGap <= 12, 'coupon title and save action share one row');
+assert.equal(utilityPresentation.headingIconDisplay, 'none', 'coupon heading removes the decorative icon tile');
+assert.equal(utilityPresentation.eyebrowDisplay, 'none', 'coupon heading removes the redundant Shopping label');
+assert.equal(utilityPresentation.couponSectionBackground, 'rgba(0, 0, 0, 0)', 'coupon content is not wrapped in another card');
+assert.equal(utilityPresentation.couponSectionBorderStyle, 'none');
+assert.equal(utilityPresentation.couponSectionRadius, '0px');
+assert.equal(utilityPresentation.couponSectionPadding, '0px');
+assert.equal(utilityPresentation.toolsInMoreHeader, true, 'offline and install states live with the More heading');
+if (utilityPresentation.installVisibleOnline) {
+  assert.equal(utilityPresentation.toolsHiddenOnline, false, 'the native install action remains available when offered');
+  assert.equal(utilityPresentation.toolsModeOnline, 'install');
+  assert.equal(utilityPresentation.toolsPositionOnline, 'absolute', 'the install action does not create a footer row');
+} else {
+  assert.equal(utilityPresentation.toolsHiddenOnline, true, 'online mode removes the redundant offline row');
+  assert.equal(utilityPresentation.toolsHeightOnline, 0, 'hidden online tools reserve no vertical space');
+}
+assert.equal(utilityPresentation.readyStatusHiddenOnline, true);
+assert.equal(utilityPresentation.networkNoteDisplay, 'none');
 assert.deepEqual(
   await evaluate(`(async () => ({
     closed: [...document.querySelectorAll('.v2-scan-coupon')].every((item) => !item.open),
@@ -280,11 +298,20 @@ const workerConnection = await connectToServiceWorker();
 await workerConnection.send('Network.setBlockedURLs', { urls: ['*coupon-cocokara-zh.jpg*', '*coupon-cocokara-en.jpg*'] });
 await setOffline(true);
 await evaluate(`window.dispatchEvent(new Event('offline'))`);
-assert.equal(
-  await evaluate(`getComputedStyle(document.querySelector('.v2-offline-network-note')).display`),
-  'block',
-  'network-dependent exceptions appear when the device goes offline',
-);
+const offlineUtility = await evaluate(`(() => {
+  const tools = document.querySelector('.v2-offline-tools');
+  const status = document.querySelector('.v2-offline-ready-status');
+  return {
+    toolsHidden: tools.hidden,
+    toolsHeight: tools.getBoundingClientRect().height,
+    statusHidden: status.hidden,
+    networkNoteDisplay: getComputedStyle(document.querySelector('.v2-offline-network-note')).display,
+  };
+})()`);
+assert.equal(offlineUtility.toolsHidden, false, 'offline status becomes visible only when needed');
+assert.ok(offlineUtility.toolsHeight > 0, 'offline status has a compact visible surface');
+assert.equal(offlineUtility.statusHidden, false);
+assert.equal(offlineUtility.networkNoteDisplay, 'block', 'network-dependent exceptions appear only while offline');
 await workerConnection.send('Network.emulateNetworkConditions', {
   offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
 });
@@ -362,7 +389,7 @@ await workerConnection.send('Network.setBlockedURLs', { urls: [] });
 const requestsBeforeRetry = couponRequests.length;
 await evaluate(`document.querySelector('.v2-coupon-download').click()`);
 await waitForValue(`document.querySelector('.v2-coupon-download')?.dataset.state === 'ready'`, 'complete coupon cache');
-assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label').textContent.trim()`), '優惠券已儲存');
+assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label').textContent.trim()`), '已儲存');
 assert.equal(couponRequests.length - requestsBeforeRetry, 1, 'retry downloads only the one missing coupon');
 assert.equal(
   await evaluate(`(async () => {
@@ -375,17 +402,27 @@ assert.equal(
 
 await navigate('fukuoka-golf-en.html?p=more');
 await waitForValue(`document.querySelector('.v2-coupon-download')?.dataset.state === 'ready'`, 'English coupon status');
-assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label').textContent.trim()`), 'Coupons saved');
+assert.equal(await evaluate(`document.querySelector('.v2-coupon-download-label').textContent.trim()`), 'Saved');
 
 const overviewTools = await evaluate(`({
-  finalChild: document.querySelector('#overview')?.lastElementChild?.classList.contains('v2-offline-tools'),
+  inMoreHeader: document.querySelector('.v2-offline-tools')?.parentElement === document.querySelector('#more > .day-head'),
   tabCount: document.querySelectorAll('#more > .tabs > .seg').length,
+  hidden: document.querySelector('.v2-offline-tools')?.hidden,
+  mode: document.querySelector('.v2-offline-tools')?.dataset.mode,
+  installVisible: Boolean(document.querySelector('.v2-install-button:not([hidden])')),
+  online: navigator.onLine,
   status: document.querySelector('.v2-offline-ready-status')?.textContent.trim(),
   networkNote: document.querySelector('.v2-offline-network-note')?.textContent.trim()
 })`);
-assert.equal(overviewTools.finalChild, true, 'offline tools follow the Overview footer');
+assert.equal(overviewTools.inMoreHeader, true, 'offline tools stay with the More heading');
 assert.equal(overviewTools.tabCount, 3, 'offline tools do not add a More sub-tab');
-assert.ok(overviewTools.status, 'offline-ready status remains visible');
+if (overviewTools.installVisible) {
+  assert.equal(overviewTools.hidden, false, 'a native browser install prompt may expose only the install action');
+  assert.equal(overviewTools.mode, 'install');
+} else {
+  assert.equal(overviewTools.hidden, true, 'online mode hides the offline utility without a native install action');
+}
+assert.ok(overviewTools.status, 'offline-ready text remains available for the actual offline state');
 assert.equal(overviewTools.networkNote, 'Google Maps, live weather and external sites still require internet.');
 
 assert.equal(await evaluate(`(() => {
@@ -411,8 +448,23 @@ assert.deepEqual(
     };
   })()`),
   { minHeight: '44px', background: 'rgba(0, 0, 0, 0)', color: 'rgb(36, 100, 61)', borderStyle: 'none' },
-  'install action stays a quiet inline footer action',
+  'install action stays a quiet inline heading action',
 );
+await setOffline(true);
+await evaluate(`window.dispatchEvent(new Event('offline'))`);
+assert.equal(
+  await evaluate(`document.querySelector('.v2-install-button').hidden`),
+  true,
+  'the install action does not compete with the true offline status',
+);
+assert.equal(
+  await evaluate(`document.querySelector('.v2-offline-ready-status').hidden`),
+  false,
+  'the true offline status remains visible',
+);
+await setOffline(false);
+await evaluate(`window.dispatchEvent(new Event('online'))`);
+await waitForValue(`Boolean(document.querySelector('.v2-install-button:not([hidden])'))`, 'install action after reconnect');
 await evaluate(`document.querySelector('.v2-install-button').click()`);
 await waitForValue(`window.__installPromptCalls === 1`, 'one native install prompt');
 
@@ -446,12 +498,13 @@ await navigate('fukuoka-golf.html?p=more&mode=standalone');
 await waitForValue(`Boolean(document.querySelector('.v2-offline-tools'))`, 'standalone offline status');
 assert.deepEqual(
   await evaluate(`({
+    toolsHidden: document.querySelector('.v2-offline-tools').hidden,
     installVisible: Boolean(document.querySelector('.v2-install-button:not([hidden])')),
     guidanceVisible: Boolean(document.querySelector('.v2-install-guidance:not([hidden])')),
-    status: document.querySelector('.v2-offline-ready-status')?.textContent.trim()
+    statusVisible: Boolean(document.querySelector('.v2-offline-ready-status:not([hidden])'))
   })`),
-  { installVisible: false, guidanceVisible: false, status: '行程可離線使用' },
-  'standalone mode hides redundant install guidance but keeps offline status',
+  { toolsHidden: true, installVisible: false, guidanceVisible: false, statusVisible: false },
+  'standalone online mode removes every redundant install and offline status row',
 );
 await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: standaloneOverride.identifier });
 
