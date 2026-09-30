@@ -2,37 +2,37 @@
   'use strict';
 
   var copy = document.documentElement.lang === 'en' ? {
-    download: 'Download coupons for offline use',
+    download: 'Save coupons',
     downloading: 'Downloading {completed}/{total}',
     retry: 'Retry {count} missing coupon',
     retryMany: 'Retry {count} missing coupons',
     partial: 'Downloaded {completed}/{total}; {failed} failed.',
-    ready: 'Available offline',
+    ready: 'Coupons saved',
     offlineTitle: 'Offline use',
     offlinePreparing: 'Preparing the itinerary for offline use…',
-    offlineReady: 'Trip itinerary is available offline',
+    offlineReady: 'Itinerary available offline',
     offlineUnsupported: 'Offline trips are unavailable in this browser',
     networkNote: 'Google Maps, live weather and external sites still require internet.',
     couponUnsupported: 'Offline coupon downloads are unavailable in this browser',
     couponOfflineError: 'This coupon has not been downloaded. Connect to the internet and try again.',
-    install: 'Install trip app',
+    install: 'Add to Home Screen',
     installGeneric: 'Use your browser menu to add this trip to your Home Screen.',
     installIOS: 'Tap Share → Add to Home Screen.'
   } : {
-    download: '下載優惠券供離線使用',
+    download: '儲存優惠券',
     downloading: '正在下載 {completed}/{total}',
     retry: '重試未完成的 {count} 張',
     retryMany: '重試未完成的 {count} 張',
     partial: '已下載 {completed}/{total}，{failed} 張失敗',
-    ready: '已可離線使用',
+    ready: '優惠券已儲存',
     offlineTitle: '離線使用',
     offlinePreparing: '正在準備離線行程…',
-    offlineReady: '行程已可離線開啟',
+    offlineReady: '行程可離線使用',
     offlineUnsupported: '此瀏覽器不支援離線行程',
     networkNote: 'Google Maps、即時天氣與外部網站仍需網路。',
     couponUnsupported: '此瀏覽器不支援優惠券離線下載',
     couponOfflineError: '這張優惠券尚未下載，請連上網路後再試。',
-    install: '安裝到主畫面',
+    install: '加入主畫面',
     installGeneric: '可從瀏覽器選單將行程加入主畫面。',
     installIOS: '點分享，再選「加入主畫面」。'
   };
@@ -45,6 +45,7 @@
   var installButton;
   var installGuidance;
   var offlineReadyStatus;
+  var offlineTools;
 
   function format(template, values) {
     return template.replace(/\{(\w+)\}/g, function (_, key) { return values[key]; });
@@ -59,7 +60,7 @@
       '<span class="v2-coupon-download-icon" aria-hidden="true">↓</span>' +
       '<span class="v2-coupon-download-label"></span></button>' +
       '<p class="v2-coupon-download-status" role="status" aria-live="polite"></p>';
-    heading.insertAdjacentElement('afterend', control);
+    (heading.lastElementChild || heading).appendChild(control);
     couponButton = control.querySelector('.v2-coupon-download');
     couponLabel = control.querySelector('.v2-coupon-download-label');
     couponStatus = control.querySelector('.v2-coupon-download-status');
@@ -162,6 +163,11 @@
     offlineReadyStatus.textContent = text;
   }
 
+  function updateNetworkUI() {
+    if (!offlineTools) return;
+    offlineTools.dataset.network = root.navigator.onLine === false ? 'offline' : 'online';
+  }
+
   function renderOfflineTools() {
     var footer = document.querySelector('#overview .overview-foot');
     if (!footer || document.querySelector('.v2-offline-tools')) return;
@@ -174,6 +180,7 @@
       '<p class="v2-offline-network-note"></p></div>' +
       '<button class="v2-install-button" type="button" hidden></button>';
     footer.insertAdjacentElement('afterend', tools);
+    offlineTools = tools;
     tools.querySelector('h3').textContent = copy.offlineTitle;
     offlineReadyStatus = tools.querySelector('.v2-offline-ready-status');
     setOfflineStatus('preparing', copy.offlinePreparing);
@@ -188,6 +195,7 @@
       prompt.prompt();
       Promise.resolve(prompt.userChoice).finally(updateInstallUI);
     });
+    updateNetworkUI();
     updateInstallUI();
   }
 
@@ -297,6 +305,9 @@
     installPrompt = null;
     updateInstallUI();
   });
+
+  root.addEventListener('online', updateNetworkUI);
+  root.addEventListener('offline', updateNetworkUI);
 
   root.FukuokaPWA = { register: register };
   register();

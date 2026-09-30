@@ -99,16 +99,16 @@
   var COPY = {
     zh: {
       eyebrow: 'Golf Day',
-      entryTitle: '今日分組抽籤',
-      entryBody: '六顆球分成兩組，關閉後不保留結果。',
-      open: '開始抽籤',
+      entryTitle: '今天分組',
+      entryBody: '到球場再抽；關閉後不保留結果。',
+      open: '開始分組',
       dialogTitle: '今天誰跟誰一組？',
-      dialogBody: '按下開始後，六顆球會隨機落入兩組。',
-      start: '開始抽籤',
+      dialogBody: '按下開始後，六人會隨機分成兩組。',
+      start: '開始分組',
       again: '再抽一次',
       close: '關閉',
-      ready: '準備好了，按下開始抽籤。',
-      drawing: '正在洗牌…',
+      ready: '六人名單已就緒',
+      drawing: '正在分組…',
       complete: '分組完成',
       groupA: '第一組',
       groupB: '第二組',
@@ -116,16 +116,16 @@
     },
     en: {
       eyebrow: 'Golf Day',
-      entryTitle: 'Today’s group draw',
-      entryBody: 'Six balls, two groups. Results disappear when you close.',
-      open: 'Start the draw',
+      entryTitle: 'Today’s groups',
+      entryBody: 'Draw at the course. Results disappear when you close.',
+      open: 'Make groups',
       dialogTitle: 'Who’s playing together today?',
-      dialogBody: 'Start the draw and watch six balls land in two groups.',
-      start: 'Start the draw',
+      dialogBody: 'Start when everyone is ready. Six names will split into two groups.',
+      start: 'Make groups',
       again: 'Draw again',
       close: 'Close',
-      ready: 'Ready when you are.',
-      drawing: 'Shuffling the balls…',
+      ready: 'Six names ready',
+      drawing: 'Making groups…',
       complete: 'Groups are ready',
       groupA: 'Group 1',
       groupB: 'Group 2',
@@ -200,9 +200,10 @@
     DRAW_UNITS.forEach(function (unit, index) {
       var ball = element(doc, 'span', 'golf-draw-ball', unit.name);
       ball.setAttribute('role', 'listitem');
+      ball.dataset.ticketNumber = (index + 1 < 10 ? '0' : '') + (index + 1);
       ball.style.setProperty('--ball-index', index);
-      ball.style.setProperty('--ball-x', ((index % 3) - 1) * 16 + 'px');
-      ball.style.setProperty('--ball-y', (index % 2 ? 10 : -9) + 'px');
+      ball.style.setProperty('--ball-x', ((index % 3) - 1) * 6 + 'px');
+      ball.style.setProperty('--ball-y', (index % 2 ? 4 : -4) + 'px');
       stage.appendChild(ball);
     });
 

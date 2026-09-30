@@ -138,6 +138,7 @@ for (const file of files) {
       ariaModal: modal.getAttribute('aria-modal'),
       state: modal.dataset.state,
       names: [...modal.querySelectorAll('.golf-draw-ball')].map((ball) => ball.textContent.trim()).sort(),
+      ticketNumbers: [...modal.querySelectorAll('.golf-draw-ball')].map((ball) => ball.dataset.ticketNumber),
       hasHiddenPartnerCopy: modal.textContent.includes('女伴'),
       bodyLocked: document.body.classList.contains('golf-draw-open'),
       activeInside: modal.contains(document.activeElement),
@@ -148,27 +149,14 @@ for (const file of files) {
   assert.equal(opened.ariaModal, 'true');
   assert.equal(opened.state, 'ready');
   assert.deepEqual(opened.names, ['偉哥', 'Asa', '小林', 'Derek', 'Jack', 'Alex'].sort());
+  assert.deepEqual(opened.ticketNumbers, ['01', '02', '03', '04', '05', '06']);
   assert.equal(opened.hasHiddenPartnerCopy, false);
   assert.equal(opened.bodyLocked, true);
   assert.equal(opened.activeInside, true);
 
-  const visualTreatment = await evaluate(`(() => {
-    function rgb(value) {
-      return (value.match(/[\\d.]+/g) || []).slice(0, 3).map(Number);
-    }
-    function luminance(value) {
-      const channels = rgb(value).map((channel) => {
-        const normalized = channel / 255;
-        return normalized <= .04045 ? normalized / 12.92 : ((normalized + .055) / 1.055) ** 2.4;
-      });
-      return .2126 * channels[0] + .7152 * channels[1] + .0722 * channels[2];
-    }
-    function contrast(foreground, background) {
-      const light = Math.max(luminance(foreground), luminance(background));
-      const dark = Math.min(luminance(foreground), luminance(background));
-      return (light + .05) / (dark + .05);
-    }
+  await evaluate(`Promise.all(document.querySelector('.golf-draw-modal').getAnimations().map((animation) => animation.finished.catch(() => {})))`);
 
+  const visualTreatment = await evaluate(`(() => {
     const entry = document.querySelector('#day2 > .golf-draw-entry');
     const entryEyebrow = entry.querySelector('.golf-draw-entry-eyebrow');
     const modal = document.querySelector('.golf-draw-modal');
@@ -179,23 +167,43 @@ for (const file of files) {
     const ballStyle = getComputedStyle(ball);
     const entryEyebrowStyle = getComputedStyle(entryEyebrow);
     const entryButtonStyle = getComputedStyle(entry.querySelector('.golf-draw-entry-button'));
+    const modalEyebrowStyle = getComputedStyle(modalEyebrow);
+    const modalRect = modal.getBoundingClientRect();
     return {
       entryEyebrowDisplay: entryEyebrowStyle.display,
-      entryBackgroundLuminance: luminance(entryStyle.backgroundColor),
-      entryButtonBackgroundLuminance: luminance(entryButtonStyle.backgroundColor),
-      entryButtonContrast: contrast(entryButtonStyle.color, entryButtonStyle.backgroundColor),
-      modalEyebrowContrast: contrast(getComputedStyle(modalEyebrow).color, modalStyle.backgroundColor),
-      ballGradientLayers: (ballStyle.backgroundImage.match(/gradient\\(/g) || []).length,
-      ballTextContrast: contrast(ballStyle.color, 'rgb(248, 246, 238)'),
+      entryBackground: entryStyle.backgroundColor,
+      entryBoxShadow: entryStyle.boxShadow,
+      entryRadius: entryStyle.borderRadius,
+      entryBorderWidths: [entryStyle.borderTopWidth, entryStyle.borderRightWidth, entryStyle.borderBottomWidth, entryStyle.borderLeftWidth],
+      entryButtonBackground: entryButtonStyle.backgroundColor,
+      entryButtonBorderStyle: entryButtonStyle.borderStyle,
+      modalEyebrowDisplay: modalEyebrowStyle.display,
+      modalHeight: modalRect.height,
+      modalBottomGap: Math.abs(innerHeight - modalRect.bottom),
+      modalRadius: modalStyle.borderTopLeftRadius,
+      ticketRadius: ballStyle.borderRadius,
+      ticketAspectRatio: ballStyle.aspectRatio,
+      ticketBackgroundImage: ballStyle.backgroundImage,
+      ticketBoxShadow: ballStyle.boxShadow,
+      ticketHeight: ball.getBoundingClientRect().height,
     };
   })()`);
-  assert.equal(visualTreatment.entryEyebrowDisplay, 'none', `${file} removes the promotional Golf Day label from the quiet entry card`);
-  assert.ok(visualTreatment.entryBackgroundLuminance >= .9, `${file} keeps the draw entry visually consistent with light itinerary cards`);
-  assert.ok(visualTreatment.entryButtonBackgroundLuminance >= .8, `${file} keeps the entry action visually secondary`);
-  assert.ok(visualTreatment.entryButtonContrast >= 4.5, `${file} keeps the entry action readable`);
-  assert.ok(visualTreatment.modalEyebrowContrast >= 4.5, `${file} keeps the modal Golf Day label readable`);
-  assert.ok(visualTreatment.ballGradientLayers >= 3, `${file} gives the draw balls a layered golf-ball texture`);
-  assert.ok(visualTreatment.ballTextContrast >= 4.5, `${file} keeps names readable over the ivory golf balls`);
+  assert.equal(visualTreatment.entryEyebrowDisplay, 'none', `${file} keeps the promotional label out of the itinerary`);
+  assert.equal(visualTreatment.entryBackground, 'rgba(0, 0, 0, 0)', `${file} flattens the draw entry into the day flow`);
+  assert.equal(visualTreatment.entryBoxShadow, 'none', `${file} removes the extra entry card elevation`);
+  assert.equal(visualTreatment.entryRadius, '0px', `${file} uses a scorecard rule instead of another rounded card`);
+  assert.deepEqual(visualTreatment.entryBorderWidths, ['1px', '0px', '1px', '0px']);
+  assert.equal(visualTreatment.entryButtonBackground, 'rgba(0, 0, 0, 0)', `${file} treats the entry action as a quiet text control`);
+  assert.equal(visualTreatment.entryButtonBorderStyle, 'none');
+  assert.equal(visualTreatment.modalEyebrowDisplay, 'none', `${file} removes the leftover Golf Day promotion from the sheet`);
+  assert.ok(visualTreatment.modalHeight < 700, `${file} keeps the draw in a compact bottom sheet`);
+  assert.ok(visualTreatment.modalBottomGap <= 2, `${file} anchors the mobile sheet to the bottom edge`);
+  assert.ok(parseFloat(visualTreatment.modalRadius) >= 18, `${file} gives the sheet a deliberate top edge`);
+  assert.ok(parseFloat(visualTreatment.ticketRadius) <= 6, `${file} renders scorecard slips instead of balls`);
+  assert.equal(visualTreatment.ticketAspectRatio, 'auto');
+  assert.equal(visualTreatment.ticketBackgroundImage, 'none');
+  assert.equal(visualTreatment.ticketBoxShadow, 'none');
+  assert.ok(visualTreatment.ticketHeight <= 52, `${file} keeps each player slip compact`);
 
   await click('[data-golf-draw-start]');
   await click('[data-golf-draw-start]');
@@ -235,6 +243,25 @@ for (const file of files) {
   assert.equal(result.announcementRole, 'status');
   assert.equal(result.announcementLive, 'polite');
   assertValidGroups(result, file);
+  const resultTreatment = await evaluate(`(() => {
+    const results = document.querySelector('.golf-draw-results');
+    const group = results.querySelector('.golf-draw-group');
+    const player = results.querySelector('.golf-draw-player');
+    return {
+      resultsBackground: getComputedStyle(results).backgroundColor,
+      groupBackground: getComputedStyle(group).backgroundColor,
+      groupShadow: getComputedStyle(group).boxShadow,
+      playerRadius: getComputedStyle(player).borderRadius,
+      playerAspectRatio: getComputedStyle(player).aspectRatio,
+      playerShadow: getComputedStyle(player).boxShadow,
+    };
+  })()`);
+  assert.equal(resultTreatment.resultsBackground, 'rgb(250, 249, 243)', `${file} presents results as one scorecard sheet`);
+  assert.equal(resultTreatment.groupBackground, 'rgba(0, 0, 0, 0)', `${file} removes nested result cards`);
+  assert.equal(resultTreatment.groupShadow, 'none');
+  assert.ok(parseFloat(resultTreatment.playerRadius) <= 2, `${file} presents the roster as ruled rows`);
+  assert.equal(resultTreatment.playerAspectRatio, 'auto');
+  assert.equal(resultTreatment.playerShadow, 'none');
   if (file.includes('-en')) {
     assert.equal(result.statusText, 'Groups are ready');
     assert.match(result.announcement, /^Groups are ready\. Group 1: .+; Group 2: .+$/);
@@ -289,6 +316,36 @@ for (const file of files) {
     `${file} closes on Escape and restores focus`,
   );
 }
+
+await send('Emulation.setDeviceMetricsOverride', {
+  width: 1024,
+  height: 900,
+  deviceScaleFactor: 1,
+  mobile: false,
+});
+await navigate('fukuoka-golf.html');
+await click('#day2 [data-golf-draw-open]');
+await evaluate(`Promise.all(document.querySelector('.golf-draw-modal').getAnimations().map((animation) => animation.finished.catch(() => {})))`);
+const desktopSheet = await evaluate(`(() => {
+  const modalRect = document.querySelector('.golf-draw-modal').getBoundingClientRect();
+  const shellRect = document.querySelector('.golf-draw-shell').getBoundingClientRect();
+  return {
+    modalHeight: modalRect.height,
+    shellHeight: shellRect.height,
+    centerOffset: Math.abs((innerHeight / 2) - (modalRect.top + modalRect.height / 2)),
+  };
+})()`);
+assert.ok(desktopSheet.modalHeight < 480, 'desktop keeps the draw dialog compact');
+assert.ok(Math.abs(desktopSheet.modalHeight - desktopSheet.shellHeight) <= 2, 'desktop dialog does not leave an empty tail below its content');
+assert.ok(desktopSheet.centerOffset <= 2, 'desktop centers the compact dialog');
+await click('[data-golf-draw-close]');
+
+await send('Emulation.setDeviceMetricsOverride', {
+  width: 390,
+  height: 844,
+  deviceScaleFactor: 2,
+  mobile: true,
+});
 
 const dialogFallbackOverride = await send('Page.addScriptToEvaluateOnNewDocument', {
   source: `

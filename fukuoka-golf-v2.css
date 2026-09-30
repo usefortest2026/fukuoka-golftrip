@@ -941,29 +941,31 @@ main {
 }
 
 .v2-coupon-offline {
-  display: grid;
-  gap: 5px;
-  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 8px;
+  margin-top: 4px;
 }
 
 .v2-coupon-download {
-  display: flex;
-  width: 100%;
+  display: inline-flex;
+  width: auto;
   min-height: 44px;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
-  padding: 10px 14px;
-  border: 1px solid #cbdaca;
-  border-radius: 8px;
-  background: #fff;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #24643d;
   font: inherit;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   line-height: 1.35;
   cursor: pointer;
-  transition: background-color 180ms cubic-bezier(.16, 1, .3, 1), transform 140ms cubic-bezier(.16, 1, .3, 1);
+  transition: color 140ms cubic-bezier(.16, 1, .3, 1), opacity 140ms cubic-bezier(.16, 1, .3, 1);
 }
 
 .v2-coupon-download-icon {
@@ -976,13 +978,14 @@ main {
 }
 
 .v2-coupon-download:disabled { cursor: wait; }
-.v2-coupon-download[data-state="downloading"] { background: #f7faf6; }
-.v2-coupon-download[data-state="ready"] { cursor: default; background: #edf5e7; }
-.v2-coupon-download[data-state="unavailable"] { cursor: default; border-color: #d8dadf; background: #f0f2f5; color: #71717a; }
+.v2-coupon-download[data-state="downloading"] { opacity: .72; }
+.v2-coupon-download[data-state="ready"] { cursor: default; }
+.v2-coupon-download[data-state="unavailable"] { cursor: default; color: #71717a; }
 .v2-coupon-download[data-state="ready"] .v2-coupon-download-icon { color: transparent; font-size: 0; }
 .v2-coupon-download[data-state="ready"] .v2-coupon-download-icon::after { color: #24643d; content: '✓'; font-size: 15px; line-height: 1; }
 .v2-coupon-download-status {
-  margin: 6px 0 0;
+  flex-basis: 100%;
+  margin: 0;
   color: #656b67;
   font-size: 12px;
   line-height: 1.5;
@@ -992,43 +995,62 @@ main {
 .v2-coupon-download[data-state="partial"] + .v2-coupon-download-status { color: #80580d; }
 
 .v2-coupon-download:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
-.v2-coupon-download:active:not(:disabled) { transform: scale(.985); }
+.v2-coupon-download:active:not(:disabled) { opacity: .66; }
 
 .v2-offline-tools {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 0;
-  margin: 12px 0 24px;
-  padding: 14px 12px;
-  border: 1px solid #d8dadf;
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(24, 24, 27, .035);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 12px;
+  margin: 16px 0 20px;
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid #d8dadf;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-.v2-offline-tools-copy { min-width: 0; }
+.v2-offline-tools-copy { min-width: 0; flex: 1 1 180px; }
 .v2-offline-tools h3,
 .v2-offline-tools p { margin: 0; }
-.v2-offline-tools h3 { color: #18181b; font-size: 15px; font-weight: 800; line-height: 1.4; }
+.v2-offline-tools h3 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .v2-offline-ready-status,
 .v2-install-guidance,
 .v2-offline-network-note { color: #65676b; font-size: 13px; line-height: 1.5; }
-.v2-offline-ready-status { display: flex; align-items: baseline; gap: 7px; margin-top: 2px !important; font-weight: 600; }
+.v2-offline-ready-status { display: flex; align-items: baseline; gap: 7px; font-weight: 700; }
 .v2-offline-ready-status::before { color: #a1a1aa; content: '•'; font-size: 14px; line-height: 1; }
 .v2-offline-ready-status[data-state="ready"]::before { color: #24643d; content: '✓'; font-weight: 900; }
 .v2-offline-ready-status[data-state="unsupported"]::before { color: #a1a1aa; content: '•'; }
-.v2-install-guidance { margin-top: 2px !important; }
-.v2-offline-network-note { margin-top: 6px !important; color: #71717a !important; font-size: 12px !important; }
+.v2-install-guidance { margin-top: 2px !important; font-size: 12px; }
+.v2-offline-network-note {
+  display: none;
+  flex-basis: 100%;
+  margin-top: 6px !important;
+  color: #71717a !important;
+  font-size: 12px !important;
+}
+.v2-offline-tools[data-network="offline"] .v2-offline-network-note { display: block; }
 
 .v2-install-button {
-  grid-column: 1;
-  justify-self: start;
+  flex: 0 0 auto;
   min-height: 44px;
-  margin-top: 10px;
-  padding: 8px 12px;
-  border: 1px solid #bad3c1;
-  border-radius: 8px;
-  background: #edf5e7;
+  margin: 0;
+  padding: 8px 0 8px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #24643d;
   font: inherit;
   font-size: 12px;
@@ -1039,7 +1061,7 @@ main {
 .v2-install-button[hidden],
 .v2-install-guidance[hidden] { display: none; }
 .v2-install-button:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
-.v2-install-button:active { transform: scale(.97); }
+.v2-install-button:active { opacity: .66; }
 
 .v2-passport-offers {
   display: grid;
@@ -1200,8 +1222,8 @@ main {
   .contact-actions .v2-nav-button:hover,
   .v2-scan-coupon-caption .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .v2-scan-coupon > summary:hover { background: #f8faf8; }
-  .v2-coupon-download:hover:not(:disabled) { background: #edf5e7; }
-  .v2-install-button:hover { background: #e3efe0; }
+  .v2-coupon-download:hover:not(:disabled),
+  .v2-install-button:hover { color: #173629; background: transparent; }
   .hero .lang-switch:hover { background: #24643d; color: #fff; }
   .v2-quick-action .v2-nav-button:hover { opacity: 1; background: transparent; transform: none; }
   .private-info-form button:hover { opacity: .86; transform: translateY(-1px); background: #edf5e7; }
@@ -1228,7 +1250,7 @@ main {
   .v2-trip-coupons { padding: 14px 12px; }
   .v2-scan-coupon-title b { max-width: 116px; text-align: right; white-space: normal; }
   .v2-scan-coupon-caption { align-items: flex-start; }
-  .v2-offline-tools { padding-inline: 12px; }
+  .v2-offline-tools { padding-inline: 0; }
 }
 
 @media (max-width:380px) {
@@ -1566,30 +1588,27 @@ details > summary {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
-  margin: 12px 0 16px;
-  padding: 14px 12px;
-  border: 1px solid #d8dadf;
-  border-radius: 10px;
-  background: #fff;
+  margin: 16px 0;
+  padding: 12px 0;
+  border: 0;
+  border-top: 1px solid #d8dadf;
+  border-bottom: 1px solid #d8dadf;
+  border-radius: 0;
+  background: transparent;
   color: #18181b;
-  box-shadow: 0 2px 8px rgba(24, 24, 27, .035);
+  box-shadow: none;
 }
 
 .golf-draw-entry-copy { min-width: 0; }
 .golf-draw-entry-eyebrow { display: none; }
 .golf-draw-eyebrow {
-  display: block;
-  color: #24643d;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  display: none;
 }
 
 .golf-draw-entry-title {
   margin: 0 0 2px;
   color: #18181b;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   line-height: 1.4;
 }
@@ -1597,7 +1616,7 @@ details > summary {
 .golf-draw-entry-body {
   margin: 0;
   color: #65676b;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   line-height: 1.5;
 }
@@ -1605,9 +1624,6 @@ details > summary {
 .golf-draw-entry-button,
 .golf-draw-primary {
   min-height: 44px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 8px 12px;
   font: inherit;
   font-size: 14px;
   font-weight: 800;
@@ -1617,8 +1633,10 @@ details > summary {
 }
 
 .golf-draw-entry-button {
-  border-color: #bad3c1;
-  background: #edf5e7;
+  padding: 8px 0 8px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #24643d;
 }
 
@@ -1628,14 +1646,15 @@ details > summary {
 .golf-draw-primary:disabled { cursor: wait; opacity: .58; }
 
 .golf-draw-modal {
-  width: min(100%, 500px);
+  width: min(calc(100% - 16px), 500px);
   max-width: none;
-  height: 100dvh;
-  max-height: none;
+  height: auto;
+  max-height: calc(100dvh - 12px);
   margin: 0 auto;
   padding: 0;
   border: 0;
-  background: #f0f3ed;
+  border-radius: 22px 22px 0 0;
+  background: #f4f5ef;
   color: #18181b;
   overflow: hidden;
 }
@@ -1655,9 +1674,9 @@ details > summary {
 .golf-draw-fallback-backdrop[hidden] { display: none !important; }
 .golf-draw-modal.is-fallback-open {
   position: fixed;
-  inset: 0;
+  inset: auto 0 0;
   z-index: 9999;
-  margin: auto;
+  margin: 0 auto;
 }
 
 body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-backdrop):not(script) {
@@ -1667,80 +1686,104 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
 
 .golf-draw-modal[open] {
   display: block;
-  animation: golfDrawModalIn 320ms cubic-bezier(.16, 1, .3, 1);
+  position: fixed;
+  inset: auto 0 0;
+  margin: 0 auto;
+  animation: golfDrawModalIn 260ms cubic-bezier(.16, 1, .3, 1);
 }
 
 .golf-draw-shell {
   position: relative;
   display: flex;
-  min-height: 100%;
   flex-direction: column;
-  padding: calc(24px + env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom));
+  max-height: calc(100dvh - 12px);
+  padding: 30px 20px max(20px, env(safe-area-inset-bottom));
   overflow-y: auto;
+}
+
+.golf-draw-shell::before {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 38px;
+  height: 3px;
+  border-radius: 999px;
+  background: #c8cec5;
+  content: '';
+  transform: translateX(-50%);
 }
 
 .golf-draw-close {
   position: absolute;
-  top: calc(12px + env(safe-area-inset-top));
-  right: 14px;
+  top: 20px;
+  right: 10px;
   display: inline-flex;
   width: 44px;
   height: 44px;
   align-items: center;
   justify-content: center;
   border: 0;
-  border-radius: 50%;
-  background: #e3e9df;
+  border-radius: 0;
+  background: transparent;
   color: #173629;
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 400;
   line-height: 1;
   cursor: pointer;
 }
 
-.golf-draw-heading { padding: 28px 52px 0 0; }
+.golf-draw-heading { padding: 14px 48px 0 0; }
 .golf-draw-title {
-  margin: 5px 0 4px;
+  margin: 0 0 4px;
   color: #173629;
-  font-size: clamp(24px, 7vw, 32px);
-  line-height: 1.2;
+  font-size: clamp(21px, 6vw, 27px);
+  line-height: 1.25;
 }
 
 .golf-draw-description {
   margin: 0;
   color: #596159;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.55;
 }
 
 .golf-draw-stage {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin: auto 0;
-  padding: 30px 8px;
+  gap: 8px;
+  margin: 20px 0;
+  padding: 0;
 }
 
-.golf-draw-ball,
-.golf-draw-player {
+.golf-draw-ball {
   display: flex;
-  aspect-ratio: 1;
+  aspect-ratio: auto;
+  min-height: 46px;
   min-width: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 7px;
+  padding: 8px;
   border: 1px solid #d4d8cc;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, .9) 0 8%, transparent 30%),
-    radial-gradient(circle at 50% 50%, rgba(23, 54, 41, .09) 0 1.4px, rgba(255, 255, 255, .52) 1.5px 2.2px, transparent 2.3px) 0 0 / 13px 13px,
-    linear-gradient(145deg, #fbf9f1, #ede9dc);
+  border-radius: 4px;
+  background: #faf9f3;
+  background-image: none;
   color: #173629;
-  box-shadow: inset -3px -4px 7px rgba(23, 54, 41, .055), 0 6px 14px rgba(23, 54, 41, .1);
-  font-size: clamp(13px, 4vw, 16px);
+  box-shadow: none;
+  font-size: clamp(12px, 3.7vw, 14px);
   font-weight: 800;
   line-height: 1.2;
-  text-align: center;
-  text-shadow: 0 1px rgba(255, 255, 255, .7);
+  text-align: left;
+}
+
+.golf-draw-ball::before {
+  flex: 0 0 auto;
+  color: #6d766c;
+  content: attr(data-ticket-number);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: .04em;
 }
 
 .golf-draw-modal[data-state="drawing"] .golf-draw-ball {
@@ -1751,44 +1794,75 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
 .golf-draw-results {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: auto 0;
-  padding: 24px 0;
+  gap: 0;
+  margin: 20px 0;
+  padding: 12px 0;
+  border: 1px solid #d4d8cc;
+  border-radius: 8px;
+  background: #faf9f3;
 }
 
 .golf-draw-group {
   min-width: 0;
-  padding: 14px 10px 12px;
-  border-top: 2px solid #34744d;
-  background: #fff;
-  border-radius: 4px 4px 10px 10px;
-  box-shadow: 0 8px 24px rgba(23, 54, 41, .07);
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
 }
 
+.golf-draw-group + .golf-draw-group { border-left: 1px solid #d8dad3; }
+
 .golf-draw-group h3 {
-  margin: 0 0 10px;
+  margin: 0 0 4px;
   color: #173629;
-  font-size: 15px;
-  text-align: center;
+  font-size: 13px;
+  letter-spacing: .04em;
+  text-align: left;
 }
 
 .golf-draw-group-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: 1fr;
+  gap: 0;
+  counter-reset: roster;
 }
 
 .golf-draw-player {
+  display: flex;
+  aspect-ratio: auto;
   width: 100%;
-  box-shadow: inset -3px -4px 7px rgba(23, 54, 41, .045), 0 3px 8px rgba(23, 54, 41, .08);
-  font-size: 12px;
-  animation: golfDrawPlayerIn 420ms cubic-bezier(.16, 1, .3, 1) both;
-  animation-delay: calc(var(--player-index) * 70ms);
+  min-height: 36px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 7px 0;
+  border: 0;
+  border-bottom: 1px solid #e1e2dc;
+  border-radius: 0;
+  background: transparent;
+  color: #173629;
+  box-shadow: none;
+  font-size: 13px;
+  font-weight: 800;
+  animation: golfDrawPlayerIn 280ms cubic-bezier(.16, 1, .3, 1) both;
+  animation-delay: calc(var(--player-index) * 45ms);
+}
+
+.golf-draw-player:last-child { border-bottom: 0; }
+.golf-draw-player::before {
+  min-width: 14px;
+  color: #6d766c;
+  content: counter(roster, decimal-leading-zero);
+  counter-increment: roster;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
 }
 
 .golf-draw-status {
   min-height: 24px;
-  margin: 4px 0 12px;
+  margin: 0 0 12px;
   color: #596159;
   font-size: 13px;
   font-weight: 600;
@@ -1811,9 +1885,12 @@ body.golf-draw-fallback-open > *:not(.golf-draw-modal):not(.golf-draw-fallback-b
 .golf-draw-actions { display: grid; }
 .golf-draw-primary {
   width: 100%;
+  padding: 9px 14px;
+  border: 1px solid #173629;
+  border-radius: 6px;
   background: #173629;
   color: #fff;
-  box-shadow: 0 5px 16px rgba(23, 54, 41, .16);
+  box-shadow: none;
 }
 
 body.golf-draw-open { overflow: hidden; }
@@ -1831,42 +1908,45 @@ body.golf-draw-open .app { overflow: hidden; }
 }
 
 @keyframes golfDrawShuffle {
-  from { transform: translate3d(calc(var(--ball-x) * -1), calc(var(--ball-y) * -1), 0) rotate(-4deg); }
-  to { transform: translate3d(var(--ball-x), var(--ball-y), 0) rotate(4deg); }
+  from { transform: translate3d(calc(var(--ball-x) * -1), calc(var(--ball-y) * -1), 0) rotate(-1deg); }
+  to { transform: translate3d(var(--ball-x), var(--ball-y), 0) rotate(1deg); }
 }
 
 @keyframes golfDrawPlayerIn {
-  from { opacity: 0; transform: translate3d(0, -12px, 0) scale(.96); }
+  from { opacity: 0; transform: translate3d(0, -6px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
 }
 
 @media (min-width:600px) {
   .golf-draw-modal {
-    height: min(720px, calc(100dvh - 48px));
+    height: fit-content;
+    max-height: min(620px, calc(100dvh - 48px));
     margin: auto;
     border-radius: 18px;
   }
 
-  .golf-draw-shell { min-height: 100%; padding: 32px; }
-  .golf-draw-close { top: 16px; right: 16px; }
-  .golf-draw-stage { padding-inline: 28px; }
+  .golf-draw-modal[open],
+  .golf-draw-modal.is-fallback-open { inset: 0; margin: auto; }
+  .golf-draw-shell { max-height: min(620px, calc(100dvh - 48px)); padding: 34px 32px 28px; }
+  .golf-draw-close { top: 22px; right: 18px; }
+  .golf-draw-stage { padding-inline: 0; }
   .golf-draw-player { font-size: 14px; }
 }
 
 @media (max-width:340px) {
-  .golf-draw-entry { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
-  .golf-draw-entry-button { width: 100%; }
+  .golf-draw-entry { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 12px 0; }
+  .golf-draw-entry-button { width: auto; padding-left: 8px; }
   .golf-draw-shell { padding-left: 14px; padding-right: 14px; }
-  .golf-draw-stage { gap: 9px; padding-inline: 0; }
-  .golf-draw-results { gap: 8px; }
-  .golf-draw-group { padding-inline: 7px; }
-  .golf-draw-group-list { gap: 6px; }
+  .golf-draw-stage { gap: 6px; padding-inline: 0; }
+  .golf-draw-results { gap: 0; }
+  .golf-draw-group { padding-inline: 9px; }
+  .golf-draw-group-list { gap: 0; }
 }
 
 @media (hover:hover) and (pointer:fine) {
-  .golf-draw-entry-button:hover { background: #e3efe0; transform: translateY(-1px); }
+  .golf-draw-entry-button:hover { color: #173629; }
   .golf-draw-primary:hover { background: #24513d; transform: translateY(-1px); }
-  .golf-draw-close:hover { background: #d7e0d3; }
+  .golf-draw-close:hover { color: #24643d; }
 }
 
 @media (prefers-reduced-motion:reduce) {
