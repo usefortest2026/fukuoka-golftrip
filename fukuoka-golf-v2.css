@@ -919,8 +919,6 @@ main {
 .v2-coupon-heading .eyebrow,
 .v2-coupon-heading h2,
 .v2-coupon-heading p,
-.v2-passport-offer h3,
-.v2-passport-offer p,
 .v2-scan-coupon h3 { margin: 0; }
 
 .v2-coupon-heading .eyebrow {
@@ -1075,44 +1073,6 @@ main {
 .v2-install-button:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
 .v2-install-button:active { opacity: .66; }
 
-.v2-passport-offers {
-  display: grid;
-  margin-top: 15px;
-  border-top: 1px solid #dfe8e1;
-  border-bottom: 1px solid #dfe8e1;
-}
-
-.v2-passport-offer {
-  padding: 13px 1px;
-  border-bottom: 1px solid #dfe8e1;
-}
-
-.v2-passport-offer:last-child { border-bottom: 0; }
-
-.v2-passport-offer > span {
-  display: inline-flex;
-  margin-bottom: 5px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: #fff0c9;
-  color: #80580d;
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.v2-passport-offer h3 {
-  color: #27272a;
-  font-size: 15px;
-  line-height: 1.4;
-}
-
-.v2-passport-offer p {
-  margin-top: 4px;
-  color: #656b67;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
 .v2-scan-coupons {
   display: grid;
   gap: 14px;
@@ -1203,6 +1163,24 @@ main {
   max-width: 850px;
   height: auto;
   margin: 0 auto;
+}
+
+.v2-passport-coupon-copy {
+  padding: 12px 13px;
+  border-top: 1px solid #edf0ed;
+  color: #656b67;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.v2-passport-coupon-copy p { margin: 0; }
+
+.v2-coupon-map-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 10px;
 }
 
 .v2-coupon-frame-note {
@@ -1557,20 +1535,6 @@ details > summary {
   }
 
   #overview .overview-day { padding: 16px; }
-
-  .v2-passport-offers {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    border: 1px solid #dfe8e1;
-    border-radius: 10px;
-  }
-
-  .v2-passport-offer {
-    padding: 14px;
-    border-right: 1px solid #dfe8e1;
-    border-bottom: 0;
-  }
-
-  .v2-passport-offer:last-child { border-right: 0; }
 
   .v2-scan-coupons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
