@@ -13,6 +13,7 @@ ENTRY_POINTS = (
 COUPON_ASSETS = {
     "coupon-airport-dutyfree-zh.jpg",
     "coupon-alpen-zh.jpg",
+    "coupon-biccamera-zh.jpg",
     "coupon-cocokara-en.jpg",
     "coupon-cocokara-zh.jpg",
     "coupon-cosmos-zh.jpg",

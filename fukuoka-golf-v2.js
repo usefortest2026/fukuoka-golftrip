@@ -53,6 +53,8 @@
     if (!details.open) return;
     var image = details.querySelector('.v2-coupon-image[data-src]');
     if (image && !image.hasAttribute('src')) image.src = image.dataset.src;
+    var frame = details.querySelector('.v2-coupon-frame[data-src]');
+    if (frame && !frame.hasAttribute('src')) frame.src = frame.dataset.src;
   }
 
   document.querySelectorAll('details.v2-scan-coupon').forEach(function (details) {

@@ -76,7 +76,7 @@ class PwaAssetsTest(unittest.TestCase):
 
     def test_release_version_is_aligned_across_offline_assets(self):
         version = (ROOT / "version.txt").read_text(encoding="utf-8").strip()
-        self.assertEqual("20261018-55", version)
+        self.assertEqual("20261018-56", version)
         for filename in HTML_FILES:
             source = (ROOT / filename).read_text(encoding="utf-8")
             self.assertEqual([version], re.findall(r'APP_VERSION="([0-9-]+)"', source), filename)

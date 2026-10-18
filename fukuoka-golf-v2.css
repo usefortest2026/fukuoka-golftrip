@@ -1000,9 +1000,6 @@ main {
 .v2-coupon-download:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
 .v2-coupon-download:active:not(:disabled) { opacity: .66; }
 
-.v2-live-coupon { margin-top: 15px; }
-.v2-live-coupon .v2-offer-item { border-bottom: 0; }
-
 .v2-offline-tools {
   display: flex;
   flex-wrap: wrap;
@@ -1206,6 +1203,41 @@ main {
   max-width: 850px;
   height: auto;
   margin: 0 auto;
+}
+
+.v2-coupon-frame-note {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 11px 13px;
+  border-top: 1px solid #edf0ed;
+  background: #fff8e8;
+  color: #74520f;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.v2-coupon-frame-note i {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.v2-coupon-fallback {
+  margin-left: 4px;
+  color: #24643d;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.v2-coupon-frame {
+  display: block;
+  width: 100%;
+  height: min(72vh, 720px);
+  min-height: 560px;
+  border: 0;
+  border-top: 1px solid #edf0ed;
+  background: #fff;
 }
 
 .v2-coupon-image-error {

@@ -196,6 +196,7 @@ await navigate('fukuoka-golf.html?p=more&layout=1');
 const couponAssets = [
   'coupon-airport-dutyfree-zh.jpg',
   'coupon-alpen-zh.jpg',
+  'coupon-biccamera-zh.jpg',
   'coupon-cocokara-en.jpg',
   'coupon-cocokara-zh.jpg',
   'coupon-cosmos-zh.jpg',
@@ -315,7 +316,7 @@ assert.equal(offlineUtility.networkNoteDisplay, 'block', 'network-dependent exce
 await workerConnection.send('Network.emulateNetworkConditions', {
   offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
 });
-await evaluate(`document.querySelector('.v2-scan-coupon summary').click()`);
+await evaluate(`document.querySelector('.v2-coupon-image').closest('.v2-scan-coupon').querySelector('summary').click()`);
 await waitForValue(`Boolean(document.querySelector('.v2-coupon-image-error'))`, 'Chinese uncached coupon offline error');
 assert.equal(
   await evaluate(`document.querySelector('.v2-coupon-image-error').textContent.trim()`),
@@ -331,7 +332,7 @@ await setOffline(true);
 await workerConnection.send('Network.emulateNetworkConditions', {
   offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
 });
-await evaluate(`document.querySelector('.v2-scan-coupon summary').click()`);
+await evaluate(`document.querySelector('.v2-coupon-image').closest('.v2-scan-coupon').querySelector('summary').click()`);
 await waitForValue(`Boolean(document.querySelector('.v2-coupon-image-error'))`, 'English uncached coupon offline error');
 assert.equal(
   await evaluate(`document.querySelector('.v2-coupon-image-error').textContent.trim()`),
@@ -527,7 +528,7 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-v2.html', 'fukuoka-golf-e
 }
 
 await navigate('fukuoka-golf.html?p=more');
-await evaluate(`document.querySelector('.v2-scan-coupon summary').click()`);
+await evaluate(`document.querySelector('.v2-coupon-image').closest('.v2-scan-coupon').querySelector('summary').click()`);
 await waitForValue(`document.querySelector('.v2-coupon-image')?.naturalWidth > 0`, 'cached coupon image offline');
 
 await setOffline(false);

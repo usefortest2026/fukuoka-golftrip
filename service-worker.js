@@ -1,4 +1,4 @@
-const APP_VERSION = '20261018-55';
+const APP_VERSION = '20261018-56';
 const APP_CACHE_PREFIX = 'fukuoka-trip-';
 const CORE_CACHE = `${APP_CACHE_PREFIX}core-${APP_VERSION}`;
 const COUPON_CACHE = `${APP_CACHE_PREFIX}coupons-${APP_VERSION}`;
@@ -24,6 +24,7 @@ const CORE_PATHS = new Set(CORE_ASSETS.map((asset) => new URL(asset, self.locati
 const COUPON_ASSETS = [
   './coupon-airport-dutyfree-zh.jpg',
   './coupon-alpen-zh.jpg',
+  './coupon-biccamera-zh.jpg',
   './coupon-cocokara-en.jpg',
   './coupon-cocokara-zh.jpg',
   './coupon-cosmos-zh.jpg',

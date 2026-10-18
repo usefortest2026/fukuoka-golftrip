@@ -30,6 +30,9 @@ class TripPageParser(HTMLParser):
         self.overview_coupon_map_links = []
         self.overview_passport_offer_count = 0
         self.overview_live_coupon_links = []
+        self.overview_coupon_iframes = []
+        self.overview_coupon_fallback_links = []
+        self.overview_standalone_live_coupon_count = 0
         self.overview_offer_badges = []
         self.overview_tax_refund_links = []
         self.course_photos = []
@@ -53,6 +56,10 @@ class TripPageParser(HTMLParser):
         inside_more = active_page is not None and active_page[1].get("id") == "more"
         inside_day5 = active_page is not None and active_page[1].get("id") == "day5"
         inside_overview = any(item[1].get("id") == "overview" for item in self.stack)
+        inside_embedded_coupon = any(
+            item[0] == "details" and "v2-embedded-coupon" in item[2]
+            for item in self.stack
+        )
         inside_hotels = any(item[1].get("id") == "hotels" for item in self.stack)
         inside_contact_actions = any(
             item[0] == "div" and "contact-actions" in item[2]
@@ -134,6 +141,12 @@ class TripPageParser(HTMLParser):
             self.overview_coupon_map_links.append(attrs)
         if tag == "a" and inside_overview and "v2-live-coupon-link" in classes:
             self.overview_live_coupon_links.append(attrs)
+        if tag == "iframe" and inside_overview and "v2-coupon-frame" in classes:
+            self.overview_coupon_iframes.append(attrs)
+        if tag == "a" and inside_embedded_coupon and "v2-coupon-fallback" in classes:
+            self.overview_coupon_fallback_links.append(attrs)
+        if tag == "article" and inside_overview and "v2-live-coupon" in classes:
+            self.overview_standalone_live_coupon_count += 1
         if tag == "span" and inside_overview and "v2-offer-badge" in classes:
             self._capture = {
                 "kind": "offer-badge",
@@ -276,9 +289,9 @@ class FooterNavigationTest(unittest.TestCase):
             with self.subTest(filename=filename):
                 page = self.parse(filename)
                 self.assertEqual(3, page.overview_passport_offer_count)
-                self.assertEqual(13, len(page.overview_coupon_images))
-                self.assertEqual(13, len(page.overview_coupon_image_links))
-                self.assertEqual(13, len(page.overview_coupon_map_links))
+                self.assertEqual(14, len(page.overview_coupon_images))
+                self.assertEqual(14, len(page.overview_coupon_image_links))
+                self.assertEqual(14, len(page.overview_coupon_map_links))
                 self.assertEqual(
                     0,
                     sum("src" in item for item in page.overview_coupon_images),
@@ -286,7 +299,7 @@ class FooterNavigationTest(unittest.TestCase):
                 image_sources = [
                     item["data-src"] for item in page.overview_coupon_images
                 ]
-                self.assertIn("coupon-cocokara-", image_sources[0])
+                self.assertIn("coupon-biccamera-zh.jpg", image_sources)
                 self.assertEqual(
                     "coupon-airport-dutyfree-zh.jpg",
                     image_sources[-1],
@@ -319,44 +332,50 @@ class FooterNavigationTest(unittest.TestCase):
                     )
                 )
 
-    def test_coupon_section_links_to_current_live_coupons_and_refund_guidance(self):
+    def test_coupon_section_embeds_donki_and_keeps_refund_guidance(self):
         for filename, _, _ in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(2, len(page.overview_live_coupon_links))
+                self.assertEqual(0, len(page.overview_live_coupon_links))
+                self.assertEqual(0, page.overview_standalone_live_coupon_count)
+                self.assertEqual(1, len(page.overview_coupon_iframes))
                 self.assertEqual(1, len(page.overview_tax_refund_links))
-                donki_coupon, bic_camera_coupon = page.overview_live_coupon_links
+                donki_coupon = page.overview_coupon_iframes[0]
                 refund_guide = page.overview_tax_refund_links[0]
+                self.assertNotIn("src", donki_coupon)
                 self.assertIn(
-                    "livejapan.com/public/operation/coupon/donki/",
-                    donki_coupon.get("href", ""),
+                    "japanportal.donki-global.com/coupon/?ptcd=0099000503",
+                    donki_coupon.get("data-src", ""),
                 )
+                self.assertEqual("lazy", donki_coupon.get("loading"))
+                self.assertTrue(donki_coupon.get("title"))
+                self.assertEqual(1, len(page.overview_coupon_fallback_links))
+                donki_fallback = page.overview_coupon_fallback_links[0]
                 self.assertIn(
-                    "threeonelee.com/wp-content/uploads/20251226180501_0_c169b9.webp",
-                    bic_camera_coupon.get("href", ""),
+                    "japanportal.donki-global.com/coupon/?ptcd=0099000503",
+                    donki_fallback.get("href", ""),
                 )
+                self.assertEqual("_blank", donki_fallback.get("target"))
+                self.assertIn("noopener", donki_fallback.get("rel", ""))
                 self.assertIn(
                     "mlit.go.jp/kankocho/tax-free/",
                     refund_guide.get("href", ""),
                 )
-                for link in (donki_coupon, bic_camera_coupon, refund_guide):
-                    self.assertEqual("_blank", link.get("target"))
-                    self.assertIn("noopener", link.get("rel", ""))
+                self.assertEqual("_blank", refund_guide.get("target"))
+                self.assertIn("noopener", refund_guide.get("rel", ""))
 
-    def test_live_coupon_badges_do_not_label_established_offers_as_new(self):
+    def test_live_coupon_is_not_rendered_as_a_separate_offer_panel(self):
         for filename, _, _ in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(2, len(page.overview_offer_badges))
-                self.assertTrue(
-                    all("new" not in badge.casefold() for badge in page.overview_offer_badges)
-                )
+                self.assertEqual(0, page.overview_standalone_live_coupon_count)
+                self.assertEqual(0, len(page.overview_offer_badges))
 
     def test_coupon_map_links_use_the_shared_navigation_button(self):
         for filename, _, _ in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(13, len(page.overview_coupon_map_links))
+                self.assertEqual(14, len(page.overview_coupon_map_links))
                 self.assertTrue(
                     all(
                         "v2-nav-button" in item.get("class", "").split()

@@ -252,6 +252,9 @@ async function inspectDayFiveCoupons(file, width) {
     .filter((image) => image.hasAttribute('src'))
     .map((image) => image.getAttribute('src'))) `);
   const initialOpenCouponCount = await evaluate(`document.querySelectorAll('#overview details.v2-scan-coupon[open]').length`);
+  const initialLoadedCouponFrames = await evaluate(`([...document.querySelectorAll('#overview .v2-coupon-frame')]
+    .filter((frame) => frame.hasAttribute('src'))
+    .map((frame) => frame.getAttribute('src'))) `);
   await evaluate(`(async () => {
     document.querySelectorAll('#overview details.v2-scan-coupon').forEach((details) => {
       details.open = true;
@@ -324,8 +327,23 @@ async function inspectDayFiveCoupons(file, width) {
       followsDayFiveCard: overviewList?.lastElementChild === dayFiveCard && section?.previousElementSibling === overviewList,
       passportOffers: document.querySelectorAll('#overview .v2-passport-offer').length,
       couponDetails: document.querySelectorAll('#overview details.v2-scan-coupon').length,
+      embeddedCoupons: [...document.querySelectorAll('#overview .v2-coupon-frame')].map((frame) => ({
+        src: frame.getAttribute('src') || '',
+        title: frame.title,
+        loading: frame.loading,
+        width: frame.getBoundingClientRect().width,
+        height: frame.getBoundingClientRect().height,
+      })),
+      standaloneLiveCouponPanels: document.querySelectorAll('#overview .v2-live-coupon').length,
+      couponFallbacks: [...document.querySelectorAll('#overview .v2-coupon-fallback')].map((link) => ({
+        href: link.href,
+        target: link.target,
+        rel: link.rel,
+        insideEmbeddedCoupon: Boolean(link.closest('.v2-embedded-coupon')),
+      })),
       initialLoadedImageSources: ${JSON.stringify(initialLoadedImageSources)},
       initialOpenCouponCount: ${JSON.stringify(initialOpenCouponCount)},
+      initialLoadedCouponFrames: ${JSON.stringify(initialLoadedCouponFrames)},
       discountAlignments,
       images,
       mapLinks: mapLinks.map((link) => ({
@@ -618,15 +636,27 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.equal(coupons.followsDayFiveCard, true, `${file} coupons should immediately follow the D5 overview row`);
     assert.equal(coupons.sectionTop >= coupons.dayFiveCardBottom, true, `${file} coupons should follow the D5 overview row`);
     assert.equal(coupons.passportOffers, 3);
-    assert.equal(coupons.images.length, 13);
-    assert.equal(coupons.couponDetails, 13);
+    assert.equal(coupons.images.length, 14);
+    assert.equal(coupons.couponDetails, 15);
     assert.deepEqual(coupons.initialLoadedImageSources, []);
+    assert.deepEqual(coupons.initialLoadedCouponFrames, []);
     assert.equal(coupons.initialOpenCouponCount, 0);
     assert.equal(coupons.images.at(-1).src, 'coupon-airport-dutyfree-zh.jpg');
     assert.ok(coupons.discountAlignments.every((offset) => offset <= 2), `${file} discount labels are not aligned with expand controls at ${width}px`);
-    assert.equal(coupons.mapLinks.length, 13);
-    assert.equal(coupons.officialLinks, 2);
-    assert.equal(coupons.liveCouponLinks, 2);
+    assert.equal(coupons.mapLinks.length, 14);
+    assert.equal(coupons.officialLinks, 0);
+    assert.equal(coupons.liveCouponLinks, 0);
+    assert.equal(coupons.standaloneLiveCouponPanels, 0);
+    assert.equal(coupons.embeddedCoupons.length, 1);
+    assert.ok(coupons.embeddedCoupons[0].src.includes('japanportal.donki-global.com/coupon/?ptcd=0099000503'));
+    assert.ok(coupons.embeddedCoupons[0].title.length > 0);
+    assert.equal(coupons.embeddedCoupons[0].loading, 'lazy');
+    assert.ok(coupons.embeddedCoupons[0].width >= 280);
+    assert.equal(coupons.couponFallbacks.length, 1);
+    assert.ok(coupons.couponFallbacks[0].href.includes('japanportal.donki-global.com/coupon/?ptcd=0099000503'));
+    assert.equal(coupons.couponFallbacks[0].target, '_blank');
+    assert.ok(coupons.couponFallbacks[0].rel.includes('noopener'));
+    assert.equal(coupons.couponFallbacks[0].insideEmbeddedCoupon, true);
     assert.equal(coupons.refundGuideLinks, 1);
     assert.equal(coupons.pageOverflow, false, `${file} coupons overflow at ${width}px`);
     assert.ok(coupons.images.every((item) => item.complete && item.naturalWidth >= 590));
