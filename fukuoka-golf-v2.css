@@ -888,6 +888,12 @@ main {
 }
 
 .v2-offers-checked i { margin-top: 3px; color: #54815c; }
+.v2-offers-checked strong { color: #3f5148; }
+.v2-tax-refund-link {
+  color: #24643d;
+  font-weight: 800;
+  text-underline-offset: 2px;
+}
 
 .v2-trip-coupons {
   margin-top: 24px;
@@ -993,6 +999,9 @@ main {
 
 .v2-coupon-download:focus-visible { outline: 3px solid rgba(36, 100, 61, .26); outline-offset: 2px; }
 .v2-coupon-download:active:not(:disabled) { opacity: .66; }
+
+.v2-live-coupon { margin-top: 15px; }
+.v2-live-coupon .v2-offer-item { border-bottom: 0; }
 
 .v2-offline-tools {
   display: flex;

@@ -29,6 +29,8 @@ class TripPageParser(HTMLParser):
         self.overview_coupon_image_links = []
         self.overview_coupon_map_links = []
         self.overview_passport_offer_count = 0
+        self.overview_live_coupon_links = []
+        self.overview_tax_refund_links = []
         self.course_photos = []
         self.hero_images = []
         self.hotel_heading = None
@@ -129,6 +131,10 @@ class TripPageParser(HTMLParser):
             self.overview_coupon_image_links.append(attrs)
         if tag == "a" and inside_overview and "v2-coupon-map" in classes:
             self.overview_coupon_map_links.append(attrs)
+        if tag == "a" and inside_overview and "v2-live-coupon-link" in classes:
+            self.overview_live_coupon_links.append(attrs)
+        if tag == "a" and inside_overview and "v2-tax-refund-link" in classes:
+            self.overview_tax_refund_links.append(attrs)
         if tag == "a" and any(
             item[0] == "section" and "pickup-routes" in item[2]
             for item in self.stack
@@ -301,6 +307,26 @@ class FooterNavigationTest(unittest.TestCase):
                         for item in page.overview_coupon_map_links
                     )
                 )
+
+    def test_coupon_section_links_to_live_donki_coupon_and_refund_guidance(self):
+        for filename, _, _ in self.CASES:
+            with self.subTest(filename=filename):
+                page = self.parse(filename)
+                self.assertEqual(1, len(page.overview_live_coupon_links))
+                self.assertEqual(1, len(page.overview_tax_refund_links))
+                live_coupon = page.overview_live_coupon_links[0]
+                refund_guide = page.overview_tax_refund_links[0]
+                self.assertIn(
+                    "livejapan.com/public/operation/coupon/donki/",
+                    live_coupon.get("href", ""),
+                )
+                self.assertIn(
+                    "mlit.go.jp/kankocho/tax-free/",
+                    refund_guide.get("href", ""),
+                )
+                for link in (live_coupon, refund_guide):
+                    self.assertEqual("_blank", link.get("target"))
+                    self.assertIn("noopener", link.get("rel", ""))
 
     def test_coupon_map_links_use_the_shared_navigation_button(self):
         for filename, _, _ in self.CASES:

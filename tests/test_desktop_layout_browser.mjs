@@ -338,6 +338,8 @@ async function inspectDayFiveCoupons(file, width) {
       })),
       referenceButtonStyle: visualStyle(referenceButton),
       officialLinks: document.querySelectorAll('#overview .v2-offer-link, #overview .v2-nearby-official').length,
+      liveCouponLinks: document.querySelectorAll('#overview .v2-live-coupon-link').length,
+      refundGuideLinks: document.querySelectorAll('#overview .v2-tax-refund-link').length,
       sectionTop: section?.getBoundingClientRect().top || 0,
       dayFiveCardBottom: dayFiveCard?.getBoundingClientRect().bottom || 0,
       pageOverflow: document.documentElement.scrollWidth > innerWidth,
@@ -623,7 +625,9 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.equal(coupons.images.at(-1).src, 'coupon-airport-dutyfree-zh.jpg');
     assert.ok(coupons.discountAlignments.every((offset) => offset <= 2), `${file} discount labels are not aligned with expand controls at ${width}px`);
     assert.equal(coupons.mapLinks.length, 13);
-    assert.equal(coupons.officialLinks, 0);
+    assert.equal(coupons.officialLinks, 1);
+    assert.equal(coupons.liveCouponLinks, 1);
+    assert.equal(coupons.refundGuideLinks, 1);
     assert.equal(coupons.pageOverflow, false, `${file} coupons overflow at ${width}px`);
     assert.ok(coupons.images.every((item) => item.complete && item.naturalWidth >= 590));
     assert.ok(coupons.images.every((item) => item.src.startsWith('coupon-') && item.src === item.linkHref));
