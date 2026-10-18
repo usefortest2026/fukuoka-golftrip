@@ -1,3 +1,3 @@
 # fukuoka-golftrip
 
-Local review version: `20261018-54`
+Local review version: `20261018-55`
