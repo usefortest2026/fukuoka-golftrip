@@ -1036,13 +1036,8 @@ main {
   white-space: nowrap;
   border: 0;
 }
-.v2-offline-ready-status,
 .v2-install-guidance,
 .v2-offline-network-note { color: #65676b; font-size: 13px; line-height: 1.5; }
-.v2-offline-ready-status { display: flex; align-items: baseline; gap: 6px; font-weight: 700; }
-.v2-offline-ready-status::before { color: #a1a1aa; content: '•'; font-size: 14px; line-height: 1; }
-.v2-offline-ready-status[data-state="ready"]::before { color: #24643d; content: '✓'; font-weight: 900; }
-.v2-offline-ready-status[data-state="unsupported"]::before { color: #a1a1aa; content: '•'; }
 .v2-install-guidance { margin-top: 2px !important; font-size: 12px; }
 .v2-offline-network-note {
   display: none;

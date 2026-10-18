@@ -9,9 +9,6 @@
     partial: 'Downloaded {completed}/{total}; {failed} failed.',
     ready: 'Saved',
     offlineTitle: 'Offline use',
-    offlinePreparing: 'Preparing the itinerary for offline use…',
-    offlineReady: 'Itinerary available offline',
-    offlineUnsupported: 'Offline trips are unavailable in this browser',
     networkNote: 'Google Maps, live weather and external sites still require internet.',
     couponUnsupported: 'Offline coupon downloads are unavailable in this browser',
     couponOfflineError: 'This coupon has not been downloaded. Connect to the internet and try again.',
@@ -26,9 +23,6 @@
     partial: '已下載 {completed}/{total}，{failed} 張失敗',
     ready: '已儲存',
     offlineTitle: '離線使用',
-    offlinePreparing: '正在準備離線行程…',
-    offlineReady: '行程可離線使用',
-    offlineUnsupported: '此瀏覽器不支援離線行程',
     networkNote: 'Google Maps、即時天氣與外部網站仍需網路。',
     couponUnsupported: '此瀏覽器不支援優惠券離線下載',
     couponOfflineError: '這張優惠券尚未下載，請連上網路後再試。',
@@ -44,7 +38,8 @@
   var installPrompt;
   var installButton;
   var installGuidance;
-  var offlineReadyStatus;
+  var offlineNetworkNote;
+  var offlineNetworkState = null;
   var offlineTools;
 
   function format(template, values) {
@@ -160,12 +155,6 @@
     updateUtilityVisibility();
   }
 
-  function setOfflineStatus(state, text) {
-    if (!offlineReadyStatus) return;
-    offlineReadyStatus.dataset.state = state;
-    offlineReadyStatus.textContent = text;
-  }
-
   function updateUtilityVisibility() {
     if (!offlineTools) return;
     var offline = root.navigator.onLine === false;
@@ -174,10 +163,19 @@
     var iosGuidanceAvailable = !standalone && !installPrompt && isIOS();
     if (installButton) installButton.hidden = offline || !installAvailable;
     if (installGuidance) installGuidance.hidden = offline || !iosGuidanceAvailable;
+    if (offlineNetworkNote && !offline) offlineNetworkNote.textContent = '';
     offlineTools.dataset.network = offline ? 'offline' : 'online';
     offlineTools.dataset.mode = offline ? 'offline' : (installAvailable ? 'install' : (iosGuidanceAvailable ? 'guidance' : 'hidden'));
     offlineTools.hidden = !(offline || installAvailable || iosGuidanceAvailable);
-    if (offlineReadyStatus) offlineReadyStatus.hidden = !offline;
+    if (offlineNetworkNote && offline && offlineNetworkState !== true) {
+      offlineNetworkNote.textContent = '';
+      root.requestAnimationFrame(function () {
+        if (root.navigator.onLine === false && offlineNetworkNote && offlineTools && !offlineTools.hidden) {
+          offlineNetworkNote.textContent = copy.networkNote;
+        }
+      });
+    }
+    offlineNetworkState = offline;
   }
 
   function updateNetworkUI() {
@@ -192,18 +190,14 @@
     tools.hidden = true;
     tools.setAttribute('aria-labelledby', 'offline-tools-title');
     tools.innerHTML = '<div class="v2-offline-tools-copy"><h3 id="offline-tools-title"></h3>' +
-      '<p class="v2-offline-ready-status" role="status" aria-live="polite"></p>' +
       '<p class="v2-install-guidance"></p>' +
-      '<p class="v2-offline-network-note"></p></div>' +
+      '<p class="v2-offline-network-note" role="status" aria-live="polite" aria-atomic="true"></p></div>' +
       '<button class="v2-install-button" type="button" hidden></button>';
     header.appendChild(tools);
     offlineTools = tools;
     tools.querySelector('h3').textContent = copy.offlineTitle;
-    offlineReadyStatus = tools.querySelector('.v2-offline-ready-status');
-    offlineReadyStatus.hidden = true;
-    setOfflineStatus('preparing', copy.offlinePreparing);
     installGuidance = tools.querySelector('.v2-install-guidance');
-    tools.querySelector('.v2-offline-network-note').textContent = copy.networkNote;
+    offlineNetworkNote = tools.querySelector('.v2-offline-network-note');
     installButton = tools.querySelector('.v2-install-button');
     installButton.textContent = copy.install;
     installButton.addEventListener('click', function () {
@@ -266,7 +260,6 @@
 
   function showPwaUnavailable() {
     activeWorker = null;
-    setOfflineStatus('unsupported', copy.offlineUnsupported);
     if (couponButton) {
       couponButton.disabled = true;
       couponButton.dataset.state = 'unavailable';
@@ -282,7 +275,6 @@
     couponButton.disabled = false;
     couponButton.dataset.state = 'idle';
     postWorkerMessage({ type: 'GET_COUPON_CACHE_STATUS' });
-    setOfflineStatus('ready', copy.offlineReady);
   }
 
   function register() {

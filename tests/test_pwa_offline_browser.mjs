@@ -252,8 +252,12 @@ const utilityPresentation = await evaluate(`(() => {
     toolsModeOnline: tools.dataset.mode,
     toolsPositionOnline: getComputedStyle(tools).position,
     installVisibleOnline: Boolean(tools.querySelector('.v2-install-button:not([hidden])')),
-    readyStatusHiddenOnline: document.querySelector('.v2-offline-ready-status').hidden,
+    offlineReadyStatusCount: document.querySelectorAll('.v2-offline-ready-status').length,
     networkNoteDisplay: getComputedStyle(networkNote).display,
+    networkNoteRole: networkNote.getAttribute('role'),
+    networkNoteLive: networkNote.getAttribute('aria-live'),
+    networkNoteAtomic: networkNote.getAttribute('aria-atomic'),
+    networkNoteTextOnline: networkNote.textContent.trim(),
   };
 })()`);
 assert.ok(utilityPresentation.couponIconWidth <= 16, 'coupon download uses a small linear icon');
@@ -280,8 +284,12 @@ if (utilityPresentation.installVisibleOnline) {
   assert.equal(utilityPresentation.toolsHiddenOnline, true, 'online mode removes the redundant offline row');
   assert.equal(utilityPresentation.toolsHeightOnline, 0, 'hidden online tools reserve no vertical space');
 }
-assert.equal(utilityPresentation.readyStatusHiddenOnline, true);
+assert.equal(utilityPresentation.offlineReadyStatusCount, 0, 'the redundant itinerary-ready status is not rendered');
 assert.equal(utilityPresentation.networkNoteDisplay, 'none');
+assert.equal(utilityPresentation.networkNoteRole, 'status');
+assert.equal(utilityPresentation.networkNoteLive, 'polite');
+assert.equal(utilityPresentation.networkNoteAtomic, 'true');
+assert.equal(utilityPresentation.networkNoteTextOnline, '', 'the live region stays empty while online');
 assert.deepEqual(
   await evaluate(`(async () => ({
     closed: [...document.querySelectorAll('.v2-scan-coupon')].every((item) => !item.open),
@@ -295,24 +303,66 @@ assert.deepEqual(
   'coupons remain closed, lazy, and uncached before opt-in',
 );
 
+const offlineAnnouncementTransition = await evaluate(`(() => {
+  const nativeAnimationFrame = window.requestAnimationFrame;
+  window.__offlineAnnouncementFrame = null;
+  window.requestAnimationFrame = (callback) => {
+    window.__offlineAnnouncementFrame = callback;
+    return 1;
+  };
+  Object.defineProperty(navigator, 'onLine', { configurable: true, get: () => false });
+  window.dispatchEvent(new Event('offline'));
+  const tools = document.querySelector('.v2-offline-tools');
+  const note = document.querySelector('.v2-offline-network-note');
+  const result = {
+    toolsHidden: tools.hidden,
+    noteText: note.textContent.trim(),
+    frameQueued: typeof window.__offlineAnnouncementFrame === 'function'
+  };
+  window.requestAnimationFrame = nativeAnimationFrame;
+  return result;
+})()`);
+assert.deepEqual(
+  offlineAnnouncementTransition,
+  { toolsHidden: false, noteText: '', frameQueued: true },
+  'offline mode exposes an empty live region before queuing its announcement',
+);
+assert.equal(
+  await evaluate(`(() => {
+    window.__offlineAnnouncementFrame(performance.now());
+    const text = document.querySelector('.v2-offline-network-note').textContent.trim();
+    delete navigator.onLine;
+    window.dispatchEvent(new Event('online'));
+    delete window.__offlineAnnouncementFrame;
+    return text;
+  })()`),
+  'Google Maps、即時天氣與外部網站仍需網路。',
+  'the queued frame announces the network limitation after the region is exposed',
+);
+
 const workerConnection = await connectToServiceWorker();
 await workerConnection.send('Network.setBlockedURLs', { urls: ['*coupon-cocokara-zh.jpg*', '*coupon-cocokara-en.jpg*'] });
 await setOffline(true);
 await evaluate(`window.dispatchEvent(new Event('offline'))`);
+await waitForValue(
+  `document.querySelector('.v2-offline-network-note')?.textContent.trim() === 'Google Maps、即時天氣與外部網站仍需網路。'`,
+  'Chinese offline network announcement',
+);
 const offlineUtility = await evaluate(`(() => {
   const tools = document.querySelector('.v2-offline-tools');
-  const status = document.querySelector('.v2-offline-ready-status');
   return {
     toolsHidden: tools.hidden,
     toolsHeight: tools.getBoundingClientRect().height,
-    statusHidden: status.hidden,
+    offlineReadyStatusCount: document.querySelectorAll('.v2-offline-ready-status').length,
     networkNoteDisplay: getComputedStyle(document.querySelector('.v2-offline-network-note')).display,
+    networkNoteText: document.querySelector('.v2-offline-network-note').textContent.trim(),
   };
 })()`);
 assert.equal(offlineUtility.toolsHidden, false, 'offline status becomes visible only when needed');
 assert.ok(offlineUtility.toolsHeight > 0, 'offline status has a compact visible surface');
-assert.equal(offlineUtility.statusHidden, false);
+assert.equal(offlineUtility.offlineReadyStatusCount, 0, 'offline mode does not restore the removed status');
 assert.equal(offlineUtility.networkNoteDisplay, 'block', 'network-dependent exceptions appear only while offline');
+assert.equal(offlineUtility.networkNoteText, 'Google Maps、即時天氣與外部網站仍需網路。');
 await workerConnection.send('Network.emulateNetworkConditions', {
   offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0, connectionType: 'none'
 });
@@ -412,7 +462,7 @@ const overviewTools = await evaluate(`({
   mode: document.querySelector('.v2-offline-tools')?.dataset.mode,
   installVisible: Boolean(document.querySelector('.v2-install-button:not([hidden])')),
   online: navigator.onLine,
-  status: document.querySelector('.v2-offline-ready-status')?.textContent.trim(),
+  offlineReadyStatusCount: document.querySelectorAll('.v2-offline-ready-status').length,
   networkNote: document.querySelector('.v2-offline-network-note')?.textContent.trim()
 })`);
 assert.equal(overviewTools.inMoreHeader, true, 'offline tools stay with the More heading');
@@ -423,8 +473,8 @@ if (overviewTools.installVisible) {
 } else {
   assert.equal(overviewTools.hidden, true, 'online mode hides the offline utility without a native install action');
 }
-assert.ok(overviewTools.status, 'offline-ready text remains available for the actual offline state');
-assert.equal(overviewTools.networkNote, 'Google Maps, live weather and external sites still require internet.');
+assert.equal(overviewTools.offlineReadyStatusCount, 0, 'English also omits the redundant itinerary-ready status');
+assert.equal(overviewTools.networkNote, '', 'the English live region is empty while online');
 
 assert.equal(await evaluate(`(() => {
   window.__installPromptCalls = 0;
@@ -453,15 +503,24 @@ assert.deepEqual(
 );
 await setOffline(true);
 await evaluate(`window.dispatchEvent(new Event('offline'))`);
+await waitForValue(
+  `document.querySelector('.v2-offline-network-note')?.textContent.trim() === 'Google Maps, live weather and external sites still require internet.'`,
+  'English offline network announcement',
+);
 assert.equal(
   await evaluate(`document.querySelector('.v2-install-button').hidden`),
   true,
   'the install action does not compete with the true offline status',
 );
 assert.equal(
-  await evaluate(`document.querySelector('.v2-offline-ready-status').hidden`),
-  false,
-  'the true offline status remains visible',
+  await evaluate(`document.querySelectorAll('.v2-offline-ready-status').length`),
+  0,
+  'going offline does not recreate the removed itinerary-ready status',
+);
+assert.equal(
+  await evaluate(`document.querySelector('.v2-offline-network-note').textContent.trim()`),
+  'Google Maps, live weather and external sites still require internet.',
+  'English offline mode announces only the useful network limitation',
 );
 await setOffline(false);
 await evaluate(`window.dispatchEvent(new Event('online'))`);
@@ -502,9 +561,9 @@ assert.deepEqual(
     toolsHidden: document.querySelector('.v2-offline-tools').hidden,
     installVisible: Boolean(document.querySelector('.v2-install-button:not([hidden])')),
     guidanceVisible: Boolean(document.querySelector('.v2-install-guidance:not([hidden])')),
-    statusVisible: Boolean(document.querySelector('.v2-offline-ready-status:not([hidden])'))
+    offlineReadyStatusCount: document.querySelectorAll('.v2-offline-ready-status').length
   })`),
-  { toolsHidden: true, installVisible: false, guidanceVisible: false, statusVisible: false },
+  { toolsHidden: true, installVisible: false, guidanceVisible: false, offlineReadyStatusCount: 0 },
   'standalone online mode removes every redundant install and offline status row',
 );
 await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: standaloneOverride.identifier });
@@ -542,14 +601,12 @@ await navigate('fukuoka-golf.html?p=day4');
 assert.deepEqual(
   await evaluate(`({
     active: document.querySelector('.page.active')?.id,
-    offlineStatus: document.querySelector('.v2-offline-ready-status')?.textContent.trim(),
-    offlineState: document.querySelector('.v2-offline-ready-status')?.dataset.state,
+    offlineReadyStatusCount: document.querySelectorAll('.v2-offline-ready-status').length,
     couponStatus: document.querySelector('.v2-coupon-download-label')?.textContent.trim()
   })`),
   {
     active: 'day4',
-    offlineStatus: '此瀏覽器不支援離線行程',
-    offlineState: 'unsupported',
+    offlineReadyStatusCount: 0,
     couponStatus: '此瀏覽器不支援優惠券離線下載'
   },
   'unsupported-service-worker fallback stays usable and explains unavailable offline controls',
