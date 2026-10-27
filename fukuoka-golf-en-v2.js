@@ -72,23 +72,23 @@
   });
 
   var summaries = {
-    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Hakata Uokura lunch (reserved)'], ['15:00+', 'Hotel check-in, then free time'], ['18:00', 'Meet at Miyanaka Bettei for dinner']],
-    day2: [['09:10', 'Depart Ritz; pick up group'], ['10:06', 'Arrive at Hisayama Country Club'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata']],
-    day3: [['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['16:00', 'Leave the final stop by this time'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
-    day4: [['07:55', 'Depart Ritz; pick up group'], ['09:00', 'Arrive at Dazaifu Golf Club'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano']],
-    day5: [['07:50', 'Depart Ritz; pick up group'], ['09:08', 'Arrive at Fukuoka Century Golf Club'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 2 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
+    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Hakata Uokura lunch (reserved)'], ['15:00+', 'Hotel check-in, then free time'], ['17:20', 'Depart Mitsui → Ritz → Miyanaka Bettei'], ['18:00', 'Dinner at Miyanaka Bettei']],
+    day2: [['09:10', 'Depart Mitsui; pick up at Ritz'], ['10:06', 'Arrive at Hisayama Country Club'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata']],
+    day3: [['Hotel departure', 'Mitsui → Ritz → Itoshima'], ['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['Before dinner', 'Return to hotels; Mitsui → Ritz → Yamashou'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
+    day4: [['07:55', 'Depart Mitsui; pick up at Ritz'], ['09:00', 'Arrive at Dazaifu Golf Club'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano']],
+    day5: [['07:50', 'Depart Mitsui; pick up at Ritz'], ['09:08', 'Arrive at Fukuoka Century Golf Club'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 2 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
   };
 
   var golfQuickInfo = {
-    day2: [['Hotel departure', '09:10 Ritz → Mitsui'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
-    day4: [['Hotel departure', '07:55 Ritz → Mitsui'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
-    day5: [['Hotel departure', '07:50 Ritz → Mitsui'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket.', 'dress']]
+    day2: [['Hotel departure', '09:10 Mitsui → Ritz → golf course'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
+    day4: [['Hotel departure', '07:55 Mitsui → Ritz → golf course'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
+    day5: [['Hotel departure', '07:50 Mitsui → Ritz → golf course'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket.', 'dress']]
   };
 
   var mapLinks = {
-    day2: 'https://www.google.com/maps/search/?api=1&query=Hisayama+Country+Club',
-    day4: 'https://www.google.com/maps/search/?api=1&query=Dazaifu+Golf+Club',
-    day5: 'https://www.google.com/maps/search/?api=1&query=Fukuoka+Century+Golf+Club'
+    day2: 'https://www.google.com/maps/dir/?api=1&origin=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&destination=Hisayama+Country+Club%2C+3549+Kuhara%2C+Hisayama%2C+Fukuoka&waypoints=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&travelmode=driving',
+    day4: 'https://www.google.com/maps/dir/?api=1&origin=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&destination=Dazaifu+Golf+Club%2C+3467-39+Ishiana%2C+Dazaifu%2C+Fukuoka&waypoints=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&travelmode=driving',
+    day5: 'https://www.google.com/maps/dir/?api=1&origin=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&destination=Fukuoka+Century+Golf+Club%2C+1-1+Itaya%2C+Asakura%2C+Fukuoka&waypoints=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&travelmode=driving'
   };
 
   var routeStops = [

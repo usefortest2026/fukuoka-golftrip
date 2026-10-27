@@ -77,28 +77,30 @@
       ['11:15', '抵達福岡機場'],
       ['13:00', '博多魚藏午餐（已訂位）'],
       ['15:00 後', '飯店入住後自由活動'],
-      ['18:00', '宮中 別邸燒肉晚餐集合']
+      ['17:20', '三井 → 麗思 → 宮中 別邸'],
+      ['18:00', '宮中 別邸燒肉晚餐']
     ],
     day2: [
-      ['09:10', '麗思出發，依序接人'],
+      ['09:10', '三井出發，經麗思接人'],
       ['10:06', '抵達久山鄉村俱樂部'],
       ['11:06', '第一組 Tee Time（第二組 11:14）'],
       ['18:00', 'Chinpunkampun Hakata 晚餐']
     ],
     day3: [
+      ['飯店出發', '三井 → 麗思 → 糸島'],
       ['上午', '糸島海岸與森林景點'],
       ['午餐', '糸島午餐備選'],
-      ['16:00', '最晚由最後一站出發'],
+      ['晚餐前', '返回飯店；三井 → 麗思 → 山翔'],
       ['17:30', '壽喜燒 山翔晚餐']
     ],
     day4: [
-      ['07:55', '麗思出發，依序接人'],
+      ['07:55', '三井出發，經麗思接人'],
       ['09:00', '抵達太宰府高爾夫俱樂部'],
       ['10:00', '第一組 Tee Time（第二組 10:08）'],
       ['18:00', '水炊 長野晚餐']
     ],
     day5: [
-      ['07:50', '麗思出發，依序接人'],
+      ['07:50', '三井出發，經麗思接人'],
       ['09:08', '抵達福岡世紀高爾夫俱樂部'],
       ['10:08', '第一組 Tee Time（第二組 10:16）'],
       ['球後', '全員先前往福岡機場；2 位續住者再回麗思'],
@@ -108,26 +110,26 @@
 
   var golfQuickInfo = {
     day2: [
-      ['飯店出發', '09:10 麗思 → 三井'],
+      ['飯店出發', '09:10 三井 → 麗思 → 球場'],
       ['Tee Time', '11:06 / 11:14'],
       ['服裝重點', '抵達時請穿著夾克或西裝。', 'dress']
     ],
     day4: [
-      ['飯店出發', '07:55 麗思 → 三井'],
+      ['飯店出發', '07:55 三井 → 麗思 → 球場'],
       ['Tee Time', '10:00 / 10:08'],
       ['服裝重點', '抵達時請穿著夾克或西裝。', 'dress']
     ],
     day5: [
-      ['飯店出發', '07:50 麗思 → 三井'],
+      ['飯店出發', '07:50 三井 → 麗思 → 球場'],
       ['Tee Time', '10:08 / 10:16'],
       ['服裝重點', '請穿西裝外套或高爾夫球衣外套。', 'dress']
     ]
   };
 
   var mapLinks = {
-    day2: 'https://www.google.com/maps/search/?api=1&query=Hisayama+Country+Club',
-    day4: 'https://www.google.com/maps/search/?api=1&query=Dazaifu+Golf+Club',
-    day5: 'https://www.google.com/maps/search/?api=1&query=Fukuoka+Century+Golf+Club'
+    day2: 'https://www.google.com/maps/dir/?api=1&origin=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&destination=Hisayama+Country+Club%2C+3549+Kuhara%2C+Hisayama%2C+Fukuoka&waypoints=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&travelmode=driving',
+    day4: 'https://www.google.com/maps/dir/?api=1&origin=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&destination=Dazaifu+Golf+Club%2C+3467-39+Ishiana%2C+Dazaifu%2C+Fukuoka&waypoints=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&travelmode=driving',
+    day5: 'https://www.google.com/maps/dir/?api=1&origin=Mitsui+Garden+Hotel+Fukuoka+Nakasu%2C+5-5-1+Nakasu%2C+Hakata+Ward%2C+Fukuoka&destination=Fukuoka+Century+Golf+Club%2C+1-1+Itaya%2C+Asakura%2C+Fukuoka&waypoints=The+Ritz-Carlton+Fukuoka%2C+2-6-50+Daimyo%2C+Chuo+Ward%2C+Fukuoka&travelmode=driving'
   };
 
   var routeStops = [
