@@ -20,6 +20,7 @@ async function renderForecast(htmlFile, localeFile, daily) {
   const classes = new Set();
   const nodes = {
     '.wx-icon': { className: 'wx-icon fa-solid fa-sun' },
+    '.wx-condition': { textContent: '' },
     '.wx-hi': { textContent: '21°' },
     '.wx-lo': { textContent: '13°' },
     '.v2-weather-label': { textContent: 'Historical' },
@@ -92,5 +93,37 @@ for (const [html, locale, forecastLabel] of entries) {
     assert.equal(nodes['.wx-hi'].textContent, '21°');
     assert.equal(nodes['.wx-lo'].textContent, '13°');
     assert.equal(weather.classList.contains('wx-live'), false);
+  });
+
+  test(`${html}: drizzle and heavy rain have distinct icons and visible descriptions`, async () => {
+    const english = html.includes('-en');
+    const cases = [
+      [53, 'fa-cloud-rain', english ? 'Drizzle' : '毛毛雨'],
+      [55, 'fa-cloud-rain', english ? 'Drizzle' : '毛毛雨'],
+      [61, 'fa-cloud-rain', english ? 'Light rain' : '小雨'],
+      [65, 'fa-cloud-showers-heavy', english ? 'Heavy rain' : '大雨'],
+      [82, 'fa-cloud-showers-heavy', english ? 'Heavy showers' : '強陣雨'],
+    ];
+    for (const [code, icon, description] of cases) {
+      const { nodes } = await renderForecast(html, locale, {
+        time: ['2026-11-06'],
+        weather_code: [code],
+        temperature_2m_max: [20],
+        temperature_2m_min: [11],
+      });
+      assert.equal(nodes['.wx-icon'].className, `wx-icon fa-solid ${icon}`, `weather code ${code}`);
+      assert.equal(nodes['.wx-condition'].textContent, description, `weather code ${code}`);
+    }
+  });
+
+  test(`${html}: heavy thunderstorms retain a specific description`, async () => {
+    const { nodes } = await renderForecast(html, locale, {
+      time: ['2026-11-06'],
+      weather_code: [97],
+      temperature_2m_max: [20],
+      temperature_2m_min: [11],
+    });
+    assert.match(nodes['.wx-icon'].className, /fa-cloud-bolt/);
+    assert.equal(nodes['.wx-condition'].textContent, html.includes('-en') ? 'Heavy thunderstorm' : '強雷雨');
   });
 }
