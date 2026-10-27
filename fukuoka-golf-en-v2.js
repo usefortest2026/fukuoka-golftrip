@@ -72,17 +72,17 @@
   });
 
   var summaries = {
-    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Hakata Uokura lunch (reserved)'], ['15:00+', 'Hotel check-in, then free time'], ['17:20', 'Depart Mitsui → Ritz → Miyanaka Bettei'], ['18:00', 'Dinner at Miyanaka Bettei']],
-    day2: [['09:10', 'Depart Mitsui; pick up at Ritz'], ['10:06', 'Arrive at Hisayama Country Club'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata']],
-    day3: [['Hotel departure', 'Mitsui → Ritz → Itoshima'], ['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['Before dinner', 'Return to hotels; Mitsui → Ritz → Yamashou'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
-    day4: [['07:55', 'Depart Mitsui; pick up at Ritz'], ['09:00', 'Arrive at Dazaifu Golf Club'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano']],
-    day5: [['07:50', 'Depart Mitsui; pick up at Ritz'], ['09:08', 'Arrive at Fukuoka Century Golf Club'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 2 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
+    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Hakata Uokura lunch (reserved)'], ['15:00+', 'Hotel check-in, then free time'], ['Drive', 'Mitsui → Ritz → Miyanaka Bettei: approx. 15–25 min'], ['18:00', 'Dinner at Miyanaka Bettei']],
+    day2: [['Drive', 'Mitsui → Ritz → Hisayama: approx. 30–40 min'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata (Mitsui via Ritz: approx. 20–30 min)']],
+    day3: [['Hotel departure', 'Mitsui → Ritz → Itoshima'], ['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['Before dinner', 'Return to hotels; Mitsui via Ritz to Yamashou: approx. 15–25 min'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
+    day4: [['Drive', 'Mitsui → Ritz → Dazaifu: approx. 40–50 min'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano (Mitsui via Ritz: approx. 15–25 min)']],
+    day5: [['Drive', 'Mitsui → Ritz → Fukuoka Century: approx. 50–60 min'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 2 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
   };
 
   var golfQuickInfo = {
-    day2: [['Hotel departure', '09:10 Mitsui → Ritz → golf course'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
-    day4: [['Hotel departure', '07:55 Mitsui → Ritz → golf course'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
-    day5: [['Hotel departure', '07:50 Mitsui → Ritz → golf course'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket.', 'dress']]
+    day2: [['Drive', 'Mitsui via Ritz: approx. 30–40 min'], ['Tee Time', '11:06 / 11:14'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
+    day4: [['Drive', 'Mitsui via Ritz: approx. 40–50 min'], ['Tee Time', '10:00 / 10:08'], ['Dress highlight', 'Wear a jacket or suit on arrival.', 'dress']],
+    day5: [['Drive', 'Mitsui via Ritz: approx. 50–60 min'], ['Tee Time', '10:08 / 10:16'], ['Dress highlight', 'Wear a blazer or golf jacket.', 'dress']]
   };
 
   var mapLinks = {

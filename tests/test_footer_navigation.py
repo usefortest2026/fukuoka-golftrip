@@ -502,29 +502,29 @@ class FooterNavigationTest(unittest.TestCase):
                 with self.subTest(filename=filename, phrase=phrase):
                     self.assertNotIn(phrase, content)
 
-    def test_overview_folds_departure_recommendations_into_main_events(self):
+    def test_overview_shows_drive_estimates_with_main_events(self):
         expected = {
             "fukuoka-golf.html": [
                 [
                     "08:00 BR106 台北起飛，11:15 抵達福岡",
                     "13:00 博多魚藏｜午餐（已訂位）",
                     "15:00 後 飯店入住後自由活動",
-                    "18:00 宮中 別邸｜燒肉（建議三井 17:20 出發，經麗思接人）",
+                    "18:00 宮中 別邸｜燒肉（三井經麗思車程約 15–25 分鐘）",
                 ],
                 [
-                    "11:06 兩組開球 11:06 / 11:14；不休息連續打球（建議三井 09:10 出發，經麗思接人）",
-                    "18:00 Chinpunkampun Hakata（建議三井 17:15 出發，經麗思接人）",
+                    "11:06 兩組開球 11:06 / 11:14；不休息連續打球（三井經麗思車程約 30–40 分鐘）",
+                    "18:00 Chinpunkampun Hakata（三井經麗思車程約 20–30 分鐘）",
                 ],
                 [
                     "全天 優先：雷山千如寺、櫻井二見浦、PALM BEACH",
-                    "17:30 壽喜燒 山翔｜每人 ¥10,000 含暢飲（先回飯店，再由三井 → 麗思 → 山翔）",
+                    "17:30 壽喜燒 山翔｜每人 ¥10,000 含暢飲（先回飯店；三井經麗思至山翔約 15–25 分鐘）",
                 ],
                 [
-                    "10:00 兩組開球 10:00 / 10:08（建議三井 07:55 出發，經麗思接人）",
-                    "18:00 水炊 長野｜雞肉火鍋（建議三井 17:20 出發，經麗思接人）",
+                    "10:00 兩組開球 10:00 / 10:08（三井經麗思車程約 40–50 分鐘）",
+                    "18:00 水炊 長野｜雞肉火鍋（三井經麗思車程約 15–25 分鐘）",
                 ],
                 [
-                    "10:08 兩組開球 10:08 / 10:16（建議三井 07:50 出發，經麗思接人）",
+                    "10:08 兩組開球 10:08 / 10:16（三井經麗思車程約 50–60 分鐘）",
                     "球後 全員先到福岡機場，再送 2 位返回麗思",
                     "20:55 BR101 福岡起飛，22:40 抵達台北",
                 ],
@@ -534,22 +534,22 @@ class FooterNavigationTest(unittest.TestCase):
                     "08:00 BR106 departs Taipei; arrives Fukuoka 11:15",
                     "13:00 Hakata Uokura | Lunch (reserved)",
                     "15:00+ Hotel check-in, then free time",
-                    "18:00 Miyanaka Bettei | Yakiniku (suggested Mitsui departure: 17:20; then Ritz pickup)",
+                    "18:00 Miyanaka Bettei | Yakiniku (approx. 15–25 min from Mitsui via Ritz)",
                 ],
                 [
-                    "11:06 Tee times 11:06 / 11:14; through play (suggested Mitsui departure: 09:10; then Ritz pickup)",
-                    "18:00 Chinpunkampun Hakata (suggested Mitsui departure: 17:15; then Ritz pickup)",
+                    "11:06 Tee times 11:06 / 11:14; through play (approx. 30–40 min from Mitsui via Ritz)",
+                    "18:00 Chinpunkampun Hakata (approx. 20–30 min from Mitsui via Ritz)",
                 ],
                 [
                     "Day Priority: Raizan Sennyoji, Sakurai Futamigaura and PALM BEACH",
-                    "17:30 Sukiyaki Yamashou | ¥10,000 with drinks (return to the hotels, then Mitsui → Ritz → Yamashou)",
+                    "17:30 Sukiyaki Yamashou | ¥10,000 with drinks (return to hotels; Mitsui → Ritz → Yamashou: approx. 15–25 min)",
                 ],
                 [
-                    "10:00 Tee times 10:00 / 10:08 (suggested Mitsui departure: 07:55; then Ritz pickup)",
-                    "18:00 Mizutaki Nagano | Chicken hot pot (suggested Mitsui departure: 17:20; then Ritz pickup)",
+                    "10:00 Tee times 10:00 / 10:08 (approx. 40–50 min from Mitsui via Ritz)",
+                    "18:00 Mizutaki Nagano | Chicken hot pot (approx. 15–25 min from Mitsui via Ritz)",
                 ],
                 [
-                    "10:08 Tee times 10:08 / 10:16 (suggested Mitsui departure: 07:50; then Ritz pickup)",
+                    "10:08 Tee times 10:08 / 10:16 (approx. 50–60 min from Mitsui via Ritz)",
                     "After Airport first, then 2 guests return to the Ritz",
                     "20:55 BR101 departs Fukuoka; arrives Taipei 22:40",
                 ],
