@@ -508,8 +508,8 @@ class FooterNavigationTest(unittest.TestCase):
                 [
                     "08:00 BR106 台北起飛，11:15 抵達福岡",
                     "13:00 博多魚藏｜午餐（已訂位）",
-                    "15:00 後 飯店入住；市區觀光",
-                    "18:00 宮中 別邸｜燒肉（建議麗思 17:20 出發）",
+                    "15:00 後 飯店入住後自由活動",
+                    "18:00 宮中 別邸｜燒肉（餐廳集合）",
                 ],
                 [
                     "11:06 兩組開球 11:06 / 11:14；不休息連續打球（建議麗思 09:10 出發）",
@@ -533,8 +533,8 @@ class FooterNavigationTest(unittest.TestCase):
                 [
                     "08:00 BR106 departs Taipei; arrives Fukuoka 11:15",
                     "13:00 Hakata Uokura | Lunch (reserved)",
-                    "15:00+ Hotel check-in and city sightseeing",
-                    "18:00 Miyanaka Bettei | Yakiniku (suggested Ritz departure: 17:20)",
+                    "15:00+ Hotel check-in, then free time",
+                    "18:00 Miyanaka Bettei | Yakiniku (meet at the restaurant)",
                 ],
                 [
                     "11:06 Tee times 11:06 / 11:14; through play (suggested Ritz departure: 09:10)",
