@@ -5,9 +5,9 @@ import { test } from 'node:test';
 
 const root = new URL('../', import.meta.url);
 const entries = [
-  ['fukuoka-golf.html', 'fukuoka-golf-v2.js', '預報'],
-  ['fukuoka-golf-v2.html', 'fukuoka-golf-v2.js', '預報'],
-  ['fukuoka-golf-en.html', 'fukuoka-golf-en-v2.js', 'Forecast'],
+  ['fukuoka-golf.html', 'fukuoka-golf-v2.js'],
+  ['fukuoka-golf-v2.html', 'fukuoka-golf-v2.js'],
+  ['fukuoka-golf-en.html', 'fukuoka-golf-en-v2.js'],
 ];
 
 async function renderForecast(htmlFile, localeFile, daily) {
@@ -15,7 +15,7 @@ async function renderForecast(htmlFile, localeFile, daily) {
   const locale = fs.readFileSync(new URL(localeFile, root), 'utf8');
   const weatherScript = html.match(/\(function\(\)\{function wxIcon\(c\)\{[\s\S]+?\}\)\(\);/)[0];
   const labelStart = locale.indexOf("  document.querySelectorAll('.day-weather').forEach");
-  const labelScript = locale.slice(labelStart, locale.lastIndexOf('\n})();'));
+  const labelScript = labelStart >= 0 ? locale.slice(labelStart, locale.lastIndexOf('\n})();')) : '';
   const watchers = [];
   const classes = new Set();
   const nodes = {
@@ -27,6 +27,12 @@ async function renderForecast(htmlFile, localeFile, daily) {
     },
     '.wx-hi': { textContent: '21°' },
     '.wx-lo': { textContent: '13°' },
+    '.wx-rain': {
+      attributes: {},
+      setAttribute(name, value) { this.attributes[name] = value; },
+      getAttribute(name) { return this.attributes[name] || null; },
+    },
+    '.wx-rain-value': { textContent: '20%' },
     '.v2-weather-label': { textContent: 'Historical' },
   };
   const weather = {
@@ -53,13 +59,17 @@ async function renderForecast(htmlFile, localeFile, daily) {
     }
     static now() { return Date.parse('2026-10-28T03:00:00.000Z'); }
   }
+  let requestUrl = '';
   const context = vm.createContext({
     Date: FixedDate,
     document: {
       querySelector: (selector) => selector.includes('2026-11-06') ? weather : null,
       querySelectorAll: () => [weather],
     },
-    fetch: async () => ({ ok: true, json: async () => ({ daily }) }),
+    fetch: async (url) => {
+      requestUrl = url;
+      return { ok: true, json: async () => ({ daily }) };
+    },
     MutationObserver: class {
       constructor(notify) { this.notify = notify; }
       observe() { watchers.push(this.notify); }
@@ -68,23 +78,46 @@ async function renderForecast(htmlFile, localeFile, daily) {
   vm.runInContext(weatherScript, context);
   vm.runInContext(labelScript, context);
   await new Promise((resolve) => setImmediate(resolve));
-  return { weather, nodes };
+  return { weather, nodes, requestUrl };
 }
 
-for (const [html, locale, forecastLabel] of entries) {
-  test(`${html}: fetched temperatures are identified as a dated forecast`, async () => {
-    const { weather, nodes } = await renderForecast(html, locale, {
+for (const [html, locale] of entries) {
+  test(`${html}: temperatures and rain probability refresh together`, async () => {
+    const { weather, nodes, requestUrl } = await renderForecast(html, locale, {
       time: ['2026-11-06'],
       weather_code: [53],
       temperature_2m_max: [22.4],
       temperature_2m_min: [11.2],
+      precipitation_probability_max: [42.4],
     });
     assert.equal(nodes['.wx-hi'].textContent, '22°');
     assert.equal(nodes['.wx-lo'].textContent, '11°');
     assert.match(nodes['.wx-icon'].className, /fa-cloud-rain/);
-    assert.ok(nodes['.v2-weather-label'].textContent.includes(forecastLabel));
-    assert.ok(nodes['.v2-weather-label'].textContent.includes('10/28'));
+    assert.equal(nodes['.wx-rain-value'].textContent, '42%');
+    assert.ok(nodes['.wx-rain'].getAttribute('aria-label').includes('42%'));
+    assert.ok(new URL(requestUrl).searchParams.get('daily').split(',').includes('precipitation_probability_max'));
     assert.equal(weather.dataset.weatherUpdated, '2026-10-28');
+  });
+
+  test(`${html}: zero percent is a valid rain probability`, async () => {
+    const { nodes } = await renderForecast(html, locale, {
+      time: ['2026-11-06'], weather_code: [0],
+      temperature_2m_max: [20], temperature_2m_min: [11],
+      precipitation_probability_max: [0],
+    });
+    assert.equal(nodes['.wx-rain-value'].textContent, '0%');
+  });
+
+  test(`${html}: unavailable or invalid rain probability is not displayed as zero`, async () => {
+    for (const chance of [null, 150]) {
+      const { nodes } = await renderForecast(html, locale, {
+        time: ['2026-11-06'], weather_code: [3],
+        temperature_2m_max: [20], temperature_2m_min: [11],
+        precipitation_probability_max: [chance],
+      });
+      assert.equal(nodes['.wx-rain-value'].textContent, '—');
+      assert.equal(nodes['.wx-hi'].textContent, '20°');
+    }
   });
 
   test(`${html}: missing forecast values do not replace temperatures with zero`, async () => {

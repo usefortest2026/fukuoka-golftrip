@@ -487,20 +487,5 @@
   }
   syncDesktopDetails();
 
-  document.querySelectorAll('.day-weather').forEach(function (weather) {
-    var label = weather.querySelector('.v2-weather-label');
-    if (!label) {
-      label = document.createElement('span');
-      label.className = 'v2-weather-label';
-      weather.appendChild(label);
-    }
-    function syncWeatherLabel() {
-      var updated = weather.getAttribute('data-weather-updated') || '';
-      var date = /^\d{4}-\d{2}-\d{2}$/.test(updated) ? Number(updated.slice(5, 7)) + '/' + Number(updated.slice(8, 10)) : '';
-      label.textContent = weather.classList.contains('wx-live') ? 'Forecast' + (date ? ' · ' + date : '') : '(Historical)';
-    }
-    syncWeatherLabel();
-    new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class', 'data-weather-updated'] });
-  });
 
 })();

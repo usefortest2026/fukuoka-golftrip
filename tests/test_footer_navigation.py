@@ -438,13 +438,6 @@ class FooterNavigationTest(unittest.TestCase):
                 self.assertEqual(0, page.contact_call_count)
                 self.assertEqual(0, page.telephone_link_count)
 
-    def test_english_forecast_weather_label_is_compact(self):
-        html = (ROOT / "fukuoka-golf-en.html").read_text(encoding="utf-8")
-        script = (ROOT / "fukuoka-golf-en-v2.js").read_text(encoding="utf-8")
-        self.assertEqual(5, html.count(">Forecast · "))
-        self.assertNotIn("Historical temperature reference", html)
-        self.assertNotIn("Historical temperature reference", script)
-
     def test_day_five_title_names_only_the_golf_course(self):
         chinese_titles = (
             (ROOT / "fukuoka-golf.html").read_text(encoding="utf-8"),
