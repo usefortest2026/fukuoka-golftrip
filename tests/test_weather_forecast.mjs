@@ -19,8 +19,12 @@ async function renderForecast(htmlFile, localeFile, daily) {
   const watchers = [];
   const classes = new Set();
   const nodes = {
-    '.wx-icon': { className: 'wx-icon fa-solid fa-sun' },
-    '.wx-condition': { textContent: '' },
+    '.wx-icon': {
+      className: 'wx-icon fa-solid fa-sun',
+      attributes: {},
+      setAttribute(name, value) { this.attributes[name] = value; },
+      getAttribute(name) { return this.attributes[name] || null; },
+    },
     '.wx-hi': { textContent: '21°' },
     '.wx-lo': { textContent: '13°' },
     '.v2-weather-label': { textContent: 'Historical' },
@@ -95,7 +99,7 @@ for (const [html, locale, forecastLabel] of entries) {
     assert.equal(weather.classList.contains('wx-live'), false);
   });
 
-  test(`${html}: drizzle and heavy rain have distinct icons and visible descriptions`, async () => {
+  test(`${html}: drizzle and heavy rain have distinct icons and accessible hints`, async () => {
     const english = html.includes('-en');
     const cases = [
       [53, 'fa-cloud-rain', english ? 'Drizzle' : '毛毛雨'],
@@ -112,7 +116,9 @@ for (const [html, locale, forecastLabel] of entries) {
         temperature_2m_min: [11],
       });
       assert.equal(nodes['.wx-icon'].className, `wx-icon fa-solid ${icon}`, `weather code ${code}`);
-      assert.equal(nodes['.wx-condition'].textContent, description, `weather code ${code}`);
+      assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), description, `weather code ${code}`);
+      assert.equal(nodes['.wx-icon'].getAttribute('title'), description, `weather code ${code}`);
+      assert.equal(nodes['.wx-icon'].getAttribute('role'), 'img');
     }
   });
 
@@ -124,6 +130,6 @@ for (const [html, locale, forecastLabel] of entries) {
       temperature_2m_min: [11],
     });
     assert.match(nodes['.wx-icon'].className, /fa-cloud-bolt/);
-    assert.equal(nodes['.wx-condition'].textContent, html.includes('-en') ? 'Heavy thunderstorm' : '強雷雨');
+    assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), html.includes('-en') ? 'Heavy thunderstorm' : '強雷雨');
   });
 }
