@@ -495,10 +495,12 @@
       weather.appendChild(label);
     }
     function syncWeatherLabel() {
-      label.textContent = weather.classList.contains('wx-live') ? 'Weather reference' : '(Historical)';
+      var updated = weather.getAttribute('data-weather-updated') || '';
+      var date = /^\d{4}-\d{2}-\d{2}$/.test(updated) ? Number(updated.slice(5, 7)) + '/' + Number(updated.slice(8, 10)) : '';
+      label.textContent = weather.classList.contains('wx-live') ? 'Forecast' + (date ? ' · ' + date : '') : '(Historical)';
     }
     syncWeatherLabel();
-    new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class'] });
+    new MutationObserver(syncWeatherLabel).observe(weather, { attributes: true, attributeFilter: ['class', 'data-weather-updated'] });
   });
 
 })();
