@@ -72,7 +72,7 @@
   });
 
   var summaries = {
-    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Light lunch in Fukuoka City'], ['15:00+', 'Hotel check-in & city sightseeing'], ['18:00', 'Dinner at Miyanaka Bettei']],
+    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Hakata Uokura lunch (reserved)'], ['15:00+', 'Hotel check-in & city sightseeing'], ['18:00', 'Dinner at Miyanaka Bettei']],
     day2: [['09:10', 'Depart Ritz; pick up group'], ['10:06', 'Arrive at Hisayama Country Club'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata']],
     day3: [['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['16:00', 'Leave the final stop by this time'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
     day4: [['07:55', 'Depart Ritz; pick up group'], ['09:00', 'Arrive at Dazaifu Golf Club'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano']],

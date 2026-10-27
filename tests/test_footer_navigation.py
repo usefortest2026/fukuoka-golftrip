@@ -507,7 +507,8 @@ class FooterNavigationTest(unittest.TestCase):
             "fukuoka-golf.html": [
                 [
                     "08:00 BR106 台北起飛，11:15 抵達福岡",
-                    "午後 午餐後前往飯店，15:00 後入住；市區觀光",
+                    "13:00 博多魚藏｜午餐（已訂位）",
+                    "15:00 後 飯店入住；市區觀光",
                     "18:00 宮中 別邸｜燒肉（建議麗思 17:20 出發）",
                 ],
                 [
@@ -531,7 +532,8 @@ class FooterNavigationTest(unittest.TestCase):
             "fukuoka-golf-en.html": [
                 [
                     "08:00 BR106 departs Taipei; arrives Fukuoka 11:15",
-                    "PM Lunch, hotel after 15:00, then city sightseeing",
+                    "13:00 Hakata Uokura | Lunch (reserved)",
+                    "15:00+ Hotel check-in and city sightseeing",
                     "18:00 Miyanaka Bettei | Yakiniku (suggested Ritz departure: 17:20)",
                 ],
                 [
