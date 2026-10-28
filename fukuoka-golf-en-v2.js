@@ -72,11 +72,11 @@
   });
 
   var summaries = {
-    day1: [['08:00', 'Depart Taoyuan Airport'], ['11:15', 'Arrive at Fukuoka Airport'], ['13:00', 'Hakata Uokura lunch'], ['15:00+', 'Hotel check-in, then free time'], ['Drive', 'Mitsui → Ritz → Miyanaka Bettei: approx. 15–25 min'], ['18:00', 'Dinner at Miyanaka Bettei']],
+    day1: [['06:50', 'CI110 departs Taipei; arrives Fukuoka 10:00'], ['08:00', 'BR106 departs Taipei; arrives Fukuoka 11:15'], ['13:00', 'Hakata Uokura lunch'], ['15:00+', 'Hotel check-in, then free time'], ['Drive', 'Mitsui → Ritz → Miyanaka Bettei: approx. 15–25 min'], ['18:00', 'Dinner at Miyanaka Bettei']],
     day2: [['Drive', 'Mitsui → Ritz → Hisayama: approx. 30–40 min'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata (Mitsui via Ritz: approx. 20–30 min)']],
     day3: [['Hotel departure', 'Mitsui → Ritz → Itoshima'], ['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['Before dinner', 'Return to hotels; Mitsui via Ritz to Yamashou: approx. 15–25 min'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
     day4: [['Drive', 'Mitsui → Ritz → Dazaifu: approx. 40–50 min'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano (Mitsui via Ritz: approx. 15–25 min)']],
-    day5: [['Drive', 'Mitsui → Ritz → Fukuoka Century: approx. 50–60 min'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 2 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
+    day5: [['Drive', 'Mitsui → Ritz → Fukuoka Century: approx. 50–60 min'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 4 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
   };
 
   var golfQuickInfo = {

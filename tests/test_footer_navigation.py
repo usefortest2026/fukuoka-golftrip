@@ -499,6 +499,7 @@ class FooterNavigationTest(unittest.TestCase):
         expected = {
             "fukuoka-golf.html": [
                 [
+                    "06:50 CI110 台北起飛，10:00 抵達福岡",
                     "08:00 BR106 台北起飛，11:15 抵達福岡",
                     "13:00 博多魚藏｜午餐",
                     "15:00 後 飯店入住後自由活動",
@@ -518,12 +519,13 @@ class FooterNavigationTest(unittest.TestCase):
                 ],
                 [
                     "10:08 兩組開球 10:08 / 10:16；球場午餐（三井經麗思車程約 50–60 分鐘）",
-                    "球後 全員先到福岡機場，再送 2 位返回麗思",
+                    "球後 全員先到福岡機場，再送 4 位返回麗思",
                     "20:55 BR101 福岡起飛，22:40 抵達台北",
                 ],
             ],
             "fukuoka-golf-en.html": [
                 [
+                    "06:50 CI110 departs Taipei; arrives Fukuoka 10:00",
                     "08:00 BR106 departs Taipei; arrives Fukuoka 11:15",
                     "13:00 Hakata Uokura | Lunch",
                     "15:00+ Hotel check-in, then free time",
@@ -543,7 +545,7 @@ class FooterNavigationTest(unittest.TestCase):
                 ],
                 [
                     "10:08 Tee times 10:08 / 10:16; lunch at the course (approx. 50–60 min from Mitsui via Ritz)",
-                    "After Airport first, then 2 guests return to the Ritz",
+                    "After Airport first, then 4 guests return to the Ritz",
                     "20:55 BR101 departs Fukuoka; arrives Taipei 22:40",
                 ],
             ],
