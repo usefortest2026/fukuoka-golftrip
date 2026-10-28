@@ -12,6 +12,21 @@
     '2026-11-09': 'day4',
     '2026-11-10': 'day5'
   };
+  function resetScroll(scroller, view) {
+    if (!scroller) {
+      view.scrollTo({ top: 0, behavior: 'auto' });
+      return;
+    }
+    // Recreate the scroll renderer to discard native momentum without replacing DOM nodes.
+    var display = scroller.style.display;
+    try {
+      scroller.style.display = 'none';
+      void scroller.offsetHeight;
+    } finally {
+      scroller.style.display = display;
+    }
+    scroller.scrollTo({ top: 0, behavior: 'auto' });
+  }
 
   function getTokyoDate(now) {
     var date = now instanceof Date ? now : new Date(now);
@@ -37,6 +52,7 @@
   }
 
   return {
+    resetScroll: resetScroll,
     getTokyoDate: getTokyoDate,
     resolveInitialPage: resolveInitialPage
   };
