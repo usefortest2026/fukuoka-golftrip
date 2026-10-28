@@ -8,6 +8,12 @@ main {
 
 .portrait-lock { display: none; }
 
+@media (max-width: 600px) {
+  .course-photo {
+    height: clamp(120px, 36vw, 160px);
+  }
+}
+
 @media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
   body > .app { visibility: hidden; }
 
