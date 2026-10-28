@@ -513,11 +513,11 @@ class FooterNavigationTest(unittest.TestCase):
                     "17:30 壽喜燒 山翔｜每人 ¥10,000 含暢飲（先回飯店；三井經麗思至山翔約 15–25 分鐘）",
                 ],
                 [
-                    "10:00 兩組開球 10:00 / 10:08（三井經麗思車程約 40–50 分鐘）",
+                    "10:00 兩組開球 10:00 / 10:08；球場午餐（三井經麗思車程約 40–50 分鐘）",
                     "18:00 水炊 長野｜雞肉火鍋（三井經麗思車程約 15–25 分鐘）",
                 ],
                 [
-                    "10:08 兩組開球 10:08 / 10:16（三井經麗思車程約 50–60 分鐘）",
+                    "10:08 兩組開球 10:08 / 10:16；球場午餐（三井經麗思車程約 50–60 分鐘）",
                     "球後 全員先到福岡機場，再送 2 位返回麗思",
                     "20:55 BR101 福岡起飛，22:40 抵達台北",
                 ],
@@ -538,11 +538,11 @@ class FooterNavigationTest(unittest.TestCase):
                     "17:30 Sukiyaki Yamashou | ¥10,000 with drinks (return to hotels; Mitsui → Ritz → Yamashou: approx. 15–25 min)",
                 ],
                 [
-                    "10:00 Tee times 10:00 / 10:08 (approx. 40–50 min from Mitsui via Ritz)",
+                    "10:00 Tee times 10:00 / 10:08; lunch at the course (approx. 40–50 min from Mitsui via Ritz)",
                     "18:00 Mizutaki Nagano | Chicken hot pot (approx. 15–25 min from Mitsui via Ritz)",
                 ],
                 [
-                    "10:08 Tee times 10:08 / 10:16 (approx. 50–60 min from Mitsui via Ritz)",
+                    "10:08 Tee times 10:08 / 10:16; lunch at the course (approx. 50–60 min from Mitsui via Ritz)",
                     "After Airport first, then 2 guests return to the Ritz",
                     "20:55 BR101 departs Fukuoka; arrives Taipei 22:40",
                 ],
