@@ -418,9 +418,9 @@ class FooterNavigationTest(unittest.TestCase):
         for filename, label in expected.items():
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(4, len(page.contact_navigation_labels))
+                self.assertEqual(5, len(page.contact_navigation_labels))
                 self.assertEqual(
-                    [label] * 4,
+                    [label] * 5,
                     [item["text"] for item in page.contact_navigation_labels],
                 )
                 self.assertTrue(
@@ -434,7 +434,7 @@ class FooterNavigationTest(unittest.TestCase):
         for filename, _, _ in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(4, len(page.contact_navigation_labels))
+                self.assertEqual(5, len(page.contact_navigation_labels))
                 self.assertEqual(0, page.contact_call_count)
                 self.assertEqual(0, page.telephone_link_count)
 
@@ -500,7 +500,7 @@ class FooterNavigationTest(unittest.TestCase):
             "fukuoka-golf.html": [
                 [
                     "08:00 BR106 台北起飛，11:15 抵達福岡",
-                    "13:00 博多魚藏｜午餐（已訂位）",
+                    "13:00 博多魚藏｜午餐",
                     "15:00 後 飯店入住後自由活動",
                     "18:00 宮中 別邸｜燒肉（三井經麗思車程約 15–25 分鐘）",
                 ],
@@ -525,7 +525,7 @@ class FooterNavigationTest(unittest.TestCase):
             "fukuoka-golf-en.html": [
                 [
                     "08:00 BR106 departs Taipei; arrives Fukuoka 11:15",
-                    "13:00 Hakata Uokura | Lunch (reserved)",
+                    "13:00 Hakata Uokura | Lunch",
                     "15:00+ Hotel check-in, then free time",
                     "18:00 Miyanaka Bettei | Yakiniku (approx. 15–25 min from Mitsui via Ritz)",
                 ],
