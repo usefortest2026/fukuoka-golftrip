@@ -505,7 +505,7 @@ class FooterNavigationTest(unittest.TestCase):
                     "18:00 宮中 別邸｜燒肉（三井經麗思車程約 15–25 分鐘）",
                 ],
                 [
-                    "11:06 兩組開球 11:06 / 11:14；不休息連續打球（三井經麗思車程約 30–40 分鐘）",
+                    "11:06 兩組開球 11:06 / 11:14；球場午餐（三井經麗思車程約 30–40 分鐘）",
                     "18:00 Chinpunkampun Hakata（三井經麗思車程約 20–30 分鐘）",
                 ],
                 [
@@ -530,7 +530,7 @@ class FooterNavigationTest(unittest.TestCase):
                     "18:00 Miyanaka Bettei | Yakiniku (approx. 15–25 min from Mitsui via Ritz)",
                 ],
                 [
-                    "11:06 Tee times 11:06 / 11:14; through play (approx. 30–40 min from Mitsui via Ritz)",
+                    "11:06 Tee times 11:06 / 11:14; lunch at the course (approx. 30–40 min from Mitsui via Ritz)",
                     "18:00 Chinpunkampun Hakata (approx. 20–30 min from Mitsui via Ritz)",
                 ],
                 [
