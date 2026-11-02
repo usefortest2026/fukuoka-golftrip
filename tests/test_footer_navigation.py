@@ -418,9 +418,9 @@ class FooterNavigationTest(unittest.TestCase):
         for filename, label in expected.items():
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(5, len(page.contact_navigation_labels))
+                self.assertEqual(6, len(page.contact_navigation_labels))
                 self.assertEqual(
-                    [label] * 5,
+                    [label] * 6,
                     [item["text"] for item in page.contact_navigation_labels],
                 )
                 self.assertTrue(
@@ -434,7 +434,7 @@ class FooterNavigationTest(unittest.TestCase):
         for filename, _, _ in self.CASES:
             with self.subTest(filename=filename):
                 page = self.parse(filename)
-                self.assertEqual(5, len(page.contact_navigation_labels))
+                self.assertEqual(6, len(page.contact_navigation_labels))
                 self.assertEqual(0, page.contact_call_count)
                 self.assertEqual(0, page.telephone_link_count)
 
@@ -510,7 +510,9 @@ class FooterNavigationTest(unittest.TestCase):
                     "18:00 Chinpunkampun Hakata（三井經麗思車程約 20–30 分鐘）",
                 ],
                 [
-                    "全天 優先：雷山千如寺、櫻井二見浦、PALM BEACH",
+                    "上午 櫻井二見浦",
+                    "11:00 CURRENT｜義式午餐",
+                    "下午 雷山千如寺",
                     "17:30 壽喜燒 山翔｜每人 ¥10,000 含暢飲（先回飯店；三井經麗思至山翔約 15–25 分鐘）",
                 ],
                 [
@@ -536,7 +538,9 @@ class FooterNavigationTest(unittest.TestCase):
                     "18:00 Chinpunkampun Hakata (approx. 20–30 min from Mitsui via Ritz)",
                 ],
                 [
-                    "Day Priority: Raizan Sennyoji, Sakurai Futamigaura and PALM BEACH",
+                    "AM Sakurai Futamigaura",
+                    "11:00 CURRENT | Italian lunch",
+                    "PM Raizan Sennyoji",
                     "17:30 Sukiyaki Yamashou | ¥10,000 with drinks (return to hotels; Mitsui → Ritz → Yamashou: approx. 15–25 min)",
                 ],
                 [

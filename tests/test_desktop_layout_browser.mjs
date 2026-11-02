@@ -584,10 +584,10 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   for (const width of [390, 1440]) {
     const result = await inspectDayThreeLinks(file, width);
     assert.equal(result.routeBlockCount, 0, `${file} still renders the duplicate route timeline`);
-    assert.equal(result.itemCount, 5);
-    assert.equal(result.links.length, 5, `${file} is missing scenic-stop navigation links`);
+    assert.equal(result.itemCount, 2);
+    assert.equal(result.links.length, 2, `${file} is missing scenic-stop navigation links`);
     assert.equal(result.everyItemStartsWithLink, true);
-    assert.equal(new Set(result.links.map((link) => link.href)).size, 5);
+    assert.equal(new Set(result.links.map((link) => link.href)).size, 2);
     assert.equal(result.links.every((link) => link.href.includes('google.com/maps/search/')), true);
     assert.equal(result.links.every((link) => link.target === '_blank' && link.rel.includes('noopener')), true);
     assert.equal(result.links.every((link) => link.cursor === 'pointer' && link.text.length > 0), true);

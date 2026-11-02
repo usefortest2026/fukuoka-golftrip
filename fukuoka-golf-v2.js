@@ -87,8 +87,9 @@
     ],
     day3: [
       ['飯店出發', '三井 → 麗思 → 糸島'],
-      ['上午', '糸島海岸與森林景點'],
-      ['午餐', '糸島午餐備選'],
+      ['上午', '櫻井二見浦'],
+      ['11:00', 'CURRENT 義式午餐'],
+      ['下午', '雷山千如寺'],
       ['晚餐前', '返回飯店；三井經麗思至山翔約 15–25 分鐘'],
       ['17:30', '壽喜燒 山翔晚餐']
     ],
@@ -131,9 +132,6 @@
 
   var routeStops = [
     ['櫻井二見浦', '優先｜白色鳥居與夫婦岩', 'https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura'],
-    ['棕櫚樹鞦韆', '優先｜PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
-    ['龍貓森林', '時間允許｜需步行約 1 公里，步道短但有起伏', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
-    ['芥屋大門', '時間允許｜遊船視天候開航', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
     ['雷山千如寺大悲王院', '優先｜建議下午早一點前往；紅葉期約 11 月下旬', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
   ];
 
@@ -418,9 +416,6 @@
   });
 
   document.querySelectorAll('#day3 .stop-list li').forEach(function (stop) {
-    if (stop.textContent.indexOf('龍貓森林') === 0) {
-      stop.textContent = '龍貓森林・需步行約 1 公里，步道短但有起伏';
-    }
     if (stop.textContent.indexOf('雷山千如寺大悲王院') === 0) {
       stop.textContent = '雷山千如寺大悲王院・紅葉期約 11 月下旬';
     }
@@ -428,10 +423,7 @@
 
   var day3StopLinks = [
     ['櫻井二見浦', routeStops[0][2]],
-    ['棕櫚樹鞦韆・PALM BEACH THE GARDENS', routeStops[1][2]],
-    ['龍貓森林', routeStops[2][2]],
-    ['芥屋大門', routeStops[3][2]],
-    ['雷山千如寺大悲王院', routeStops[4][2]]
+    ['雷山千如寺大悲王院', routeStops[1][2]]
   ];
 
   document.querySelectorAll('#day3 .timeline > .item:first-child .stop-list > li').forEach(function (item) {

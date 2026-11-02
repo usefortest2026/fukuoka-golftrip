@@ -74,7 +74,7 @@
   var summaries = {
     day1: [['06:50', 'CI110 departs Taipei; arrives Fukuoka 10:00'], ['08:00', 'BR106 departs Taipei; arrives Fukuoka 11:15'], ['13:00', 'Hakata Uokura lunch'], ['15:00+', 'Hotel check-in, then free time'], ['Drive', 'Mitsui → Ritz → Miyanaka Bettei: approx. 15–25 min'], ['18:00', 'Dinner at Miyanaka Bettei']],
     day2: [['Drive', 'Mitsui → Ritz → Hisayama: approx. 30–40 min'], ['11:06', 'First tee time (second group 11:14)'], ['18:00', 'Dinner at Chinpunkampun Hakata (Mitsui via Ritz: approx. 20–30 min)']],
-    day3: [['Hotel departure', 'Mitsui → Ritz → Itoshima'], ['Morning', 'Itoshima coast & forest stops'], ['Lunch', 'Itoshima lunch options'], ['Before dinner', 'Return to hotels; Mitsui via Ritz to Yamashou: approx. 15–25 min'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
+    day3: [['Hotel departure', 'Mitsui → Ritz → Itoshima'], ['Morning', 'Sakurai Futamigaura'], ['11:00', 'CURRENT Italian lunch'], ['Afternoon', 'Raizan Sennyoji'], ['Before dinner', 'Return to hotels; Mitsui via Ritz to Yamashou: approx. 15–25 min'], ['17:30', 'Dinner at Sukiyaki Yamashou']],
     day4: [['Drive', 'Mitsui → Ritz → Dazaifu: approx. 40–50 min'], ['10:00', 'First tee time (second group 10:08)'], ['18:00', 'Dinner at Mizutaki Nagano (Mitsui via Ritz: approx. 15–25 min)']],
     day5: [['Drive', 'Mitsui → Ritz → Fukuoka Century: approx. 50–60 min'], ['10:08', 'First tee time (second group 10:16)'], ['After golf', 'Transfer everyone to Fukuoka Airport first; 4 staying guests then return to the Ritz'], ['20:55', 'BR101 departs Fukuoka']]
   };
@@ -93,9 +93,6 @@
 
   var routeStops = [
     ['Sakurai Futamigaura', 'Priority | White torii gate & Couple Rocks', 'https://www.google.com/maps/search/?api=1&query=Sakurai+Futamigaura'],
-    ['Palm-tree Swing', 'Priority | PALM BEACH THE GARDENS', 'https://www.google.com/maps/search/?api=1&query=Palm+Tree+Swing+Itoshima'],
-    ['Totoro Forest', 'If time allows | Approx. 1 km on foot; short but uneven trail', 'https://www.google.com/maps/search/?api=1&query=Totoro+Forest+Itoshima'],
-    ['Keya no Oto', 'If time allows | Boat service depends on weather', 'https://www.google.com/maps/search/?api=1&query=Keya+no+Oto+Itoshima'],
     ['Raizan Sennyoji Daihioin', 'Priority, earlier afternoon | Autumn foliage usually peaks in late November', 'https://www.google.com/maps/search/?api=1&query=Raizan+Sennyoji+Daihioin']
   ];
 
@@ -375,16 +372,12 @@
   });
 
   document.querySelectorAll('#day3 .stop-list li').forEach(function (stop) {
-    if (stop.textContent.indexOf('Totoro Forest') === 0) stop.textContent = 'Totoro Forest · Approx. 1 km on foot; short but uneven trail';
     if (stop.textContent.indexOf('Raizan Sennyoji Daihioin') === 0) stop.textContent = 'Raizan Sennyoji Daihioin · Autumn foliage usually peaks in late November';
   });
 
   var day3StopLinks = [
     ['Sakurai Futamigaura', routeStops[0][2]],
-    ['Palm-tree swings & PALM BEACH THE GARDENS', routeStops[1][2]],
-    ['Totoro Forest', routeStops[2][2]],
-    ['Keya no Oto', routeStops[3][2]],
-    ['Raizan Sennyoji Daihioin', routeStops[4][2]]
+    ['Raizan Sennyoji Daihioin', routeStops[1][2]]
   ];
 
   document.querySelectorAll('#day3 .timeline > .item:first-child .stop-list > li').forEach(function (item) {
