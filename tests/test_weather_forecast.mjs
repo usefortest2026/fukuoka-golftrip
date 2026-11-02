@@ -9,8 +9,9 @@ const entries = [
   ['fukuoka-golf-v2.html', 'fukuoka-golf-v2.js'],
   ['fukuoka-golf-en.html', 'fukuoka-golf-en-v2.js'],
 ];
+const JMA_URL = 'https://www.jma.go.jp/bosai/forecast/data/forecast/400000.json';
 
-async function renderForecast(htmlFile, localeFile, daily) {
+async function renderForecast(htmlFile, localeFile, daily, jma = null) {
   const html = fs.readFileSync(new URL(htmlFile, root), 'utf8');
   const locale = fs.readFileSync(new URL(localeFile, root), 'utf8');
   const weatherScript = html.match(/\(function\(\)\{function wxIcon\(c\)\{[\s\S]+?\}\)\(\);/)[0];
@@ -37,12 +38,15 @@ async function renderForecast(htmlFile, localeFile, daily) {
   };
   const weather = {
     dataset: { date: '2026-11-06' },
+    attributes: {},
     querySelector: (selector) => nodes[selector],
     getAttribute(name) {
-      return name === 'data-weather-updated' ? this.dataset.weatherUpdated || null : null;
+      if (name === 'data-weather-updated') return this.dataset.weatherUpdated || null;
+      return this.attributes[name] || null;
     },
     setAttribute(name, value) {
       if (name === 'data-weather-updated') this.dataset.weatherUpdated = value;
+      else this.attributes[name] = value;
       watchers.forEach((notify) => notify());
     },
     classList: {
@@ -60,6 +64,7 @@ async function renderForecast(htmlFile, localeFile, daily) {
     static now() { return Date.parse('2026-10-28T03:00:00.000Z'); }
   }
   let requestUrl = '';
+  let jmaUrl = '';
   const context = vm.createContext({
     Date: FixedDate,
     document: {
@@ -67,6 +72,10 @@ async function renderForecast(htmlFile, localeFile, daily) {
       querySelectorAll: () => [weather],
     },
     fetch: async (url) => {
+      if (String(url).includes('jma.go.jp')) {
+        jmaUrl = url;
+        return jma ? { ok: true, json: async () => jma } : { ok: false, json: async () => null };
+      }
       requestUrl = url;
       return { ok: true, json: async () => ({ daily }) };
     },
@@ -78,12 +87,63 @@ async function renderForecast(htmlFile, localeFile, daily) {
   vm.runInContext(weatherScript, context);
   vm.runInContext(labelScript, context);
   await new Promise((resolve) => setImmediate(resolve));
-  return { weather, nodes, requestUrl };
+  return { weather, nodes, requestUrl, jmaUrl };
+}
+
+function openMeteoDay({ code, max, min, pop }) {
+  return {
+    time: ['2026-11-06'],
+    weather_code: [code],
+    temperature_2m_max: [max],
+    temperature_2m_min: [min],
+    precipitation_probability_max: [pop],
+  };
+}
+
+// Mirrors the shape of JMA's 400000.json: [short-term forecast, weekly forecast].
+// Decoy areas come first so the script must select Fukuoka region/station by code.
+function jmaForecast({ nearReport = '2026-11-05T17:00:00+09:00', nearCodes = [], nearPops = [], nearTemps = [], weeklyDays = [] } = {}) {
+  const decoy = (code, key, values) => ({ area: { name: 'decoy', code }, [key]: values.map(() => '999') });
+  const weeklyTimes = weeklyDays.map((day) => `${day.date}T00:00:00+09:00`);
+  return [
+    {
+      reportDatetime: nearReport,
+      timeSeries: [
+        {
+          timeDefines: nearCodes.map(([time]) => time),
+          areas: [decoy('400020', 'weatherCodes', nearCodes), { area: { name: '福岡地方', code: '400010' }, weatherCodes: nearCodes.map(([, code]) => code) }],
+        },
+        {
+          timeDefines: nearPops.map(([time]) => time),
+          areas: [decoy('400020', 'pops', nearPops), { area: { name: '福岡地方', code: '400010' }, pops: nearPops.map(([, pop]) => pop) }],
+        },
+        {
+          timeDefines: nearTemps.map(([time]) => time),
+          areas: [decoy('82056', 'temps', nearTemps), { area: { name: '福岡', code: '82182' }, temps: nearTemps.map(([, temp]) => temp) }],
+        },
+      ],
+    },
+    {
+      reportDatetime: '2026-11-02T17:00:00+09:00',
+      timeSeries: [
+        {
+          timeDefines: weeklyTimes,
+          areas: [{ area: { name: '福岡県', code: '400000' }, weatherCodes: weeklyDays.map((day) => day.code ?? ''), pops: weeklyDays.map((day) => day.pop ?? '') }],
+        },
+        {
+          timeDefines: weeklyTimes,
+          areas: [decoy('82056', 'tempsMax', weeklyDays), { area: { name: '福岡', code: '82182' }, tempsMax: weeklyDays.map((day) => day.max ?? ''), tempsMin: weeklyDays.map((day) => day.min ?? '') }],
+        },
+      ],
+    },
+  ];
 }
 
 for (const [html, locale] of entries) {
+  const english = html.includes('-en');
+
   test(`${html}: temperatures and rain probability refresh together`, async () => {
-    const { weather, nodes, requestUrl } = await renderForecast(html, locale, {
+    const { weather, nodes, requestUrl, jmaUrl } = await renderForecast(html, locale, {
       time: ['2026-11-06'],
       weather_code: [53],
       temperature_2m_max: [22.4],
@@ -96,6 +156,8 @@ for (const [html, locale] of entries) {
     assert.equal(nodes['.wx-rain-value'].textContent, '42%');
     assert.ok(nodes['.wx-rain'].getAttribute('aria-label').includes('42%'));
     assert.ok(new URL(requestUrl).searchParams.get('daily').split(',').includes('precipitation_probability_max'));
+    assert.equal(jmaUrl, JMA_URL);
+    assert.equal(weather.getAttribute('title'), english ? 'Fukuoka forecast · Open-Meteo' : '福岡市預報 · Open-Meteo');
     assert.equal(weather.dataset.weatherUpdated, '2026-10-28');
   });
 
@@ -133,7 +195,6 @@ for (const [html, locale] of entries) {
   });
 
   test(`${html}: drizzle and heavy rain have distinct icons and accessible hints`, async () => {
-    const english = html.includes('-en');
     const cases = [
       [53, 'fa-cloud-rain', english ? 'Drizzle' : '毛毛雨'],
       [55, 'fa-cloud-rain', english ? 'Drizzle' : '毛毛雨'],
@@ -163,6 +224,82 @@ for (const [html, locale] of entries) {
       temperature_2m_min: [11],
     });
     assert.match(nodes['.wx-icon'].className, /fa-cloud-bolt/);
-    assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), html.includes('-en') ? 'Heavy thunderstorm' : '強雷雨');
+    assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), english ? 'Heavy thunderstorm' : '強雷雨');
+  });
+
+  test(`${html}: JMA official forecast takes priority over Open-Meteo`, async () => {
+    const { weather, nodes } = await renderForecast(
+      html,
+      locale,
+      openMeteoDay({ code: 55, max: 17.9, min: 13.6, pop: 57 }),
+      jmaForecast({ weeklyDays: [{ date: '2026-11-06', code: '101', pop: '20', max: '21', min: '14' }] }),
+    );
+    assert.equal(nodes['.wx-hi'].textContent, '21°');
+    assert.equal(nodes['.wx-lo'].textContent, '14°');
+    assert.equal(nodes['.wx-icon'].className, 'wx-icon fa-solid fa-cloud-sun');
+    assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), english ? 'Sunny with some clouds' : '晴時多雲');
+    assert.equal(nodes['.wx-rain-value'].textContent, '20%');
+    assert.equal(nodes['.wx-rain'].getAttribute('aria-label'), english ? 'Chance of rain: 20%' : '當日降雨機率 20%');
+    assert.equal(weather.getAttribute('title'), english ? 'Fukuoka forecast · JMA' : '福岡市預報 · 日本氣象廳');
+    assert.equal(weather.classList.contains('wx-live'), true);
+  });
+
+  test(`${html}: JMA short-term forecast overrides weekly and skips a minimum that has already passed`, async () => {
+    const { weather, nodes } = await renderForecast(
+      html,
+      locale,
+      openMeteoDay({ code: 0, max: 18, min: 12, pop: 5 }),
+      jmaForecast({
+        nearReport: '2026-11-06T11:00:00+09:00',
+        nearCodes: [['2026-11-06T11:00:00+09:00', '202'], ['2026-11-07T00:00:00+09:00', '100']],
+        nearPops: [['2026-11-06T12:00:00+09:00', '30'], ['2026-11-06T18:00:00+09:00', '60'], ['2026-11-07T00:00:00+09:00', '90']],
+        nearTemps: [['2026-11-06T00:00:00+09:00', '19'], ['2026-11-06T09:00:00+09:00', '20']],
+        weeklyDays: [{ date: '2026-11-06', code: '100', pop: '10', max: '25', min: '' }],
+      }),
+    );
+    assert.equal(nodes['.wx-hi'].textContent, '20°');
+    assert.equal(nodes['.wx-lo'].textContent, '12°');
+    assert.equal(nodes['.wx-icon'].className, 'wx-icon fa-solid fa-cloud-rain');
+    assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), english ? 'Cloudy, chance of rain' : '陰，有時雨');
+    assert.equal(nodes['.wx-rain-value'].textContent, '60%');
+    assert.equal(nodes['.wx-rain'].getAttribute('aria-label'), english ? 'Daily maximum chance of rain: 60%' : '當日最高降雨機率 60%');
+    assert.equal(weather.getAttribute('title'), english ? 'Fukuoka forecast · JMA, Open-Meteo' : '福岡市預報 · 日本氣象廳、Open-Meteo');
+  });
+
+  test(`${html}: dates outside the JMA forecast fall back to Open-Meteo`, async () => {
+    const { weather, nodes } = await renderForecast(
+      html,
+      locale,
+      openMeteoDay({ code: 3, max: 16.4, min: 9.2, pop: 10 }),
+      jmaForecast({ weeklyDays: [{ date: '2026-11-09', code: '100', pop: '0', max: '18', min: '12' }] }),
+    );
+    assert.equal(nodes['.wx-hi'].textContent, '16°');
+    assert.equal(nodes['.wx-lo'].textContent, '9°');
+    assert.equal(nodes['.wx-icon'].className, 'wx-icon fa-solid fa-cloud');
+    assert.equal(nodes['.wx-rain-value'].textContent, '10%');
+    assert.equal(weather.getAttribute('title'), english ? 'Fukuoka forecast · Open-Meteo' : '福岡市預報 · Open-Meteo');
+  });
+
+  test(`${html}: JMA weather codes map to matching icons and descriptions`, async () => {
+    const cases = [
+      ['100', 'fa-sun', 'Sunny', '晴天'],
+      ['200', 'fa-cloud', 'Cloudy', '陰天'],
+      ['201', 'fa-cloud-sun', 'Cloudy with sunny spells', '多雲時晴'],
+      ['102', 'fa-cloud-sun-rain', 'Sunny, chance of rain', '晴，有時雨'],
+      ['203', 'fa-cloud-rain', 'Cloudy, chance of rain', '陰，有時雨'],
+      ['300', 'fa-cloud-rain', 'Rain', '雨天'],
+      ['306', 'fa-cloud-showers-heavy', 'Heavy rain', '大雨'],
+      ['240', 'fa-cloud-bolt', 'Cloudy, chance of thunderstorms', '陰，可能有雷雨'],
+    ];
+    for (const [code, icon, en, zh] of cases) {
+      const { nodes } = await renderForecast(
+        html,
+        locale,
+        openMeteoDay({ code: 0, max: 18, min: 12, pop: 5 }),
+        jmaForecast({ weeklyDays: [{ date: '2026-11-06', code, pop: '20', max: '21', min: '14' }] }),
+      );
+      assert.equal(nodes['.wx-icon'].className, `wx-icon fa-solid ${icon}`, `JMA code ${code}`);
+      assert.equal(nodes['.wx-icon'].getAttribute('aria-label'), english ? en : zh, `JMA code ${code}`);
+    }
   });
 }
