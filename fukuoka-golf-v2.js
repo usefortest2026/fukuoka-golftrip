@@ -501,7 +501,7 @@
   var desktopDetailsQuery = window.matchMedia('(min-width: 1024px)');
 
   function syncDesktopDetails() {
-    document.querySelectorAll('details:not(.v2-scan-coupon)').forEach(function (details) {
+    document.querySelectorAll('details:not(.v2-scan-coupon):not(.course-weather)').forEach(function (details) {
       if (desktopDetailsQuery.matches) {
         if (!details.hasAttribute('data-mobile-open')) {
           details.setAttribute('data-mobile-open', details.open ? 'true' : 'false');
@@ -518,7 +518,7 @@
 
   document.addEventListener('click', function (event) {
     if (!desktopDetailsQuery.matches || !event.target.closest) return;
-    if (event.target.closest('details:not(.v2-scan-coupon) > summary')) event.preventDefault();
+    if (event.target.closest('details:not(.v2-scan-coupon):not(.course-weather) > summary')) event.preventDefault();
   });
 
   if (desktopDetailsQuery.addEventListener) {

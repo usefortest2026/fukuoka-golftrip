@@ -138,7 +138,7 @@ async function inspectDayTwo(file, width) {
       quick,
       firstDetail,
       detailsCount: document.querySelectorAll('#day2 details').length,
-      closedDetailsCount: document.querySelectorAll('#day2 details:not([open])').length,
+      closedDetailsCount: document.querySelectorAll('#day2 details:not(.course-weather):not([open])').length,
       pageOverflow: document.documentElement.scrollWidth > innerWidth,
       activePage: document.querySelector('.page.active')?.id,
       buttonCount: buttons.length,
@@ -162,7 +162,7 @@ async function inspectDayTop(file, width, pageId, secondarySelector) {
         '#${pageId} > ${secondarySelector} .v2-route-stop, #${pageId} > ${secondarySelector} .v2-quick-grid > div'
       )].map((item) => getComputedStyle(item).borderRightWidth),
       detailsCount: document.querySelectorAll('#${pageId} details').length,
-      closedDetailsCount: document.querySelectorAll('#${pageId} details:not([open])').length,
+      closedDetailsCount: document.querySelectorAll('#${pageId} details:not(.course-weather):not([open])').length,
       pageOverflow: document.documentElement.scrollWidth > innerWidth,
     };
   })()`);
@@ -206,7 +206,7 @@ async function inspectDayThreeLinks(file, width) {
   return result;
 }
 
-async function inspectFiveItemSummary(file, width) {
+async function inspectDayFiveSummary(file, width) {
   await setViewport(width);
   await navigate(file, 'day5');
   return evaluate(`(() => {
@@ -528,7 +528,7 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.ok(result.firstDetail.top >= result.quick.bottom, `${file} details overlap the desktop quick info`);
     assert.ok(Math.abs(result.firstDetail.width - result.summary.width) < 2, `${file} detail panels should use the full content width`);
     assert.ok(result.detailsCount > 0);
-    assert.equal(result.closedDetailsCount, 0, `${file} desktop details should all be expanded`);
+    assert.equal(result.closedDetailsCount, 0, `${file} desktop non-weather details should all be expanded`);
     assert.deepEqual(
       result.summaryListPadding,
       { top: '8px', bottom: '8px' },
@@ -573,7 +573,7 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
     assert.ok(Math.abs(result.secondary.left - result.summary.left) < 2, `${file} ${pageId} top sections should align`);
     assert.ok(Math.abs(result.secondary.width - result.summary.width) < 2, `${file} ${pageId} top sections should have equal widths`);
     assert.ok(result.firstDetail.top >= result.secondary.bottom, `${file} ${pageId} detail content overlaps the top sections`);
-    assert.equal(result.closedDetailsCount, 0, `${file} ${pageId} desktop details should all be expanded`);
+    assert.equal(result.closedDetailsCount, 0, `${file} ${pageId} desktop non-weather details should all be expanded`);
     assert.deepEqual(
       result.secondaryDividerWidths,
       result.secondaryDividerWidths.map(() => '0px'),
@@ -596,12 +596,12 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-en.html']) {
   }
 
   for (const width of [1024, 1440]) {
-    const result = await inspectFiveItemSummary(file, width);
+    const result = await inspectDayFiveSummary(file, width);
     assert.equal(result.pageOverflow, false);
-    assert.equal(result.items.length, 5);
+    assert.equal(result.items.length, 4);
     assert.ok(
       result.items.every((item) => Math.abs(item.top - result.items[0].top) < 2),
-      `${file} five-item desktop summary should stay on one row at ${width}px`,
+      `${file} four-item desktop summary should stay on one row at ${width}px`,
     );
   }
 

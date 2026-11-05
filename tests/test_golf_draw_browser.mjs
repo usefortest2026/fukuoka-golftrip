@@ -146,7 +146,8 @@ for (const [file, copy] of Object.entries(COPY)) {
     assert.ok(item.last, `${file}: draw sits at the bottom of ${item.day}`);
   }
 
-  const storageBefore = await evaluate(`JSON.stringify([Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()])`);
+  // Weather refreshes independently; only its explicitly scoped cache is excluded.
+  const storageBefore = await evaluate(`JSON.stringify([Object.keys(localStorage).filter(key => !key.startsWith('fukuoka-course-weather-v1:')).sort(), Object.keys(sessionStorage).sort()])`);
 
   let sheet = await readSheet('day2');
   assert.equal(sheet.state, 'ready');
@@ -234,7 +235,7 @@ for (const [file, copy] of Object.entries(COPY)) {
   assert.deepEqual(layout.overflow, [], `${file}: nothing clips inside the draw`);
   assert.ok(layout.targets.every((height) => height >= 44), `${file}: touch targets are at least 44px`);
 
-  const storageAfter = await evaluate(`JSON.stringify([Object.keys(localStorage).sort(), Object.keys(sessionStorage).sort()])`);
+  const storageAfter = await evaluate(`JSON.stringify([Object.keys(localStorage).filter(key => !key.startsWith('fukuoka-course-weather-v1:')).sort(), Object.keys(sessionStorage).sort()])`);
   assert.equal(storageAfter, storageBefore, `${file}: draws are not saved`);
 
   await navigate(`${file}?p=day2`);

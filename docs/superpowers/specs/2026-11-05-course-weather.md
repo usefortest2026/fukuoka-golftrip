@@ -1,0 +1,7 @@
+# Course weather
+
+Approved in the local preview, then authorized for deployment. Keep city forecasts; add a separate, initially collapsed course-weather disclosure after course-info on days 2, 4 and 5 in all three entry pages. Match the existing dress-code disclosure. Expanded content has play-time temperature range, maximum hourly rain probability, wind range and hourly table, with Japan time and data source/update time. No nested disclosure.
+
+Use Open-Meteo at course-vicinity coordinates from official access maps: Hisayama 33.649745,130.493236 on November 7 (11–16); Dazaifu 33.513042,130.541229 on November 9 (10–16); Century 33.424437,130.698915 on November 10 (10–16). All dates are 2026 and hours are inclusive Japan local hours. These are approximate playing windows, not promised round end times.
+
+Options considered: retain city-only weather (insufficient local detail); replace city weather (loses evening city context); add the approved collapsed course section (selected). Use live hourly forecasts rather than the preview snapshot. Cache validated successful responses locally for up to 24 hours, explicitly label fallback data, and show unavailable when no usable forecast exists. Missing values must never become zero. Keep desktop resize handling from automatically opening or blocking the new disclosures. Include the new script in offline core assets; align release 20261105-32.

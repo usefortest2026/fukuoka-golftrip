@@ -1,4 +1,4 @@
-const APP_VERSION = '20261105-31';
+const APP_VERSION = '20261105-32';
 const APP_CACHE_PREFIX = 'fukuoka-trip-';
 const CORE_CACHE = `${APP_CACHE_PREFIX}core-${APP_VERSION}`;
 const COUPON_CACHE = `${APP_CACHE_PREFIX}coupons-${APP_VERSION}`;
@@ -11,6 +11,7 @@ const CORE_ASSETS = [
   './fukuoka-golf-en-v2.js',
   './trip-day-router.js',
   './golf-draw.js',
+  './course-weather.js',
   './touch-gestures.js',
   './pwa.js',
   './private-trip-info.js',

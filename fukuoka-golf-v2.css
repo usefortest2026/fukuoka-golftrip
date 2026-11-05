@@ -1921,3 +1921,37 @@ details > summary {
 @media (min-width: 601px) {
   .flight-combo .fc-mid { width: 100%; max-width: 440px; justify-self: center; }
 }
+
+/* Course forecasts stay collapsed by default at every viewport size. */
+.course-weather > summary { cursor: pointer; user-select: none; }
+.course-weather > summary::after { display: block; }
+.course-weather > summary:focus-visible,
+.cw-refresh:focus-visible { outline: 2px solid #24643d; outline-offset: 2px; }
+.cw-body { padding: 14px 12px 4px; color: #203e2c; font-size: 14px; line-height: 1.5; }
+.cw-body [hidden] { display: none !important; }
+.cw-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 8px; margin-bottom: 14px; }
+.cw-heading h3 { margin: 0; font-size: 14px; font-weight: 700; color: #244632; }
+.cw-heading > span { font-size: 12px; color: #627268; font-variant-numeric: tabular-nums; }
+.cw-metrics { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 8px; margin: 0; }
+.cw-metric { min-width: 0; }
+.cw-metric + .cw-metric { border-left: 1px solid #e4eae5; padding-left: 10px; }
+.cw-metric dt { display: flex; align-items: baseline; gap: 5px; color: #566459; font-size: 11px; margin-bottom: 3px; }
+.cw-metric dt i { font-size: 11px; }
+.cw-metric dd { margin: 0; color: #244632; font-size: 21px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.4; }
+.cw-metric dd b { font-weight: inherit; white-space: nowrap; }
+.cw-metric dd small { font-size: 12px; margin-left: 3px; font-weight: 400; white-space: nowrap; }
+.cw-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin-top: 12px; color: #626d64; font-size: 11px; }
+.cw-status { margin: 12px 0; color: #63552d; font-size: 12px; }
+.cw-hourly { margin-top: 14px; }
+.cw-hourly table { border-collapse: collapse; width: 100%; font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
+.cw-hourly caption { text-align: left; padding-bottom: 8px; font-size: 12px; color: #355a41; }
+.cw-hourly th { font-weight: 400; color: #566459; }
+.cw-hourly td, .cw-hourly th { padding: 8px 0; border-top: 1px solid #e4eae5; }
+.cw-hourly th:first-child, .cw-hourly td:first-child { text-align: left; }
+.cw-refresh { display: block; min-height: 44px; padding: 8px 0; border: 0; background: transparent; color: #355a41; font: inherit; font-size: 12px; cursor: pointer; }
+.cw-refresh:disabled { opacity: .6; cursor: wait; }
+@media (min-width: 601px) {
+  .cw-body { padding: 16px 12px 8px; }
+  .cw-metric dd { font-size: 24px; }
+  .cw-metric dt { font-size: 12px; }
+}

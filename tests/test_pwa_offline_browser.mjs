@@ -158,6 +158,7 @@ const requiredCoreAssets = [
   'fukuoka-golf-en-v2.js',
   'trip-day-router.js',
   'golf-draw.js',
+  'course-weather.js',
   'pwa.js',
   'private-trip-info.js',
   'private-trip-info.enc.json',
