@@ -157,6 +157,7 @@ const requiredCoreAssets = [
   'fukuoka-golf-v2.js',
   'fukuoka-golf-en-v2.js',
   'trip-day-router.js',
+  'golf-draw.js',
   'pwa.js',
   'private-trip-info.js',
   'private-trip-info.enc.json',
@@ -171,7 +172,6 @@ for (const asset of requiredCoreAssets) {
   assert.ok(cachedPaths.includes(asset), `${asset} is available in the core offline cache`);
 }
 assert.equal(cacheSnapshot.urls.some((url) => /coupon-.*\.jpg/.test(url)), false, 'coupons stay out of core cache');
-assert.equal(cacheSnapshot.urls.some((url) => /golf-draw\.js(?:\?|$)/.test(url)), false, 'retired golf draw stays out of core cache');
 assert.equal(cacheSnapshot.urls.some((url) => !url.startsWith(baseUrl)), false, 'remote assets stay out of core cache');
 assert.equal(cacheSnapshot.urls.some((url) => /private-trip-info\.json(?:\?|$)/.test(url)), false, 'no unencrypted private payload is cached');
 
@@ -578,12 +578,14 @@ for (const file of ['fukuoka-golf.html', 'fukuoka-golf-v2.html', 'fukuoka-golf-e
     active: document.querySelector('.page.active')?.id,
     hotelCopies: document.querySelectorAll('#hotels .v2-copy-address').length,
     packingControls: document.querySelectorAll('#packing [data-pack]').length,
-    drawEntries: document.querySelectorAll('.golf-draw-entry').length
+    drawPanels: ['day2', 'day4', 'day5'].filter((id) => document.querySelector('#' + id + ' > .golf-draw')).length,
+    drawPanelTotal: document.querySelectorAll('.golf-draw').length
   })`);
   assert.equal(state.active, 'day4', `${file} restores query-bearing Day 4 offline`);
   assert.ok(state.hotelCopies > 0, `${file} retains hotel copy controls offline`);
   assert.ok(state.packingControls > 0, `${file} retains packing controls offline`);
-  assert.equal(state.drawEntries, 0, `${file} keeps the retired golf draw out of the offline UI`);
+  assert.equal(state.drawPanels, 3, `${file} retains the golf draw on every golf day offline`);
+  assert.equal(state.drawPanelTotal, 3, `${file} shows the golf draw only on golf days`);
 }
 
 await navigate('fukuoka-golf.html?p=more');
