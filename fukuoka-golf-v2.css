@@ -1595,8 +1595,8 @@ details > summary {
   --gd-ink: #2a2723;
   --gd-muted: #6b665d;
   --gd-body: #52525b; /* 與網站內文同色 */
-  --gd-cream: #f2ede3;
-  --gd-cream-line: #d9cfbd;
+  --gd-cell: #f5f8f1;      /* 與「抵達／餐別」資訊格同底色 */
+  --gd-cell-line: #e4e4e7; /* 與資訊格同框線 */
   --gd-green: #173629;
   --gd-green-pressed: #0f271d;
   --gd-pill: 40px;
@@ -1682,13 +1682,14 @@ details > summary {
 .golf-draw .gd-name {
   display: inline-block;
   color: var(--gd-body);
+  font-family: 'Noto Sans TC', system-ui, sans-serif; /* 與「提前 60 分」同字型 */
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.25;
   white-space: nowrap;
 }
 
-/* 米色膠囊名牌（名單與結果共用） */
+/* 名牌（名單與結果共用）：與「抵達／餐別」資訊格同底色、框線、圓角 */
 .golf-draw .gd-cell,
 .golf-draw .gd-slot {
   display: flex;
@@ -1698,9 +1699,9 @@ details > summary {
   min-width: 0;
   height: var(--gd-pill);
   padding: 0 6px;
-  border: 1px solid var(--gd-cream-line);
-  border-radius: 999px;
-  background: var(--gd-cream);
+  border: 1px solid var(--gd-cell-line);
+  border-radius: 8px;
+  background: var(--gd-cell);
 }
 
 /* 抽籤前：4 × 2 名牌 */
@@ -1714,7 +1715,7 @@ details > summary {
 }
 
 .golf-draw .gd-cell-pair { grid-column: span 2; }
-.golf-draw .gd-amp { color: var(--gd-body); font-size: 16px; font-weight: 500; line-height: 1; }
+.golf-draw .gd-amp { color: var(--gd-body); font-family: 'Noto Sans TC', system-ui, sans-serif; font-size: 16px; font-weight: 400; line-height: 1; }
 
 /* 抽完：兩組並排，各自置中 */
 .golf-draw .gd-sheet-grid {
