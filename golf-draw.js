@@ -9,9 +9,9 @@
   'use strict';
 
   // 打球日「今日分組」：8 人分成 4＋4，兩種玩法。結果不保存、不同步。
-  var COUPLES = [['RT', 'Louis'], ['Asa', 'Fi']];
+  var COUPLES = [['Royston', 'Lois'], ['Asa', 'Fi']];
   var SINGLES = ['Raistlin', 'Alex', 'Derek', 'Jack'];
-  var PLAYERS = ['RT', 'Louis', 'Asa', 'Fi', 'Raistlin', 'Alex', 'Derek', 'Jack'];
+  var PLAYERS = ['Royston', 'Lois', 'Asa', 'Fi', 'Raistlin', 'Alex', 'Derek', 'Jack'];
   var GOLF_DAYS = ['day2', 'day4', 'day5'];
   var MODES = ['random', 'couple'];
   var EASE = 'cubic-bezier(.32,.72,0,1)'; // iOS sheet-style curve
@@ -99,11 +99,10 @@
       again: '再抽一次',
       group: function (index) { return index ? '第二組' : '第一組'; },
       groupLabel: function (index, time) { return (index ? '第二組' : '第一組') + (time ? '，' + time + ' 開球' : ''); },
-      pairNote: '（情侶同組）',
       summary: function (groups, times) {
         return groups.map(function (group, index) {
           return (index ? '第二組' : '第一組') + (times[index] ? ' ' + times[index] + ' 開球' : '') + '：' +
-            group.map(function (unit) { return unit.join(' 和 '); }).join('、');
+            groupNames(group).sort(byName).join('、');
         }).join('；') + '。';
       }
     },
@@ -118,11 +117,10 @@
       again: 'Draw again',
       group: function (index) { return index ? 'Group 2' : 'Group 1'; },
       groupLabel: function (index, time) { return (index ? 'Group 2' : 'Group 1') + (time ? ', tee time ' + time : ''); },
-      pairNote: ' (couple)',
       summary: function (groups, times) {
         return groups.map(function (group, index) {
           return (index ? 'Group 2' : 'Group 1') + (times[index] ? ', tee time ' + times[index] : '') + ': ' +
-            group.map(function (unit) { return unit.join(' and '); }).join(', ');
+            groupNames(group).sort(byName).join(', ');
         }).join('; ') + '.';
       }
     }
@@ -155,39 +153,42 @@
     return '<span class="gd-name" data-name="' + escapeHTML(name) + '">' + escapeHTML(name) + '</span>';
   }
 
-  function poolOrder(mode, cryptoLike) {
-    if (mode === 'couple') {
-      return { couples: randomIndex(2, cryptoLike) ? COUPLES : [COUPLES[1], COUPLES[0]], singles: shuffle(SINGLES, cryptoLike) };
-    }
-    return shuffle(PLAYERS, cryptoLike);
+  // Names are always shown A–Z; a couple is ordered A–Z inside and sorted by its first name.
+  function byName(a, b) { return a.localeCompare(b, 'en', { sensitivity: 'base' }); }
+  function sortedUnit(unit) { return unit.slice().sort(byName); }
+
+  function poolUnits(mode) {
+    if (mode !== 'couple') return PLAYERS.slice().sort(byName).map(function (name) { return [name]; });
+    return COUPLES.map(sortedUnit).concat(SINGLES.map(function (name) { return [name]; }))
+      .sort(function (a, b) { return byName(a[0], b[0]); });
   }
 
-  function poolHTML(copy, mode, order) {
-    var cells;
-    if (mode === 'couple') {
-      order = order || { couples: COUPLES, singles: SINGLES };
-      cells = order.couples.map(function (couple) {
-        return '<li class="gd-cell gd-cell-pair">' + nameHTML(couple[0]) +
+  // Shuffle order for the draw animation. In couple mode the two pairs keep the
+  // 1-2-1 / 1-2-1 slots so the 4-column pool never reflows into a third row.
+  function poolOrder(mode, cryptoLike) {
+    if (mode !== 'couple') return shuffle(PLAYERS, cryptoLike).map(function (name) { return [name]; });
+    var pairs = shuffle(COUPLES.map(sortedUnit), cryptoLike);
+    var singles = shuffle(SINGLES, cryptoLike).map(function (name) { return [name]; });
+    return [singles[0], pairs[0], singles[1], singles[2], pairs[1], singles[3]];
+  }
+
+  function poolHTML(copy, mode, units) {
+    var cells = (units || poolUnits(mode)).map(function (unit) {
+      if (unit.length === 2) {
+        return '<li class="gd-cell gd-cell-pair">' + nameHTML(unit[0]) +
           '<span class="gd-amp" aria-hidden="true">&amp;</span><span class="gd-sr">' + escapeHTML(copy.and) + '</span>' +
-          nameHTML(couple[1]) + '</li>';
-      }).concat(order.singles.map(function (name) { return '<li class="gd-cell">' + nameHTML(name) + '</li>'; }));
-    } else {
-      cells = (order || PLAYERS).map(function (name) { return '<li class="gd-cell">' + nameHTML(name) + '</li>'; });
-    }
+          nameHTML(unit[1]) + '</li>';
+      }
+      return '<li class="gd-cell">' + nameHTML(unit[0]) + '</li>';
+    });
     return '<ul class="gd-pool" aria-label="' + escapeHTML(copy.poolLabel) + '">' + cells.join('') + '</ul>';
   }
 
-  // Couples stay on adjacent lines; nothing marks them visually, screen readers hear "（情侶同組）".
-  // plain = true while shuffling a previous sheet.
-  function sheetHTML(copy, groups, times, plain) {
+  // Each group lists its four names A–Z.
+  function sheetHTML(copy, groups, times) {
     return '<div class="gd-sheet-grid">' + groups.map(function (group, groupIndex) {
-      var rows = [];
-      var line = 0;
-      group.forEach(function (unit) {
-        unit.forEach(function (name, index) {
-          var note = unit.length === 2 && index === 1 && !plain ? copy.pairNote : '';
-          rows.push(slotHTML(groupIndex, ++line, name, note));
-        });
+      var rows = groupNames(group).sort(byName).map(function (name, index) {
+        return slotHTML(groupIndex, index + 1, name);
       });
       var time = times[groupIndex] || '';
       return '<section class="gd-group" aria-label="' + escapeHTML(copy.groupLabel(groupIndex, time)) + '">' +
@@ -197,10 +198,9 @@
     }).join('') + '</div>';
   }
 
-  function slotHTML(groupIndex, line, name, note) {
+  function slotHTML(groupIndex, line, name) {
     // data-order: deal order, alternating 第一組 / 第二組 line by line.
-    return '<li class="gd-slot" data-order="' + ((line - 1) * 2 + groupIndex) + '">' + nameHTML(name) +
-      (note ? '<span class="gd-sr">' + escapeHTML(note) + '</span>' : '') + '</li>';
+    return '<li class="gd-slot" data-order="' + ((line - 1) * 2 + groupIndex) + '">' + nameHTML(name) + '</li>';
   }
 
   function buttonHTML(label) {
@@ -335,7 +335,7 @@
         if (round < 3) {
           // Phase 1: shuffle in place (the pool, or the previous sheet when drawing again).
           var shuffleHTML = fromSheet
-            ? sheetHTML(copy, drawGroups(state.mode, cryptoLike), times, true)
+            ? sheetHTML(copy, drawGroups(state.mode, cryptoLike), times)
             : poolHTML(copy, state.mode, poolOrder(state.mode, cryptoLike));
           later(function () { step(round + 1); }, morph(shuffleHTML, { duration: 180 }) + 20);
         } else {

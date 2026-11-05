@@ -97,6 +97,7 @@ function readSheet(dayId) {
       buttonClass: panel.querySelector('[data-gd-go]').className,
       live: panel.querySelector('[data-gd-live]').textContent,
       poolCells: panel.querySelectorAll('.gd-pool .gd-cell').length,
+      poolOrder: [...panel.querySelectorAll('.gd-pool .gd-cell')].map((cell) => [...cell.querySelectorAll('.gd-name')].map((name) => name.textContent).join('&')),
       poolPairs: [...panel.querySelectorAll('.gd-cell-pair')].map((cell) => [...cell.querySelectorAll('.gd-name')].map((name) => name.textContent).join('&')),
       groups
     };
@@ -105,16 +106,18 @@ function readSheet(dayId) {
 
 function assertEveryoneOnce(sheet, label) {
   const names = sheet.groups.flatMap((group) => group.rows.map((row) => row.name)).sort();
-  assert.deepEqual(names, ['Alex', 'Asa', 'Derek', 'Fi', 'Jack', 'Louis', 'RT', 'Raistlin'], `${label}: all eight names once`);
-  for (const group of sheet.groups) assert.equal(group.rows.length, 4, `${label}: four players per group`);
+  assert.deepEqual(names, ['Alex', 'Asa', 'Derek', 'Fi', 'Jack', 'Lois', 'Raistlin', 'Royston'], `${label}: all eight names once`);
+  for (const group of sheet.groups) {
+    assert.equal(group.rows.length, 4, `${label}: four players per group`);
+    const names = group.rows.map((row) => row.name);
+    assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b, 'en')), `${label}: names in each group are A–Z`);
+  }
 }
 
 function assertCouplesAdjacent(sheet, label) {
-  for (const [a, b] of [['RT', 'Louis'], ['Asa', 'Fi']]) {
+  for (const [a, b] of [['Royston', 'Lois'], ['Asa', 'Fi']]) {
     const group = sheet.groups.find((item) => item.rows.some((row) => row.name === a));
-    const index = group.rows.findIndex((row) => row.name === a || row.name === b);
-    const pair = [group.rows[index]?.name, group.rows[index + 1]?.name].sort();
-    assert.deepEqual(pair, [a, b].sort(), `${label}: ${a} & ${b} share a group on adjacent lines`);
+    assert.ok(group.rows.some((row) => row.name === b), `${label}: ${a} & ${b} share a group`);
   }
   assert.ok(sheet.groups.every((group) => group.rows.every((row) => !row.marked)), `${label}: couples carry no visual marker`);
 }
@@ -149,6 +152,7 @@ for (const [file, copy] of Object.entries(COPY)) {
   assert.equal(sheet.state, 'ready');
   assert.equal(sheet.mode, 'random');
   assert.equal(sheet.poolCells, 8, `${file}: pool lists eight players`);
+  assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa', 'Derek', 'Fi', 'Jack', 'Lois', 'Raistlin', 'Royston'], `${file}: pool is A–Z`);
   assert.equal(sheet.button, copy.draw);
   assert.equal(sheet.hasRule, false, `${file}: no explanation line under the mode tabs`);
 
@@ -177,7 +181,8 @@ for (const [file, copy] of Object.entries(COPY)) {
   sheet = await readSheet('day2');
   assert.equal(sheet.mode, 'couple', `${file}: ArrowRight selects couple mode`);
   assert.equal(sheet.state, 'ready');
-  assert.deepEqual(sheet.poolPairs, ['RT&Louis', 'Asa&Fi'], `${file}: couples are shown together in the pool`);
+  assert.deepEqual(sheet.poolPairs, ['Asa&Fi', 'Lois&Royston'], `${file}: couples are shown together in the pool, A–Z`);
+  assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa&Fi', 'Derek', 'Jack', 'Lois&Royston', 'Raistlin'], `${file}: couple-mode pool is A–Z`);
   assert.equal(await evaluate(`document.activeElement?.dataset.gdMode`), 'couple', `${file}: focus follows the selected mode`);
 
   // Many quick draws with reduced motion.
@@ -189,7 +194,7 @@ for (const [file, copy] of Object.entries(COPY)) {
     assert.equal(sheet.state, 'complete', `${file}: reduced motion shows the result at once`);
     assertEveryoneOnce(sheet, `${file} couple ${round}`);
     assertCouplesAdjacent(sheet, `${file} couple ${round}`);
-    if (sheet.groups.some((group) => ['RT', 'Louis', 'Asa', 'Fi'].every((name) => group.rows.some((row) => row.name === name)))) together += 1;
+    if (sheet.groups.some((group) => ['Royston', 'Lois', 'Asa', 'Fi'].every((name) => group.rows.some((row) => row.name === name)))) together += 1;
   }
   assert.ok(together < 40, `${file}: couples are not always in the same group`);
 

@@ -1624,16 +1624,23 @@ details > summary {
   border: 0;
 }
 
-.golf-draw .gd-head { padding: 20px 16px 0; text-align: center; }
+/* 標題列：與「高爾夫當日重點」(.v2-block-head) 相同 */
+.golf-draw .gd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 12px 8px;
+  border-bottom: 1px solid #eceef0;
+}
 
 .golf-draw .gd-head h3 {
   margin: 0;
   color: #18181b;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: .12em;
-  line-height: 1.4;
-  text-transform: uppercase;
+  font-family: 'Noto Sans TC', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.5;
 }
 
 .golf-draw .gd-body { padding: 14px 16px 18px; }

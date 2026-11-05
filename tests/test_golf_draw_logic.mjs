@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const draw = require('../golf-draw.js');
 
-const COUPLE_KEYS = ['Louis|RT', 'Asa|Fi'];
+const COUPLE_KEYS = ['Lois|Royston', 'Asa|Fi'];
 
 function groupKey(group) {
   return draw.groupNames(group).slice().sort().join(',');
@@ -42,8 +42,8 @@ function tally(mode, runs) {
 }
 
 test('roster has the eight players, two couples and four singles', () => {
-  assert.deepEqual([...draw.PLAYERS], ['RT', 'Louis', 'Asa', 'Fi', 'Raistlin', 'Alex', 'Derek', 'Jack']);
-  assert.deepEqual(draw.COUPLES.map((couple) => [...couple]), [['RT', 'Louis'], ['Asa', 'Fi']]);
+  assert.deepEqual([...draw.PLAYERS], ['Royston', 'Lois', 'Asa', 'Fi', 'Raistlin', 'Alex', 'Derek', 'Jack']);
+  assert.deepEqual(draw.COUPLES.map((couple) => [...couple]), [['Royston', 'Lois'], ['Asa', 'Fi']]);
   assert.deepEqual([...draw.SINGLES], ['Raistlin', 'Alex', 'Derek', 'Jack']);
   assert.deepEqual([...draw.GOLF_DAYS], ['day2', 'day4', 'day5']);
 });
@@ -62,7 +62,7 @@ test('random mode can split a couple', () => {
   const counts = tally('random', 2000);
   const splitsACouple = [...counts.keys()].some((key) => key.split(' / ').some((group) => {
     const names = group.split(',');
-    return names.includes('RT') !== names.includes('Louis');
+    return names.includes('Royston') !== names.includes('Lois');
   }));
   assert.ok(splitsACouple);
 });
@@ -96,8 +96,8 @@ test('either couple can land in either group, in any line order', () => {
   const rtLines = new Set();
   for (let index = 0; index < 3000; index += 1) {
     const [first] = draw.drawCouple();
-    firstGroupHasRT.add(draw.groupNames(first).includes('RT'));
-    const line = draw.groupNames(first).indexOf('RT');
+    firstGroupHasRT.add(draw.groupNames(first).includes('Royston'));
+    const line = draw.groupNames(first).indexOf('Royston');
     if (line >= 0) rtLines.add(line);
   }
   assert.deepEqual([...firstGroupHasRT].sort(), [false, true]);
