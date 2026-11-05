@@ -1,4 +1,4 @@
-const APP_VERSION = '20261105-13';
+const APP_VERSION = '20261105-14';
 const APP_CACHE_PREFIX = 'fukuoka-trip-';
 const CORE_CACHE = `${APP_CACHE_PREFIX}core-${APP_VERSION}`;
 const COUPON_CACHE = `${APP_CACHE_PREFIX}coupons-${APP_VERSION}`;

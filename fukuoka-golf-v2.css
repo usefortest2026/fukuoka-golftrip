@@ -14,6 +14,13 @@ main {
   }
 }
 
+/* 平板／桌機：球場照片改成橫幅，不再被 height="600" 撐到 600px 高 */
+@media (min-width: 601px) {
+  .course-photo {
+    height: clamp(160px, 18vw, 240px);
+  }
+}
+
 @media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
   body > .app { visibility: hidden; }
 
