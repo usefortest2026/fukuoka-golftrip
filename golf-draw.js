@@ -13,7 +13,7 @@
   var SINGLES = ['Raistlin', 'Alex', 'Derek', 'Jack'];
   var PLAYERS = ['Royston', 'Lois', 'Asa', 'Fi', 'Raistlin', 'Alex', 'Derek', 'Jack'];
   var GOLF_DAYS = ['day2', 'day4', 'day5'];
-  var MODES = ['couple', 'random']; // 左：情侶同組（預設），右：隨機分組
+  var MODES = ['couple', 'random']; // 左：隨機分組 1（預設），右：隨機分組 2
   var EASE = 'cubic-bezier(.32,.72,0,1)'; // iOS sheet-style curve
   [COUPLES[0], COUPLES[1], COUPLES, SINGLES, PLAYERS, GOLF_DAYS, MODES].forEach(Object.freeze);
 
@@ -91,7 +91,7 @@
     zh: {
       title: '今日分組',
       modeLabel: '分組方式',
-      modes: { random: '隨機分組', couple: '情侶同組' },
+      modes: { random: '隨機分組 2', couple: '隨機分組 1' },
       poolLabel: '今日球員 8 人',
       and: '和',
       draw: '抽籤',
@@ -109,7 +109,7 @@
     en: {
       title: "Today's groups",
       modeLabel: 'Grouping',
-      modes: { random: 'Random', couple: 'Couples together' },
+      modes: { random: 'Random groups 2', couple: 'Random groups 1' },
       poolLabel: "Today's 8 players",
       and: 'and',
       draw: 'Draw',
