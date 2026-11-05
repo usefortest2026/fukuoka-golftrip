@@ -150,6 +150,11 @@ for (const [file, copy] of Object.entries(COPY)) {
 
   let sheet = await readSheet('day2');
   assert.equal(sheet.state, 'ready');
+  assert.equal(sheet.mode, 'couple', `${file}: couples-together is the default`);
+  assert.deepEqual(await evaluate(`[...document.querySelectorAll('#golf-draw-day2 [data-gd-mode]')].map((b) => b.dataset.gdMode + ':' + b.getAttribute('aria-checked'))`), ['couple:true', 'random:false'], `${file}: couples-together on the left, random on the right`);
+  assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa&Fi', 'Derek', 'Jack', 'Raistlin', 'Royston&Lois'], `${file}: default pool shows the couples`);
+  await evaluate(`document.querySelector('#golf-draw-day2 [data-gd-mode="random"]').click()`);
+  sheet = await readSheet('day2');
   assert.equal(sheet.mode, 'random');
   assert.equal(sheet.poolCells, 8, `${file}: pool lists eight players`);
   assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa', 'Derek', 'Fi', 'Jack', 'Lois', 'Raistlin', 'Royston'], `${file}: pool is A–Z`);
@@ -179,7 +184,7 @@ for (const [file, copy] of Object.entries(COPY)) {
   // Switching mode resets to the pool; arrow keys move between modes.
   await evaluate(`document.querySelector('#golf-draw-day2 .gd-mode').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))`);
   sheet = await readSheet('day2');
-  assert.equal(sheet.mode, 'couple', `${file}: ArrowRight selects couple mode`);
+  assert.equal(sheet.mode, 'couple', `${file}: arrow keys switch back to couple mode`);
   assert.equal(sheet.state, 'ready');
   assert.deepEqual(sheet.poolPairs, ['Asa&Fi', 'Royston&Lois'], `${file}: couples are shown together in the pool`);
   assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa&Fi', 'Derek', 'Jack', 'Raistlin', 'Royston&Lois'], `${file}: couple-mode pool is A–Z`);

@@ -13,7 +13,7 @@
   var SINGLES = ['Raistlin', 'Alex', 'Derek', 'Jack'];
   var PLAYERS = ['Royston', 'Lois', 'Asa', 'Fi', 'Raistlin', 'Alex', 'Derek', 'Jack'];
   var GOLF_DAYS = ['day2', 'day4', 'day5'];
-  var MODES = ['random', 'couple'];
+  var MODES = ['couple', 'random']; // 左：情侶同組（預設），右：隨機分組
   var EASE = 'cubic-bezier(.32,.72,0,1)'; // iOS sheet-style curve
   [COUPLES[0], COUPLES[1], COUPLES, SINGLES, PLAYERS, GOLF_DAYS, MODES].forEach(Object.freeze);
 
@@ -237,7 +237,7 @@
     var goButton = panel.querySelector('[data-gd-go]');
     var live = panel.querySelector('[data-gd-live]');
     var modeButtons = Array.prototype.slice.call(panel.querySelectorAll('[data-gd-mode]'));
-    var state = { mode: 'random', result: null, busy: false };
+    var state = { mode: MODES[0], result: null, busy: false };
     var timers = [];
 
     function later(fn, ms) { timers.push(root.setTimeout(fn, ms)); }

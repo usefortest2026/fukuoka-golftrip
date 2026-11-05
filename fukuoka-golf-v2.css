@@ -1668,7 +1668,7 @@ details > summary {
   transition: transform 360ms var(--gd-ease);
 }
 
-.golf-draw .gd-mode[data-gd-selected="couple"] .gd-mode-thumb { transform: translateX(100%); }
+.golf-draw .gd-mode[data-gd-selected="random"] .gd-mode-thumb { transform: translateX(100%); }
 
 .golf-draw .gd-mode button {
   position: relative;
