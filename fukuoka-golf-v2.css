@@ -1805,3 +1805,101 @@ details > summary {
   .golf-draw .gd-mode button,
   .golf-draw .gd-btn { transition: none; }
 }
+
+/* Day 1 去程航班：兩班合併成一張卡，每班一行（出發 → 航空公司／直飛時間 → 抵達） */
+.flight.flight-combo {
+  padding: 4px 16px;
+  background: #173629;
+}
+
+.flight-combo .fc-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+.flight-combo .fc-row + .fc-row { border-top: 1px solid rgba(255, 255, 255, .1); }
+
+.flight-combo .fc-end { display: grid; gap: 2px; justify-items: start; min-width: 0; }
+.flight-combo .fc-end-arr { justify-items: end; text-align: right; }
+
+.flight-combo .fc-end strong {
+  color: #fff;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: .01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.flight-combo .fc-end span {
+  color: rgba(255, 255, 255, .78);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.flight-combo .fc-mid {
+  display: grid;
+  gap: 4px;
+  justify-items: stretch;
+  min-width: 0;
+  text-align: center;
+}
+
+.flight-combo .fc-carrier {
+  color: #d4bf86; /* 與飛機圖示同色 */
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.flight-combo .fc-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d4bf86;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* 空心飛機：跟原本航班卡一樣用描邊畫出外框 */
+.flight-combo .fc-line i {
+  font-size: 17px;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: .9px #d4bf86;
+}
+
+.flight-combo .fc-line::before,
+.flight-combo .fc-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(212, 191, 134, .75);
+}
+
+.flight-combo .fc-note {
+  color: #d4bf86;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .flight.flight-combo { padding: 2px 12px; }
+  .flight-combo .fc-row { gap: 10px; }
+  .flight-combo .fc-end strong { font-size: 22px; }
+  .flight-combo .fc-end span,
+  .flight-combo .fc-carrier,
+  .flight-combo .fc-note { font-size: 12px; }
+}
+
+@media (min-width: 601px) {
+  .flight-combo .fc-mid { width: 100%; max-width: 440px; justify-self: center; }
+}
