@@ -92,7 +92,7 @@ function readSheet(dayId) {
     return {
       state: panel.dataset.gdState,
       mode: panel.dataset.gdCurrentMode,
-      rule: panel.querySelector('.gd-rule').textContent,
+      hasRule: Boolean(panel.querySelector('.gd-rule')),
       button: panel.querySelector('[data-gd-go]').textContent,
       buttonClass: panel.querySelector('[data-gd-go]').className,
       live: panel.querySelector('[data-gd-live]').textContent,
@@ -150,6 +150,7 @@ for (const [file, copy] of Object.entries(COPY)) {
   assert.equal(sheet.mode, 'random');
   assert.equal(sheet.poolCells, 8, `${file}: pool lists eight players`);
   assert.equal(sheet.button, copy.draw);
+  assert.equal(sheet.hasRule, false, `${file}: no explanation line under the mode tabs`);
 
   // Animated draw: busy state ignores extra taps and mode changes.
   await evaluate(`document.querySelector('#golf-draw-day2 [data-gd-go]').focus()`);

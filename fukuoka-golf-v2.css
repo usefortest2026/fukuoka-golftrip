@@ -1677,16 +1677,7 @@ details > summary {
 .golf-draw .gd-mode button[aria-disabled="true"] { cursor: default; }
 .golf-draw .gd-mode button[aria-disabled="true"][aria-checked="false"] { opacity: .45; }
 
-.golf-draw .gd-rule {
-  margin: 10px 0 16px;
-  color: var(--gd-muted);
-  font-size: 13px;
-  line-height: 1.5;
-  text-align: center;
-  text-wrap: balance;
-}
-
-.golf-draw .gd-sheet { position: relative; }
+.golf-draw .gd-sheet { position: relative; margin-top: 18px; }
 
 .golf-draw .gd-name {
   display: inline-block;

@@ -92,10 +92,6 @@
       title: '今日分組',
       modeLabel: '分組方式',
       modes: { random: '隨機分組', couple: '情侶同組' },
-      rules: {
-        random: '8 人完全隨機分兩組，情侶也可能分開。',
-        couple: 'RT & Louis、Asa & Fi 一定同組，其餘隨機。'
-      },
       poolLabel: '今日球員 8 人',
       and: '和',
       draw: '抽籤',
@@ -115,10 +111,6 @@
       title: "Today's groups",
       modeLabel: 'Grouping',
       modes: { random: 'Random', couple: 'Couples together' },
-      rules: {
-        random: 'All 8 players are drawn at random; couples may be split.',
-        couple: 'RT & Louis and Asa & Fi always play together; the rest is random.'
-      },
       poolLabel: "Today's 8 players",
       and: 'and',
       draw: 'Draw',
@@ -224,7 +216,6 @@
             return '<button type="button" role="radio" aria-checked="' + (index === 0) + '" tabindex="' + (index === 0 ? 0 : -1) + '" data-gd-mode="' + mode + '">' + escapeHTML(copy.modes[mode]) + '</button>';
           }).join('') +
         '</div>' +
-        '<p class="gd-rule" data-gd-rule></p>' +
         '<div class="gd-sheet" data-gd-sheet></div>' +
         '<div class="gd-actions"><button type="button" class="gd-btn gd-btn-primary" data-gd-go></button></div>' +
         '<p class="gd-sr" data-gd-live role="status" aria-live="polite"></p>' +
@@ -244,7 +235,6 @@
     day.appendChild(panel);
 
     var sheet = panel.querySelector('[data-gd-sheet]');
-    var rule = panel.querySelector('[data-gd-rule]');
     var goButton = panel.querySelector('[data-gd-go]');
     var live = panel.querySelector('[data-gd-live]');
     var modeButtons = Array.prototype.slice.call(panel.querySelectorAll('[data-gd-mode]'));
@@ -302,7 +292,6 @@
     }
 
     function update() {
-      rule.textContent = copy.rules[state.mode];
       panel.querySelector('.gd-mode').setAttribute('data-gd-selected', state.mode);
       modeButtons.forEach(function (button) {
         var selected = button.getAttribute('data-gd-mode') === state.mode;
