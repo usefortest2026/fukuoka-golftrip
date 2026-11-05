@@ -181,8 +181,8 @@ for (const [file, copy] of Object.entries(COPY)) {
   sheet = await readSheet('day2');
   assert.equal(sheet.mode, 'couple', `${file}: ArrowRight selects couple mode`);
   assert.equal(sheet.state, 'ready');
-  assert.deepEqual(sheet.poolPairs, ['Asa&Fi', 'Lois&Royston'], `${file}: couples are shown together in the pool, A–Z`);
-  assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa&Fi', 'Derek', 'Jack', 'Lois&Royston', 'Raistlin'], `${file}: couple-mode pool is A–Z`);
+  assert.deepEqual(sheet.poolPairs, ['Asa&Fi', 'Royston&Lois'], `${file}: couples are shown together in the pool`);
+  assert.deepEqual(sheet.poolOrder, ['Alex', 'Asa&Fi', 'Derek', 'Jack', 'Raistlin', 'Royston&Lois'], `${file}: couple-mode pool is A–Z`);
   assert.equal(await evaluate(`document.activeElement?.dataset.gdMode`), 'couple', `${file}: focus follows the selected mode`);
 
   // Many quick draws with reduced motion.

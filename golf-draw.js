@@ -153,13 +153,12 @@
     return '<span class="gd-name" data-name="' + escapeHTML(name) + '">' + escapeHTML(name) + '</span>';
   }
 
-  // Names are always shown A–Z; a couple is ordered A–Z inside and sorted by its first name.
+  // Names are shown A–Z; a couple keeps its own order (Royston & Lois) and sorts by its first name.
   function byName(a, b) { return a.localeCompare(b, 'en', { sensitivity: 'base' }); }
-  function sortedUnit(unit) { return unit.slice().sort(byName); }
 
   function poolUnits(mode) {
     if (mode !== 'couple') return PLAYERS.slice().sort(byName).map(function (name) { return [name]; });
-    return COUPLES.map(sortedUnit).concat(SINGLES.map(function (name) { return [name]; }))
+    return COUPLES.map(function (couple) { return couple.slice(); }).concat(SINGLES.map(function (name) { return [name]; }))
       .sort(function (a, b) { return byName(a[0], b[0]); });
   }
 
@@ -167,7 +166,7 @@
   // 1-2-1 / 1-2-1 slots so the 4-column pool never reflows into a third row.
   function poolOrder(mode, cryptoLike) {
     if (mode !== 'couple') return shuffle(PLAYERS, cryptoLike).map(function (name) { return [name]; });
-    var pairs = shuffle(COUPLES.map(sortedUnit), cryptoLike);
+    var pairs = shuffle(COUPLES.map(function (couple) { return couple.slice(); }), cryptoLike);
     var singles = shuffle(SINGLES, cryptoLike).map(function (name) { return [name]; });
     return [singles[0], pairs[0], singles[1], singles[2], pairs[1], singles[3]];
   }
