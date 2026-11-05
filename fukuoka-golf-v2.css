@@ -1851,7 +1851,7 @@ details > summary {
 }
 
 .flight-combo .fc-carrier {
-  color: #c5a872; /* 與飛機圖示同色 */
+  color: #bac5bf; /* 與機場名稱同色 */
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
@@ -1862,7 +1862,7 @@ details > summary {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #c5a872;
+  color: #bac5bf;
   font-size: 15px;
   line-height: 1;
 }
@@ -1872,7 +1872,7 @@ details > summary {
   font-size: 17px;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .9px #c5a872;
+  -webkit-text-stroke: .9px #bac5bf;
 }
 
 .flight-combo .fc-line::before,
@@ -1880,11 +1880,11 @@ details > summary {
   content: '';
   flex: 1;
   height: 1px;
-  background: #c5a872;
+  background: #bac5bf;
 }
 
 .flight-combo .fc-note {
-  color: #c5a872;
+  color: #bac5bf;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
