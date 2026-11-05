@@ -1809,7 +1809,7 @@ details > summary {
 /* Day 1 去程航班：兩班合併成一張卡，每班一行（出發 → 航空公司／直飛時間 → 抵達） */
 .flight.flight-combo {
   padding: 4px 16px;
-  background: #173629;
+  background: linear-gradient(160deg, #14281e 0%, #122a1e 100%);
 }
 
 .flight-combo .fc-row {
@@ -1820,7 +1820,7 @@ details > summary {
   padding: 14px 0;
 }
 
-.flight-combo .fc-row + .fc-row { border-top: 1px solid rgba(255, 255, 255, .1); }
+.flight-combo .fc-row + .fc-row { border-top: 1px solid rgba(255, 255, 255, .08); }
 
 .flight-combo .fc-end { display: grid; gap: 2px; justify-items: start; min-width: 0; }
 .flight-combo .fc-end-arr { justify-items: end; text-align: right; }
@@ -1835,7 +1835,7 @@ details > summary {
 }
 
 .flight-combo .fc-end span {
-  color: rgba(255, 255, 255, .78);
+  color: #bac5bf;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
@@ -1851,7 +1851,7 @@ details > summary {
 }
 
 .flight-combo .fc-carrier {
-  color: #d4bf86; /* 與飛機圖示同色 */
+  color: #c5a872; /* 與飛機圖示同色 */
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
@@ -1862,7 +1862,7 @@ details > summary {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #d4bf86;
+  color: #c5a872;
   font-size: 15px;
   line-height: 1;
 }
@@ -1872,7 +1872,7 @@ details > summary {
   font-size: 17px;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .9px #d4bf86;
+  -webkit-text-stroke: .9px #c5a872;
 }
 
 .flight-combo .fc-line::before,
@@ -1880,11 +1880,11 @@ details > summary {
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(212, 191, 134, .75);
+  background: #c5a872;
 }
 
 .flight-combo .fc-note {
-  color: #d4bf86;
+  color: #c5a872;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
