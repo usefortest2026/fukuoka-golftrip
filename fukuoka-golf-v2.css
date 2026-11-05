@@ -1597,19 +1597,27 @@ details > summary {
   .private-info-form button { transition: none; }
 }
 
-/* 打球日「今日分組」抽籤（golf-draw.js）：置中字距標題、米色膠囊名牌、深森林綠按鈕。 */
-.golf-draw {
-  --gd-ink: #2a2723;
-  --gd-muted: #6b665d;
-  --gd-body: #52525b; /* 與網站內文同色 */
-  --gd-cell: #f5f8f1;      /* 與「抵達／餐別」資訊格同底色 */
-  --gd-cell-line: #e4e4e7; /* 與資訊格同框線 */
-  --gd-green: #173629;
-  --gd-green-pressed: #0f271d;
-  --gd-pill: 40px;
+/* 打球日「今日分組」抽籤（golf-draw.js）：日系輕奢自然風——白卡柔影、膠囊切換、膠囊名牌、膠囊主按鈕。 */
+.panel.golf-draw {
+  --gd-ink: #1a2e22;        /* 深炭綠：主字、名牌 */
+  --gd-muted: #8c9084;      /* 暖灰：次要字、未選頁籤 */
+  --gd-track: #f0efea;      /* 切換軌道 */
+  --gd-chip: #f9f9f6;       /* 名牌底 */
+  --gd-chip-line: #e3e1d8;  /* 名牌細框 */
+  --gd-green: #0e3524;      /* 主按鈕／選中文字 */
+  --gd-green-hover: #0a2519;
   --gd-ease: cubic-bezier(.32, .72, 0, 1);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Helvetica Neue", "Noto Sans TC", sans-serif;
+  padding: 24px;
+  border: 0;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(14, 53, 36, .04);
+  font-family: 'Noto Sans TC', system-ui, sans-serif;
   color: var(--gd-ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .golf-draw.panel:hover { border-color: transparent; box-shadow: 0 10px 30px rgba(14, 53, 36, .04); }
 }
 
 .golf-draw .gd-sr {
@@ -1624,15 +1632,8 @@ details > summary {
   border: 0;
 }
 
-/* 標題列：與「高爾夫當日重點」(.v2-block-head) 相同 */
-.golf-draw .gd-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 11px 12px 8px;
-  border-bottom: 1px solid #eceef0;
-}
+/* 標題字：與「高爾夫當日重點」相同字型、字級、粗細 */
+.golf-draw .gd-head { margin: 0 0 16px; }
 
 .golf-draw .gd-head h3 {
   margin: 0;
@@ -1643,17 +1644,16 @@ details > summary {
   line-height: 1.5;
 }
 
-.golf-draw .gd-body { padding: 14px 16px 18px; }
+.golf-draw .gd-body { padding: 0; }
 
-/* 分組方式：跟「更多 › 總覽」的切換 tab 同樣式——白底細框，選取為深森林綠滑塊 */
+/* 分組模式切換：膠囊軌道＋白色膠囊滑塊 */
 .golf-draw .gd-mode {
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   padding: 4px;
-  border: 1px solid #e4e4e7;
-  border-radius: 12px;
-  background: #fff;
+  border-radius: 50px;
+  background: var(--gd-track);
 }
 
 .golf-draw .gd-mode-thumb {
@@ -1662,10 +1662,10 @@ details > summary {
   bottom: 4px;
   left: 4px;
   width: calc(50% - 4px);
-  border-radius: 8px;
-  background: var(--gd-green);
-  box-shadow: 0 2px 8px rgba(24, 24, 27, .06);
-  transition: transform 320ms var(--gd-ease);
+  border-radius: 50px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(14, 53, 36, .08), 0 1px 2px rgba(14, 53, 36, .06);
+  transition: transform 360ms var(--gd-ease);
 }
 
 .golf-draw .gd-mode[data-gd-selected="couple"] .gd-mode-thumb { transform: translateX(100%); }
@@ -1675,35 +1675,35 @@ details > summary {
   z-index: 1;
   min-width: 0;
   min-height: 40px;
-  padding: 8px 5px;
+  padding: 0 10px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 50px;
   background: transparent;
-  color: #52525b;
+  color: var(--gd-muted);
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   touch-action: manipulation;
-  transition: color 200ms ease, opacity 200ms ease;
+  transition: color 240ms ease, opacity 240ms ease;
 }
 
-.golf-draw .gd-mode button[aria-checked="true"] { color: #fff; }
+.golf-draw .gd-mode button[aria-checked="true"] { color: var(--gd-green); font-weight: 700; }
 .golf-draw .gd-mode button[aria-disabled="true"] { cursor: default; }
-.golf-draw .gd-mode button[aria-disabled="true"][aria-checked="false"] { opacity: .45; }
+.golf-draw .gd-mode button[aria-disabled="true"][aria-checked="false"] { opacity: .5; }
 
-.golf-draw .gd-sheet { position: relative; margin-top: 18px; }
+.golf-draw .gd-sheet { position: relative; margin-top: 24px; }
 
 .golf-draw .gd-name {
   display: inline-block;
-  color: var(--gd-body);
-  font-family: 'Noto Sans TC', system-ui, sans-serif; /* 與「提前 60 分」同字型 */
+  color: var(--gd-ink);
+  font-family: 'Noto Sans TC', system-ui, sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.25;
   white-space: nowrap;
 }
 
-/* 名牌（名單與結果共用）：與「抵達／餐別」資訊格同底色、框線、圓角 */
+/* 膠囊名牌（名單與結果共用） */
 .golf-draw .gd-cell,
 .golf-draw .gd-slot {
   display: flex;
@@ -1711,27 +1711,32 @@ details > summary {
   justify-content: center;
   gap: 6px;
   min-width: 0;
-  height: var(--gd-pill);
-  padding: 0 6px;
-  border: 1px solid var(--gd-cell-line);
-  border-radius: 8px;
-  background: var(--gd-cell);
+  padding: 8px 16px;
+  border: 1px solid var(--gd-chip-line);
+  border-radius: 50px;
+  background: var(--gd-chip);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .02);
 }
 
-/* 抽籤前：4 × 2 名牌 */
+.golf-draw .gd-amp { color: var(--gd-ink); font-family: 'Noto Sans TC', system-ui, sans-serif; font-size: 16px; font-weight: 400; line-height: 1; }
+
+/* 名單：行動端 2 欄（情侶各佔一格，維持 A–Z），桌機 4 欄（情侶佔兩格） */
 .golf-draw .gd-pool {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.golf-draw .gd-cell-pair { grid-column: span 2; }
-.golf-draw .gd-amp { color: var(--gd-body); font-family: 'Noto Sans TC', system-ui, sans-serif; font-size: 16px; font-weight: 400; line-height: 1; }
+@media (min-width: 601px) {
+  .panel.golf-draw { padding: 32px; }
+  .golf-draw .gd-pool { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .golf-draw .gd-cell-pair { grid-column: span 2; }
+}
 
-/* 抽完：兩組並排，各自置中 */
+/* 抽完：兩組並排 */
 .golf-draw .gd-sheet-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1745,13 +1750,13 @@ details > summary {
   align-items: baseline;
   justify-content: center;
   gap: 6px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .golf-draw .gd-group-head b {
   color: var(--gd-ink);
-  font-size: 17px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -1765,14 +1770,14 @@ details > summary {
 
 .golf-draw .gd-slots {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-/* 唯一的動作：深森林綠長方形按鈕，文字後接洗牌圖示 */
-.golf-draw .gd-actions { margin-top: 18px; }
+/* 唯一的最大操作焦點：膠囊主按鈕 */
+.golf-draw .gd-actions { margin-top: 24px; }
 
 .golf-draw .gd-btn {
   display: flex;
@@ -1780,30 +1785,36 @@ details > summary {
   justify-content: center;
   gap: 8px;
   width: 100%;
-  min-height: 48px;
+  min-height: 50px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 50px;
   background: var(--gd-green);
-  color: #f6f2ea;
+  color: #fff;
   font: inherit;
   font-size: 16px;
-  font-weight: 500;
-  letter-spacing: .02em;
+  font-weight: 700;
+  letter-spacing: .04em;
+  box-shadow: 0 6px 16px rgba(14, 53, 36, .14);
   touch-action: manipulation;
-  transition: background-color 200ms ease, color 200ms ease, transform 240ms var(--gd-ease);
+  transition: background-color 220ms ease, transform 260ms var(--gd-ease), box-shadow 260ms ease, color 220ms ease;
 }
 
-.golf-draw .gd-btn i { font-size: 14px; }
-.golf-draw .gd-btn[aria-disabled="true"] { cursor: default; color: rgba(246, 242, 234, .75); }
-.golf-draw .gd-btn:active:not([aria-disabled="true"]) { transform: scale(.985); background: var(--gd-green-pressed); }
+.golf-draw .gd-btn i { color: currentColor; font-size: 14px; letter-spacing: 0; }
+.golf-draw .gd-btn[aria-disabled="true"] { cursor: default; color: rgba(255, 255, 255, .78); }
+.golf-draw .gd-btn:active:not([aria-disabled="true"]) { transform: scale(.98); background: var(--gd-green-hover); box-shadow: 0 3px 10px rgba(14, 53, 36, .12); }
 
 @media (hover: hover) and (pointer: fine) {
-  .golf-draw .gd-btn:not([aria-disabled="true"]):hover { background: var(--gd-green-pressed); }
+  .golf-draw .gd-btn:not([aria-disabled="true"]):hover { background: var(--gd-green-hover); transform: scale(.99); }
 }
 
 @media (max-width: 360px) {
-  .golf-draw .gd-name { font-size: 15px; }
-  .golf-draw .gd-pool { gap: 6px; }
+  .panel.golf-draw { padding: 20px; }
+  .golf-draw .gd-name,
+  .golf-draw .gd-amp { font-size: 15px; }
+  .golf-draw .gd-cell,
+  .golf-draw .gd-slot { padding: 8px 10px; }
+  .golf-draw .gd-pool,
+  .golf-draw .gd-slots { gap: 8px; }
   .golf-draw .gd-sheet-grid { gap: 12px; }
 }
 
