@@ -1697,7 +1697,7 @@ details > summary {
   display: inline-block;
   color: var(--gd-ink);
   font-family: 'Noto Sans TC', system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.25;
   white-space: nowrap;
@@ -1718,7 +1718,7 @@ details > summary {
   box-shadow: 0 2px 6px rgba(0, 0, 0, .02);
 }
 
-.golf-draw .gd-amp { color: var(--gd-ink); font-family: 'Noto Sans TC', system-ui, sans-serif; font-size: 16px; font-weight: 400; line-height: 1; }
+.golf-draw .gd-amp { color: var(--gd-ink); font-family: 'Noto Sans TC', system-ui, sans-serif; font-size: 14px; font-weight: 400; line-height: 1; }
 
 /* 名單：行動端 2 欄（情侶各佔一格，維持 A–Z），桌機 4 欄（情侶佔兩格） */
 .golf-draw .gd-pool {
@@ -1810,7 +1810,7 @@ details > summary {
 @media (max-width: 360px) {
   .panel.golf-draw { padding: 20px; }
   .golf-draw .gd-name,
-  .golf-draw .gd-amp { font-size: 15px; }
+  .golf-draw .gd-amp { font-size: 14px; }
   .golf-draw .gd-cell,
   .golf-draw .gd-slot { padding: 8px 10px; }
   .golf-draw .gd-pool,
